@@ -17,6 +17,3 @@ Details
   * common methods are named exactly like ADOdb in case you want to try DALMP with an existing code that uses ADOdb
   * sql queue
   * http client + queue (for sending data via http to another server expecting an answer, if expected was ok then proceed other wise queue the http request)
-
-*Download*
-http://github.com/nbari/DALMP/archives/master
