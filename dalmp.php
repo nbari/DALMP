@@ -165,9 +165,9 @@ class DALMP {
 	 * memcache hosts
 	 *
 	 * @access private
-	 * @var mixed
+	 * @var array
 	 */
-	private $memCacheHosts = null;
+	private $memCacheHosts = array();
 
 	/**
 	 * Use memcache compression
@@ -184,9 +184,17 @@ class DALMP {
 	 * @var mixed
 	 */
 	protected $_memcache = null;
+	
+	/**
+	 * redis connection
+	 *
+	 * @access protected
+	 * @var mixed
+	 */
+	protected $_redis = null;
 
 	/**
-	 * memcache timeout
+	 * cache timeout
 	 *
 	 * @access private
 	 * @var mixed
@@ -215,6 +223,13 @@ class DALMP {
 	 * @var boolean
 	 */
 	private $dalmp_sessions_cache = false;
+	
+	/**
+	 * use cache type for sesssion
+	 * @access private
+	 * @var string
+	 */
+	private $dalmp_sessions_cache_type = null;
 
 	/**
 	 * sqlite database to use for queueing
@@ -314,7 +329,9 @@ class DALMP {
 		'dsn',
 		'sessions',
 		'PreparedStatements',
-		'Cache'
+		'Cache',
+		'memCache',
+		'redis'
 	);
 	
 	/**
@@ -965,7 +982,6 @@ class DALMP {
 	}
 	
 	public function memCache($hosts, $compress = false) {
-		$this->useMemcache = true;
 		if ($this->debug) {
 			$this->add2log('memCache', __METHOD__, "hosts: $hosts, compress: $compress");
 		}
@@ -982,10 +998,6 @@ class DALMP {
 		$this->memCacheHosts = $hosts;
 		$this->memCacheCompress = $compress ? MEMCACHE_COMPRESSED : 0;
 		return $this->_memCacheConnect();
-	}
-	
-	public function memCacheStats() {
-		return $this->isMemcacheConnected() ? $this->_memcache->getExtendedStats() : false;
 	}
 	
 	protected function _memCacheConnect() {
@@ -1013,6 +1025,10 @@ class DALMP {
 		return ((bool)($this->_memcache instanceof MemCache));
 	}
 	
+	public function memCacheStats() {
+		return $this->isMemcacheConnected() ? $this->_memcache->getExtendedStats() : false;
+	}
+	
 	public function apcCache() {
 		if (!extension_loaded('apc') && !ini_get('apc.enabled')) {
 			if ($this->debug) {
@@ -1028,7 +1044,52 @@ class DALMP {
 		return $this->apcCache() ? apc_cache_info() : false;
 	}
 	
-	public function Cache($cache=null, $arg1=null, $arg2=null) {
+	public function redisCache($host, $port, $timeout=0) {
+		if (!extension_loaded('redis')) {
+			if ($this->debug) {
+				$this->add2log('redis', __METHOD__, 'error', 'recis extension not loaded! - http://github.com/owlient/phpredis');
+			}
+			trigger_error('error ' . __METHOD__ . ' redix extension not loaded! - http://github.com/owlient/phpredis', E_USER_NOTICE);
+			return false;
+		}
+		$redis = new Redis();
+		$this->_redis = $redis;
+		return $this->_redis->connect($host, $port, $timeout);
+	}
+	
+	public function isRedisCacheConnected() {
+		return ((bool)($this->_redis instanceof Redis));
+	}
+	
+	public function redisStats() {
+		return $this->isRedisCacheConnected() ? $this->_redis->info() : false;
+	}
+	
+	public function redisSelect($db=null) {
+		if($this->isRedisCacheConnected() && is_numeric($db)) {
+			if ($this->debug) {
+				$this->add2log('redis', __METHOD__, "select database: $db");
+			}
+			$rs =  $this->_redis->select($db) ? true : false;
+			if ($this->debug) {
+				if(!$rs) {
+					$this->add2log('redis', __METHOD__,"could not set database: $db");
+				}
+			}
+			return $rs;
+		} else {
+			if ($this->debug) {
+				$this->add2log('redis', __METHOD__, "redis daemon not running,responding or db not set: $db");
+			}
+			return false;
+		}
+	}
+	
+	public function redisDBSize() {
+		return $this->isRedisCacheConnected() ? $this->_redis->dbSize() : false;
+	}
+	
+	public function Cache($cache=null, $arg1=null, $arg2=null, $arg3=null) {
 		$cache = isset($cache) ? $cache : 'dir';
 		if(in_array(strtolower($cache),$this->_cacheOptions)) {
 			array_unshift($this->_cacheOrder, $cache);
@@ -1043,8 +1104,7 @@ class DALMP {
 					return $this->memCache($arg1, $arg2);
 					break;
 				case 'redis':
-					/*** pending ***/
-					return true;
+					return $this->redisCache($arg1, $arg2, $arg3);
 					break;
 			}
 		} else {
@@ -1055,15 +1115,16 @@ class DALMP {
 		}
 	}
 	/**
-	 * setCache arguments: $sql, $object, $timeout, $key, $cn (connection name), $dc (use dir cache)
+	 * setCache arguments: $sql, $object, $timeout, $key, $cn (connection name), $dc (use dir cache), $ct (cache type)
 	 */
-	public function setCache($sql, $object, $timeout, $key, $cn, $dc=true) {
+	public function setCache($sql, $object, $timeout, $key, $cn, $dc=true, $ct=null) {
 		$hkey = sha1('DALMP' . $sql . $key . $cn);
+		$ct = isset($ct) ? $ct : $this->_cacheType;
 		if ($this->debug) {
 			$this->add2log('Cache', __METHOD__, "hkey: $hkey, sql: $sql, object: $object, timeout: $timeout, key: $key, cn: $cn, dc: $dc");
 		}
 		$rs = false;
-		switch($this->_cacheType) {
+		switch($ct) {
 			case 'apc':
 				$rs = $this->apcCache() ? apc_store($hkey, $object, $timeout) : false;
 				if ($this->debug) {
@@ -1078,11 +1139,18 @@ class DALMP {
 				if ($this->debug) {
 					$this->add2log('Cache','memCache',"set($hkey, $object, $this->memCacheCompress, $timeout)");
 				  if(!$rs) {
-						$this->add2log('Cache','memCache','memcache daemon not running or responding');
+						$this->add2log('Cache','memCache',"memcache daemon not running or responding: $rs");
 					}
 				}
 				break;
 			case 'redis':
+				$rs = $this->isRedisCacheConnected() ? $this->_redis->setex($hkey, $timeout, serialize($object)) : false;
+				if ($this->debug) {
+					$this->add2log('Cache','redis',"setex($hkey, $timeout, $object)");
+				  if(!$rs) {
+						$this->add2log('Cache','redis',"redis daemon not running or responding: $rs");
+					}
+				}
 				break;
 		}
 		if(!$rs && $dc) {
@@ -1143,15 +1211,16 @@ class DALMP {
 		}
 	}
 	/**
-	 * setCache arguments: $sql, $key, $cn (connection name), $dc (use dir cache)
+	 * setCache arguments: $sql, $key, $cn (connection name), $dc (use dir cache), $ct (cache type)
 	 */
-	public function getCache($sql, $key, $cn, $dc=true) {
+	public function getCache($sql, $key, $cn, $dc=true, $ct=null) {
 		$hkey = sha1('DALMP' . $sql . $key. $cn);
+		$ct = isset($ct) ? $ct : $this->_cacheType;
 		if ($this->debug) {
 			$this->add2log('Cache', __METHOD__, "hkey: $hkey, sql: $sql, key: $key, cn: $cn, dc: $dc");
 		}
 		$rs = false;
-		switch($this->_cacheType) {
+		switch($ct) {
 			case 'apc':
 				$rs = $this->apcCache() ? apc_fetch($hkey) : false;
 				break;
@@ -1159,6 +1228,7 @@ class DALMP {
 				$rs = $this->isMemcacheConnected() ? $this->_memcache->get($hkey) : false;
 				break;
 			case 'redis':
+				$rs = $this->isRedisCacheConnected() ? unserialize($this->_redis->get($hkey)) : false;
 				break;
 		}
 		if(!$rs && $dc) {
@@ -1220,15 +1290,22 @@ class DALMP {
 						}
 						break;
 					case 'memcache':
-						$rs = ($this->isMemcacheConnected()) ? $this->_memcache->delete($hkey) : false;
+						$rs = $this->isMemcacheConnected() ? $this->_memcache->delete($hkey) : false;
 						if ($this->debug) {
-							$this->add2log('Cache', 'memcache', "flush hkey: $hkey");
+							$this->add2log('Cache', 'memcache', "delete hkey: $hkey");
 							if(!$rs) {
-								$this->add2log('Cache','memcache','error',"could not flush hkey: $hkey");
+								$this->add2log('Cache','memcache','error',"could not delete hkey: $hkey");
 							}
 						}
 						break;
 					case 'redis':
+						$rs = $this->isRedisCacheConnected() ? $this->_redis->delete($hkey) : false;
+						if ($this->debug) {
+							$this->add2log('Cache', 'redis', "delete hkey: $hkey");
+							if(!$rs) {
+								$this->add2log('Cache','redis','error',"could not delete hkey: $hkey");
+							}
+						}
 						break;
 					case 'dir':
 						$dalmp_cache_dir = defined('DALMP_CACHE_DIR') ? DALMP_CACHE_DIR : '/tmp/dalmp';
@@ -1258,7 +1335,7 @@ class DALMP {
 						}
 						break;
 					case 'memcache':
-						$rs = ($this->isMemcacheConnected()) ? $this->_memcache->flush() : false;
+						$rs = $this->isMemcacheConnected() ? $this->_memcache->flush() : false;
 						if ($this->debug) {
 							$this->add2log('Cache', 'memcache', "flush all");
 						  if(!$rs) {
@@ -1267,6 +1344,13 @@ class DALMP {
 						}
 						break;
 					case 'redis':
+						$rs = $this->isRedisCacheConnected() ? $this->_redis->flushDB() : false;
+						if ($this->debug) {
+							$this->add2log('Cache', 'redis', "flush db");
+						  if(!$rs) {
+								$this->add2log('Cache','redis','error','cannot flush db');
+							}
+						}
 						break;
 					case 'dir':
 						$dalmp_cache_dir = defined('DALMP_CACHE_DIR') ? DALMP_CACHE_DIR : '/tmp/dalmp';
@@ -1544,7 +1628,7 @@ class DALMP {
 		}
 		
 		if($this->dalmp_sessions_cache) {
-			if ($cache = $this->getCache($sid, 'DALMP_SESSIONS', $this->dalmp_sessions_cname, false)) {
+			if ($cache = $this->getCache($sid, 'DALMP_SESSIONS', $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type)) {
 				if ($this->debug) {
 					$this->add2log('sessions', __METHOD__, 'session cached', $cache);
 				}
@@ -1583,7 +1667,7 @@ class DALMP {
 		
 		$timeout = get_cfg_var('session.gc_maxlifetime');
 		if($this->dalmp_sessions_cache) {
-			$rs = $this->setCache($sid, $data, $timeout, 'DALMP_SESSIONS', $this->dalmp_sessions_cname, false);
+			$rs = $this->setCache($sid, $data, $timeout, 'DALMP_SESSIONS', $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
 			if (!$rs) {
 				$write2db = true;
 				if ($this->debug) { 
@@ -1708,7 +1792,7 @@ class DALMP {
 			$start = 0;
 		}
 		if (in_array($cache, $this->_cacheOrder)) {
-			$this->_cacheType = $cache;
+			$this->dalmp_sessions_cache_type = $cache;
 			$this->dalmp_sessions_cache = true;
 		} else {
 			$cache = null;
