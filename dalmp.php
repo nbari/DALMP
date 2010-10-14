@@ -1054,7 +1054,13 @@ class DALMP {
 		}
 		$redis = new Redis();
 		$this->_redis = $redis;
-		return $this->_redis->connect($host, $port, $timeout);
+		try {
+			return $this->_redis->connect($host, $port, $timeout);
+		} catch (RedisException $e) {
+			if($this->debug) {
+				$this->add2log('redis', __METHOD__,'error',$e->getMessage());
+			}
+		}
 	}
 	
 	public function isRedisCacheConnected() {
