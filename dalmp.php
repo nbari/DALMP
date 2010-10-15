@@ -1690,16 +1690,9 @@ class DALMP {
 		}
 		
 		if (isset($write2db) || isset($ref)) {
-			if ($this->PExecute('SELECT sid FROM ' . $this->dalmp_sessions_table . ' WHERE sid=?', $sid, $this->dalmp_sessions_cname)) {
-				$this->PClose();
-			}
-			if ($this->numOfRows) {
-				$sql = 'UPDATE ' . $this->dalmp_sessions_table . ' SET data=?, expiry=?, ref=? WHERE sid=?';
-			} else {
-				$sql = 'INSERT INTO ' . $this->dalmp_sessions_table . ' (data, expiry, ref, sid) VALUES (?,?,?,?)';
-			}
+			$sql = "REPLACE INTO $this->dalmp_sessions_table (sid, expiry, data, ref) VALUES(?,?,?,?)";
 			$expiry = time() + get_cfg_var('session.gc_maxlifetime');
-			$rs = $this->PExecute($sql, $data, $expiry, $ref, $sid, $this->dalmp_sessions_cname);
+			$rs = $this->PExecute($sql, $sid, $expiry, $data, $ref, $this->dalmp_sessions_cname);
 			if ($this->debug) {
 				$this->add2log('sessions', __METHOD__, "writing to db: sql: $sql, data: $data, expiry: $expiry, sid: $sid, ref: $ref, cn: $this->dalmp_sessions_cname");
 			}
