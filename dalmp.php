@@ -1810,6 +1810,14 @@ class DALMP {
 															 array(&$this,'Sdestroy'),
 															 array(&$this,'Sgc'));
 			register_shutdown_function('session_write_close');
+
+			ini_set('session.name','DALMP_SESSID');
+			ini_set('session.use_cookies', 1);
+      ini_set('session.use_only_cookies', 1);
+			ini_set('session.use_trans_sid',    0);
+		 @ini_set('session.hash_function', 1); // sha1
+		 @ini_set('session.hash_bits_per_character', 5);
+
 			if (get_cfg_var('session.auto_start') || $start) {
 				session_start();
 			}
