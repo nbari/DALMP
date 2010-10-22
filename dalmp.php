@@ -1679,7 +1679,7 @@ class DALMP {
 				if ($this->debug) { 
 					$this->add2log('sessions', __METHOD__, 'error', "setCache, $this->_cacheType not running or responding, sid: $sid, data: $data, timeout: $timeout, cn: $this->dalmp_sessions_cname");
 				}
-				trigger_error("Cache: $this->_cacheType, not running or responding", E_USER_NOTICE);
+				trigger_error("Cache: $this->dalmp_sessions_cache_type, not running or responding", E_USER_NOTICE);
 			} else {
 				if ($this->debug) {
 					$this->add2log('sessions', __METHOD__, "setCache -> $this->_cacheType, sid: $sid, data: $data, timeout: $timeout, cn: $this->dalmp_sessions_cname");
