@@ -1854,7 +1854,7 @@ class DALMP {
 			$sql = "INSERT INTO sql VALUES (NULL, '$sql64', '$cdate')";
 			$rs = sqlite_query($sdb, $sql);
 			if (!$rs) {
-				die("could not save $sql on $queue_db");
+				trigger_error("queue: could not save $sql on $queue_db", E_USER_NOTICE);
 			}
 		}
 	}
@@ -1866,14 +1866,14 @@ class DALMP {
 		$queue = isset($queue) ? $queue : $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : $this->dalmp_queue_db;
 		$db = new SQLiteDatabase($queue);
 		$rs = $db->Query("SELECT * FROM sql");
+		$out = array();
 		while ($rs->valid()) {
 			$row = $rs->current();
-			$id = $row['id'];
-			$sql = base64_decode($row['sql']);
-			$cdate = $row['cdate'];
-			echo "$id|$sql|$cdate" . $this->isCli(1);
+			$out[$row['id']]['sql'] = base64_decode($row['sql']);
+			$out[$row['id']]['cdate'] = $row['cdate'];
 			$rs->next();
 		}
+		return $out;
 	}
 	
 	public function http_client($url, $expectedValue = null, $SearchInPage = true, $queue = 'default') {
@@ -1910,7 +1910,7 @@ class DALMP {
 			$sql = "INSERT INTO url VALUES (NULL, '$queue', '$url', '$expectedValue', '$cdate')";
 			$rs = sqlite_query($sdb, $sql);
 			if (!$rs) {
-				die("could not save $url on $queue_db");
+				trigger_error("queue: could not save $url on $queue_db", E_USER_NOTICE);
 			}
 		} else {
 			curl_close($ch);
