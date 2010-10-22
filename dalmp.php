@@ -574,7 +574,7 @@ class DALMP {
 			// this is to stop a syntax error if a column name has a space in e.g "This Column"
 			// http://php.net/manual/en/mysqli-stmt.fetch.php
 			$columnName = str_replace(' ', '_', $column->name);
-			$columns[$columnName] = & $$columnName;
+			$columns[$columnName] = &$$columnName;
 		}
 		call_user_func_array(array($this->_stmt,'bind_result'), $columns);
 		$rs = array();
@@ -891,7 +891,7 @@ class DALMP {
 	
 	public function FetchRow($cn = null) {
 		if ($this->debug) {
-			$this->add2log(__METHOD__, $sql);
+			$this->add2log(__METHOD__, $cn);
 		}
 		return $this->_rs->fetch_row();
 	}
@@ -914,7 +914,7 @@ class DALMP {
 	
 	public function getRow($sql, $cn = null) {
 		if ($this->debug) {
-			$this->add2log(__METHOD__, $cn, $sql);
+			$this->add2log(__METHOD__, $sql, $cn);
 		}
 		if ($this->Execute($sql, $cn)) {
 			$row = $this->_fetch();
@@ -927,7 +927,7 @@ class DALMP {
 	
 	public function getCol($sql, $cn = null) {
 		if ($this->debug) {
-			$this->add2log(__METHOD__, $cn, $sql);
+			$this->add2log(__METHOD__, $sql, $cn);
 		}
 		if ($this->Execute($sql, $cn)) {
 			$col = array();
@@ -943,7 +943,7 @@ class DALMP {
 	
 	public function getOne($sql, $cn = null) {
 		if ($this->debug) {
-			$this->add2log(__METHOD__, $cn, $sql);
+			$this->add2log(__METHOD__, $sql, $cn);
 		}
 		if ($this->Execute($sql, $cn)) {
 			$field = reset($this->_rs->fetch_row());
@@ -1969,6 +1969,23 @@ class DALMP {
 		$function = $stack[$level]['function'];
 		return empty($function) ? 'unknown' : $function;
 	}
+
+	public function UUID() {
+		// http://us2.php.net/manual/en/function.com-create-guid.php#52354
+		// Version 4 (random)
+		if (function_exists('uuid_create')) {
+			return uuid_create();
+		} else {
+			if ($this->debug) {
+				$this->add2log(__METHOD__, 'pecl uuid not installed');
+			}
+			mt_srand((double)microtime() * 10000);
+			$charid = sha1(uniqid(mt_rand() , true));
+			$hyphen = chr(45); // "-"
+			$uuid = substr($charid, 0, 8) . $hyphen . substr($charid, 8, 4) . $hyphen . substr($charid, 12, 4) . $hyphen . substr($charid, 16, 4) . $hyphen . substr($charid, 20, 12);
+			return $uuid;
+		}
+	}
 	
 	public function __call($name, $arguments) {
 		die("'$name' method does not exist, args: " . implode(', ', $arguments) . $this->isCli(1));
@@ -1994,21 +2011,5 @@ class DALMP {
 		return $status;
 	}
 	
-	public function UUID() {
-		// http://us2.php.net/manual/en/function.com-create-guid.php#52354
-		// Version 4 (random)
-		if (function_exists('uuid_create')) {
-			return uuid_create();
-		} else {
-			if ($this->debug) {
-				$this->add2log(__METHOD__, 'pecl uuid not installed');
-			}
-			mt_srand((double)microtime() * 10000);
-			$charid = sha1(uniqid(mt_rand() , true));
-			$hyphen = chr(45); // "-"
-			$uuid = substr($charid, 0, 8) . $hyphen . substr($charid, 8, 4) . $hyphen . substr($charid, 12, 4) . $hyphen . substr($charid, 16, 4) . $hyphen . substr($charid, 20, 12);
-			return $uuid;
-		}
-	}
 }
 ?>
