@@ -5,6 +5,8 @@ After many years of web developing with PHP, 99% of my sites are using php and m
 
 I have been using ADOdb, pear DB, Zend DB,  etc. they are excellent applications, but many times they are to much for what I need, so that is why I started creating DALMP, an data abstraction layer that just feet my needs , taking the best practice code out there and put it on a single simple file.
 
+%0 fat and extremely easy to use, just one file, define some constants, and you are ready to go.
+
 Details
 =======
 
@@ -17,3 +19,6 @@ Details
   * common methods are named exactly like ADOdb in case you want to try DALMP with an existing code that uses ADOdb
   * sql queue
   * http client + queue (for sending data via http to another server expecting an answer, if expected was ok then proceed other wise queue the http request)
+  * trace everything enabling the debugger by just setting something like $db->debug(1)
+
+_share knowledge:_ irc.freenode.net #dalmp
