@@ -13,7 +13,7 @@
  * define('DB_CNAME', 'db1');
  * define('DSN', DB_CHARSET.'://'.DB_USERNAME.':'.DB_PASSWORD.'@'.DB_HOST.':'.DB_PORT.'/'.DB_DATABASE.'?'.DB_CNAME);
  * # optional
- * # define('MEMCACHE_HOSTS','127.0.0.1,192.168.0.1:11234');
+ * # define('MEMCACHE_HOSTS','127.0.0.1;192.168.0.1:11234');
  * # define('DALMP_CONNECT_TIMEOUT', 30);
  * # define('DALMP_SESSIONS_REF', 'UID');
  * # define('DALMP_HTTP_CLIENT_CONNECT_TIMEOUT', 1);
@@ -993,7 +993,7 @@ class DALMP {
 			return false;
 		}
 		$memcache = new MemCache;
-		$hosts = explode(',', $hosts);
+		$hosts = explode(';', $hosts);
 		$this->_memcache = $memcache;
 		$this->memCacheHosts = $hosts;
 		$this->memCacheCompress = $compress ? MEMCACHE_COMPRESSED : 0;
@@ -1005,7 +1005,17 @@ class DALMP {
 		foreach ($this->memCacheHosts as $hosts) {
 			$out = explode(':', $hosts);
 			$host = trim($out[0]);
-			$port = isset($out[1]) ? trim($out[1]) : 11211;
+		  if(strstr($host,'/')) {
+				$port = 0;
+				if ($this->debug) {
+					$this->add2log('memCache', __METHOD__, "Using socket: $host");
+				}
+		  } else {
+				$port = isset($out[1]) ? trim($out[1]) : 11211;
+				if ($this->debug) {
+					$this->add2log('memCache', __METHOD__, "Using host: $host, port: $port");
+				}
+			}
 			$this->_memcache->addServer($host, $port, true);
 			if (!@$this->_memcache->getVersion($host, $port)) {
 				$linkerror[$host] = $port;
