@@ -1010,6 +1010,7 @@ class DALMP {
 				if ($this->debug) {
 					$this->add2log('memCache', __METHOD__, "Using socket: $host");
 				}
+				$host = "unix://$host";
 		  } else {
 				$port = isset($out[1]) ? trim($out[1]) : 11211;
 				if ($this->debug) {
@@ -1389,7 +1390,7 @@ class DALMP {
    * Note: $kill_top_level is used internally in the function to flush subdirectories.
    */
 	private function _dirFlush($dir, $kill_top_level = false) {
-    if(!$dh = opendir($dir)) {
+    if(!$dh = @opendir($dir)) {
 			return;
 		}
     while (($obj = readdir($dh)) !==false) {
