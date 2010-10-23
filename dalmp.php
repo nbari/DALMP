@@ -1018,18 +1018,17 @@ class DALMP {
 				}
 			}
 			$this->_memcache->addServer($host, $port, true);
-			if (!@$this->_memcache->getVersion($host, $port)) {
-				$linkerror[$host] = $port;
-			}
 		}
-		if (!empty($linkerror)) {
+		
+		if (!@$this->_memcache->getVersion()) {
 			if ($this->debug) {
 				$this->add2log('memCache', __METHOD__, 'linkerror', 'Can not connect to any memcache server');
 			}
 			$this->_memcache = false;
 			return false;
+		} else {
+			return true;
 		}
-		return true;
 	}
 	
 	public function isMemcacheConnected() {
