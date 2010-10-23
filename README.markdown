@@ -10,15 +10,17 @@ I have been using ADOdb, pear DB, Zend DB,  etc. they are excellent applications
 Details
 =======
 
-  * *memcache* support (http://code.google.com/p/memcached/)
-  * *apc* support (http://pecl.php.net/package/APC)
   * *redis* support (http://github.com/owlient/phpredis)
+  * *memcache*  single or multiple hosts and socket support (http://code.google.com/p/memcached/)
+  * *apc* support (http://pecl.php.net/package/APC)
   * disk cache support 
   * ability to use different cache types at the same time 
-  * simple store of session on database and memcache
+  * simple store of session on database or a cache like redis/memcache/apc
+  * easy to use/install/adapt DALMP is just a single file 
   * common methods are named exactly like ADOdb in case you want to try DALMP with an existing code that uses ADOdb
   * sql queue
   * http client + queue (for sending data via http to another server expecting an answer, if expected was ok then proceed other wise queue the http request)
   * trace everything enabling the debugger by just setting something like $db->debug(1)
+
 
 _share knowledge:_ irc.freenode.net #dalmp
