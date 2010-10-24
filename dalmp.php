@@ -1008,13 +1008,13 @@ class DALMP {
 		  if(strstr($host,'/')) {
 				$port = 0;
 				if ($this->debug) {
-					$this->add2log('memCache', __METHOD__, "Using socket: $host");
+					$this->add2log('memCache', __METHOD__, "adding server via socket: $host");
 				}
 				$host = "unix://$host";
 		  } else {
 				$port = isset($out[1]) ? trim($out[1]) : 11211;
 				if ($this->debug) {
-					$this->add2log('memCache', __METHOD__, "Using host: $host, port: $port");
+					$this->add2log('memCache', __METHOD__, "adding server via host: $host, port: $port");
 				}
 			}
 			$this->_memcache->addServer($host, $port, true);
