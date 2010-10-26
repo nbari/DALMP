@@ -10,7 +10,7 @@ I have been using ADOdb, pear DB, Zend DB,  etc. they are excellent applications
 Details
 =======
 
-  * *redis* support (http://github.com/owlient/phpredis)
+  * *redis* support (http://code.google.com/p/redis/)
   * *memcache*  single or multiple hosts and socket support (http://code.google.com/p/memcached/)
   * *apc* support (http://pecl.php.net/package/APC)
   * disk cache support 
