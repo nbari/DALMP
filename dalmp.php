@@ -1661,12 +1661,12 @@ class DALMP {
 			}
 		} else {
 			$expiry = time();
-			$return = ($rs = $this->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, $expiry, $this->dalmp_sessions_cname)) ? $rs : '';
+			$cache = ($rs = $this->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, $expiry, $this->dalmp_sessions_cname)) ? $rs : '';
 			if ($this->debug) {
 				$this->add2log('sessions', __METHOD__, "returned from db: $return");
 			}
 			$this->debug = $this->debug2 ? true : false;
-			return $return;
+			return $cache;
 		}
 	}
 	
