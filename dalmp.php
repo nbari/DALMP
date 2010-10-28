@@ -8,17 +8,20 @@
  * define('DB_USERNAME', 'username');
  * define('DB_PASSWORD', 'password');
  * define('DB_HOST', 'localhost');
+ * define('DB_PORT', 3306);
  * define('DB_DATABASE', 'database');
  * define('DB_CHARSET', 'utf8');
  * define('DB_CNAME', 'db1');
  * define('DSN', DB_CHARSET.'://'.DB_USERNAME.':'.DB_PASSWORD.'@'.DB_HOST.':'.DB_PORT.'/'.DB_DATABASE.'?'.DB_CNAME);
  * # optional
  * # define('MEMCACHE_HOSTS','127.0.0.1;192.168.0.1:11234');
+ * # define('REDIS_HOST','127.0.0.1');
+ * # define('REDIS_PORT', 6379);
  * # define('DALMP_CONNECT_TIMEOUT', 30);
  * # define('DALMP_SESSIONS_REF', 'UID');
  * # define('DALMP_HTTP_CLIENT_CONNECT_TIMEOUT', 1);
- * # define('DALMP_DEBUG_FILE', '/path/to/debug.log');
- * # define('DALMP_CACHE_DIR', '/path/to/cache/');
+ * # define('DALMP_DEBUG_FILE', '/tmp/dalmp/debug.log');
+ * # define('DALMP_CACHE_DIR', '/tmp/dalmp/cache/');
  *
  * initialize the class:
  *
@@ -28,6 +31,8 @@
  * # $db->Cache('apc');
  * # if you want to use memcache
  * # $db->Cache('memcache',MEMCACHE_HOSTS);
+ * # if you want to use redis
+ * # $db->Cache('redis',REDIS_HOST, REDIS_PORT);
  *
  *
 -- ----------------------------
@@ -537,6 +542,14 @@ class DALMP {
 		}
 	}
 	
+	public function setFetchMode() {
+		$args = func_get_args();
+		if ($this->debug) {
+			$this->add2log(__METHOD__, implode(', ',$args));
+		}
+		return call_user_func_array(array($this, 'FetchMode'), $args);
+	}
+	
 	public function FetchMode($mode = null) {
 		switch (strtoupper($mode)) {
 			case 'NUM':
@@ -871,12 +884,12 @@ class DALMP {
 			$this->add2log(__METHOD__, $sql, $cn);
 		}
 		if ($rs = $this->getConnection($cn)->query($sql)) {
-			$this->_rs = $rs;
 			if (is_object($rs)) {
+				$this->_rs = $rs;
 				$this->numOfRows = $this->_rs->num_rows;
 				$this->numOfFields = $this->_rs->field_count;
 				if ($this->debug) {
-					$this->add2log(__METHOD__, "is object, sql: $sql, cn: $cn", "#rows: $this->numOfRows, #fields: $this->numOfFields");
+					$this->add2log(__METHOD__, "returned object, sql: $sql, cn: $cn", "#rows: $this->numOfRows, #fields: $this->numOfFields");
 				}
 			}
 			return (@$this->getConnection($cn)->affected_rows > 0) ? true : false;
