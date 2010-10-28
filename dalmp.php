@@ -11,8 +11,8 @@
  * define('DB_PORT', 3306);
  * define('DB_DATABASE', 'database');
  * define('DB_CHARSET', 'utf8');
- * define('DB_CNAME', 'db1');
- * define('DSN', DB_CHARSET.'://'.DB_USERNAME.':'.DB_PASSWORD.'@'.DB_HOST.':'.DB_PORT.'/'.DB_DATABASE.'?'.DB_CNAME);
+ * define('DB1_CNAME', 'db1');
+ * define('DSN', DB_CHARSET.'://'.DB_USERNAME.':'.DB_PASSWORD.'@'.DB_HOST.':'.DB_PORT.'/'.DB_DATABASE.'?'.DB1_CNAME);
  * # optional
  * # define('MEMCACHE_HOSTS','127.0.0.1;192.168.0.1:11234');
  * # define('REDIS_HOST','127.0.0.1');
@@ -1299,13 +1299,15 @@ class DALMP {
 		}
 	}
 	
-	public function CacheFlush($sql=null, $key=null, $cn=null) {
+	public function CacheFlush($sql=null, $key=null, $cn=null, $cache=null) {
 		if ($sql) {
 			$cn = isset($cn) ? $cn : $this->cname;
 		  $hkey = sha1('DALMP' . $sql . $key . $cn);
 			if ($this->debug) {
-				$this->add2log('Cache', __METHOD__, "flush hkey: $hkey, sql: $sql, key: $key, cn: $cn for: ".implode(', ',$this->_cacheOrder));
+				$this->add2log('Cache', __METHOD__, "flush hkey: $hkey, sql: $sql, key: $key, cn: $cn for: ". (isset($cache) ? $cache : implode(', ', $this->_cacheOrder)));
 			}
+			
+			$this->_cacheOrder = in_array($cache, $this->_cacheOrder) ? array($cache) : $this->_cacheOrder;
 			
 			foreach($this->_cacheOrder as $value) {
 				switch($value) {
@@ -1352,6 +1354,7 @@ class DALMP {
 			if ($this->debug) {
 				$this->add2log('Cache', __METHOD__, 'flush all for: '.implode(', ',$this->_cacheOrder));
 			}
+			
 			foreach($this->_cacheOrder as $value) {
 				switch($value) {
 					case 'apc':
@@ -1417,7 +1420,7 @@ class DALMP {
       if (is_dir($x)) $this->_dirFlush($x, true);
     }
     if ($kill_top_level === true) {
-			rmdir($dir);
+			@rmdir($dir);
 		}
     return true;
   }
