@@ -50,4 +50,6 @@ print_r($rs);
 echo $db->isCli(1);
 echo $_SESSION['test'];
 echo $db->isCli(1);
-echo "\n\n".$timer->getPageLoadTime()."\n";
+echo "\n".$timer->getPageLoadTime()." - ".$timer->getMemoryUsage();
+
+?>

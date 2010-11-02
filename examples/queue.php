@@ -41,6 +41,6 @@ foreach ($db->readQueue() as $key => $value) {
 }
 
 
-echo "\n\n".$timer->getPageLoadTime()."\n";
+echo "\n".$timer->getPageLoadTime()." - ".$timer->getMemoryUsage();
 
 ?>
