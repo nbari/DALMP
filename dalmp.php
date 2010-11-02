@@ -1616,21 +1616,27 @@ class DALMP {
 		return call_user_func_array(array($this,'_CacheP'), $args);
 	}
 	
-	public function getSessionRef($ref) {
-		if ($this->dalmp_sessions_cache AND !defined('DALMP_SESSIONS_REDUNDANCY'))  {
-			$key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : $this->dalmp_sessions_table;
-			$sessions_key = 'DALMP_SESSIONS_REF'.$key;
-			$refs = $this->getCache('sessions_ref', $sessions_key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
-			$rs = array();
-			foreach ($refs as $key => $expiry) {
-				if (key($expiry) == $ref) {
-					$rs[] = key($expiry);
-				}
-			}
-			return $rs;
-		} else {
-			return $this->PGetCol('SELECT ref FROM ' . $this->dalmp_sessions_table . ' WHERE ref=?', $ref);
+	public function getSessionsRefs() {
+		$key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : $this->dalmp_sessions_table;
+		$sessions_key = 'DALMP_SESSIONS_REF'.$key;
+		$cached_refs = $this->getCache('sessions_ref', $sessions_key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
+		$db_refs = $this->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
+		$dba = array();
+		foreach ($db_refs as $value) {
+			$dba[$value['sid']] = array($value['ref'] => $value['expiry']);
 		}
+		return array_merge($dba, (is_array($cached_refs) ? $cached_refs : array())); // give priority to cache
+	}
+	
+	public function getSessionRef($ref) {
+		$refs = $this->getSessionsRefs();
+		$rs = array();
+		foreach ($refs as $key => $expiry) {
+		  if (key($expiry) == $ref) {
+				$rs[] = key($expiry);
+			}
+		}
+		return $rs;
 	}
 	
 	public function delSessionRef($ref) {
@@ -1642,7 +1648,8 @@ class DALMP {
 				if (key($expiry) == $ref) {
 					unset($refs[$key]);
 				}
-			}	
+			}
+			$rs = $this->setCache('sessions_ref', $refs, 0, $sessions_key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
 		}
 		return $this->PExecute('DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE ref=?', $ref);
 	}
