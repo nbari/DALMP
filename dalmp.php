@@ -1741,7 +1741,8 @@ class DALMP {
 		$rs = $this->PExecute($sql, $sid, $this->dalmp_sessions_cname);
 		
 		if($this->dalmp_sessions_cache) {
-			$this->CacheFlush($sid,'DALMP_SESSIONS', $this->dalmp_sessions_cname);
+			$key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : $this->dalmp_sessions_table;
+			$this->CacheFlush($sid, $key, $this->dalmp_sessions_cname);
 		}
 		$this->debug = $this->debug2 ? true : false;
 		return $rs;
