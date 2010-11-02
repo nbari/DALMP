@@ -20,7 +20,7 @@
  * # define('DALMP_CONNECT_TIMEOUT', 30);
  * # define('DALMP_SESSIONS_REF', 'UID');
  * # define('DALMP_SESSIONS_KEY', 'mykey');
- * # define('DALMP_SESSIONS_REDUNDANCY', false);
+ * # define('DALMP_SESSIONS_REDUNDANCY', true);
  * # define('DALMP_HTTP_CLIENT_CONNECT_TIMEOUT', 1);
  * # define('DALMP_DEBUG_FILE', '/tmp/dalmp/debug.log');
  * # define('DALMP_CACHE_DIR', '/tmp/dalmp/cache/');
