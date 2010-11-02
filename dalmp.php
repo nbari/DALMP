@@ -19,6 +19,7 @@
  * # define('REDIS_PORT', 6379);
  * # define('DALMP_CONNECT_TIMEOUT', 30);
  * # define('DALMP_SESSIONS_REF', 'UID');
+ * # define('DALMP_SESSIONS_KEY', 'mykey');
  * # define('DALMP_HTTP_CLIENT_CONNECT_TIMEOUT', 1);
  * # define('DALMP_DEBUG_FILE', '/tmp/dalmp/debug.log');
  * # define('DALMP_CACHE_DIR', '/tmp/dalmp/cache/');
@@ -1660,7 +1661,8 @@ class DALMP {
 		}
 		
 		if($this->dalmp_sessions_cache) {
-			if ($cache = $this->getCache($sid, 'DALMP_SESSIONS', $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type)) {
+			$key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : $this->dalmp_sessions_table;
+			if ($cache = $this->getCache($sid, $key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type)) {
 				if ($this->debug) {
 					$this->add2log('sessions', __METHOD__, 'session cached', $cache);
 				}
@@ -1699,7 +1701,8 @@ class DALMP {
 		
 		$timeout = get_cfg_var('session.gc_maxlifetime');
 		if($this->dalmp_sessions_cache) {
-			$rs = $this->setCache($sid, $data, $timeout, 'DALMP_SESSIONS', $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
+			$key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : $this->dalmp_sessions_table;
+			$rs = $this->setCache($sid, $data, $timeout, $key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
 			if (!$rs) {
 				$write2db = true;
 				if ($this->debug) { 
