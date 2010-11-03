@@ -661,12 +661,14 @@ class DALMP {
   /**
 	 * Prepared Statements
 	 * arguments: $sql, $params, $cn
-	 * example: PGetAll('select * from users where id=? and name=?', '1', 'name', 'db1')
+	 * example: PGetAll('SELECT * FROM users WHERE name=? AND id=?', 'name', 1, 'db1')
+	 * user also can define  the corresponding type of the bind variables (i, d, s, b): http://pt.php.net/manual/en/mysqli-stmt.bind-param.php
+	 * example: PGetAll('SELECT * FROM table WHERE name=? AND id=?', array('s'=>'name', 'i'=>1), 'db1');
 	 */
 	public function PExecute() {
 		$args = func_get_args();
 		if ($this->debug) {
-			$this->add2log('PreparedStatements', __METHOD__, implode(', ', $args));
+			$this->add2log('PreparedStatements', __METHOD__, $this->r_implode('|',$args));
 		}
 		$sql = array_shift($args);
 		$cn = end($args);
@@ -685,10 +687,17 @@ class DALMP {
 			}
 			trigger_error('error ' . __METHOD__ . ' ' . "Please check your sql statement, unable to prepare: $sql on $cn args: $args, available connections: " . implode(', ', array_keys($this->_connection)) , E_USER_ERROR);
 		}
+		$params = array();
 		$types = null;
-		$i = 0;
+		$i = 0; 
+		$args = is_array(current($args)) ? current($args) : $args;
 		if (!empty($args)) {
 			foreach ($args as $key => $param) {
+				if (is_int($key)) {
+				  $params[] = &$args[$i];
+				} else {
+				  $params[] = &$args[$key];
+				}
 				if (!in_array($key, $this->_allowedParams, true)) {
 					if (is_int($param)) {
 						$key = 'i';
@@ -701,7 +710,6 @@ class DALMP {
 					}
 				}
 				$types.= $key;
-				$params[] = & $args[$i];
 				$i++;
 			}
 			unset($i);
@@ -734,49 +742,40 @@ class DALMP {
 	
 	public function PgetAll() {
 		$args = func_get_args();
-		if ($this->debug) {
-			$this->add2log('PreparedStatements', __METHOD__, implode(', ', $args));
-		}
+		if ($this->debug) { $this->add2log('PreparedStatements', __METHOD__); }
 		call_user_func_array(array($this,'PExecute'), $args);
 		return $this->_pFetch('all');
 	}
 	
 	public function PgetRow() {
 		$args = func_get_args();
-		if ($this->debug) {
-			$this->add2log('PreparedStatements', __METHOD__, implode(', ', $args));
-		}
+    if ($this->debug) { $this->add2log('PreparedStatements', __METHOD__); }
 		call_user_func_array(array($this,'PExecute'), $args);
 		return $this->_pFetch('row');
 	}
 	
 	public function PgetCol() {
 		$args = func_get_args();
-		if ($this->debug) {
-			$this->add2log('PreparedStatements', __METHOD__, implode(', ', $args));
-		}
+		if ($this->debug) { $this->add2log('PreparedStatements', __METHOD__); }
 		call_user_func_array(array($this,'PExecute'), $args);
 		return $this->_pFetch('col');
 	}
 	
 	public function PgetOne() {
 		$args = func_get_args();
-		if ($this->debug) {
-			$this->add2log('PreparedStatements', __METHOD__, implode(', ', $args));
-		}
+		if ($this->debug) { $this->add2log('PreparedStatements', __METHOD__); }
 		call_user_func_array(array($this,'PExecute'), $args);
 		return $this->_pFetch('one');
 	}
 	public function PgetASSOC() {
 		$args = func_get_args();
-		if ($this->debug) {
-			$this->add2log('PreparedStatements', __METHOD__, implode(', ', $args));
-		}
+		if ($this->debug) { $this->add2log('PreparedStatements', __METHOD__); }
 		call_user_func_array(array($this,'PExecute'), $args);
 		return $this->_pFetch('assoc');
 	}
 	
 	public function Insert_Id() {
+		if ($this->debug) { $this->add2log( __METHOD__); }
 		return mysqli_insert_id($this->getConnection());
 	}
 	
@@ -912,9 +911,7 @@ class DALMP {
 	}
 	
 	public function getAll($sql, $cn = null) {
-		if ($this->debug) {
-			$this->add2log(__METHOD__, $sql, $cn);
-		}
+		if ($this->debug) { $this->add2log(__METHOD__, $sql, $cn); }
 		if ($this->Execute($sql, $cn)) {
 			$rows = array();
 			while ($row = $this->_fetch()) {
@@ -928,9 +925,7 @@ class DALMP {
 	}
 	
 	public function getRow($sql, $cn = null) {
-		if ($this->debug) {
-			$this->add2log(__METHOD__, $sql, $cn);
-		}
+		if ($this->debug) { $this->add2log(__METHOD__, $sql, $cn);}
 		if ($this->Execute($sql, $cn)) {
 			$row = $this->_fetch();
 			$this->Close($cn);
@@ -941,9 +936,7 @@ class DALMP {
 	}
 	
 	public function getCol($sql, $cn = null) {
-		if ($this->debug) {
-			$this->add2log(__METHOD__, $sql, $cn);
-		}
+		if ($this->debug) { $this->add2log(__METHOD__, $sql, $cn); }
 		if ($this->Execute($sql, $cn)) {
 			$col = array();
 			while ($row = $this->_rs->fetch_row()) {
@@ -957,9 +950,7 @@ class DALMP {
 	}
 	
 	public function getOne($sql, $cn = null) {
-		if ($this->debug) {
-			$this->add2log(__METHOD__, $sql, $cn);
-		}
+		if ($this->debug) { $this->add2log(__METHOD__, $sql, $cn); }
 		if ($this->Execute($sql, $cn)) {
 			$field = reset($this->_rs->fetch_row());
 			$this->Close($cn);
@@ -970,9 +961,7 @@ class DALMP {
 	}
 	
 	public function getASSOC($sql, $cn = null) {
-		if ($this->debug) {
-			$this->add2log(__METHOD__, $sql, $cn);
-		}
+		if ($this->debug) { $this->add2log(__METHOD__, $sql, $cn); }
 		if ($this->Execute($sql, $cn)) {
 			$cols = $this->numOfFields;
 			if ($cols < 2) {
@@ -1152,7 +1141,7 @@ class DALMP {
 		$hkey = sha1('DALMP' . $sql . $key . $cn);
 		$ct = isset($ct) ? $ct : $this->_cacheType;
 		if ($this->debug) {
-			$this->add2log('Cache', __METHOD__, "hkey: $hkey, sql: $sql, object: ".serialize($object).", timeout: $timeout, key: $key, cn: $cn, dc: $dc");
+			$this->add2log('Cache', __METHOD__, "hkey: $hkey, sql: $sql, object: ".count($object).", timeout: $timeout, key: $key, cn: $cn, dc: $dc");
 		}
 		$rs = false;
 		switch($ct) {
@@ -1168,7 +1157,7 @@ class DALMP {
 			case 'memcache':
 				$rs = $this->isMemcacheConnected() ? $this->_memcache->set($hkey, $object, $this->memCacheCompress, $timeout) : false;
 				if ($this->debug) {
-					$this->add2log('Cache','memCache',"set($hkey, ".serialize($object).", $this->memCacheCompress, $timeout)");
+					$this->add2log('Cache','memCache',"set($hkey, -object- $this->memCacheCompress, $timeout)");
 				  if(!$rs) {
 						$this->add2log('Cache','memCache',"memcache daemon not running or responding: $rs");
 					}
@@ -1177,7 +1166,7 @@ class DALMP {
 			case 'redis':
 				$rs = $this->isRedisCacheConnected() ? $this->_redis->setex($hkey, $timeout, serialize($object)) : false;
 				if ($this->debug) {
-					$this->add2log('Cache','redis',"setex($hkey, $timeout, ".serialize($object)."");
+					$this->add2log('Cache','redis',"setex($hkey, $timeout, -object-");
 				  if(!$rs) {
 						$this->add2log('Cache','redis',"redis daemon not running or responding: $rs");
 					}
@@ -1295,7 +1284,7 @@ class DALMP {
 			}
 		} else {	
 			if ($this->debug) {
-				$this->add2log('Cache', __METHOD__, $ct, "returned cache for hkey $hkey: ".serialize($rs));
+				$this->add2log('Cache', __METHOD__, "cachetype: $ct, cache retrieved for hkey $hkey");
 			}
 			return $rs;
 		}
@@ -1434,7 +1423,7 @@ class DALMP {
 	protected function _Cache() {
 		$args = func_get_args();
 		if ($this->debug) {
-			$this->add2log('Cache', __METHOD__, 'initial args: '.implode(', ', $args));
+			$this->add2log('Cache', __METHOD__, 'initial args: '.$this->r_implode('|', $args));
 		}
 		$fetch = array_shift($args);
 		$cachetype = reset($args);
@@ -1488,36 +1477,42 @@ class DALMP {
 	}
 	
 	public function CacheExecute() {
+		if ($this->debug) { $this->add2log('Cache', __METHOD__); }
 		$args = func_get_args();
 		array_unshift($args, 'Execute');
 		return call_user_func_array(array($this,'_Cache'), $args);
 	}
 	
 	public function CacheGetAll() {
+		if ($this->debug) { $this->add2log('Cache', __METHOD__); }
 		$args = func_get_args();
 		array_unshift($args, 'getAll');
 		return call_user_func_array(array($this,'_Cache'), $args);
 	}
 	
 	public function CacheGetRow() {
+		if ($this->debug) { $this->add2log('Cache', __METHOD__); }
  		$args = func_get_args();
 		array_unshift($args, 'getRow');
 		return call_user_func_array(array($this,'_Cache'), $args);
 	}
 	
 	public function CacheGetCol() {
+		if ($this->debug) { $this->add2log('Cache', __METHOD__); }
  		$args = func_get_args();
 		array_unshift($args, 'getCol');
 		return call_user_func_array(array($this,'_Cache'), $args);
 	}
 	
 	public function CacheGetOne() {
+		if ($this->debug) { $this->add2log('Cache', __METHOD__); }
  		$args = func_get_args();
 		array_unshift($args, 'getOne');
 		return call_user_func_array(array($this,'_Cache'), $args);
 	}
 	
 	public function CacheGetASSOC() {
+		if ($this->debug) { $this->add2log('Cache', __METHOD__); }
 		$args = func_get_args();
 		array_unshift($args, 'getAssoc');
 		return call_user_func_array(array($this,'_Cache'), $args);
@@ -1530,7 +1525,7 @@ class DALMP {
 	protected function _CacheP() {
 		$args = func_get_args();
 		if ($this->debug) {
-			$this->add2log('Cache', __METHOD__, 'PreparedStatements initial args: '. implode(', ', $args));
+			$this->add2log('Cache', __METHOD__, 'PreparedStatements initial args: '. $this->r_implode('|', $args));
 		}
 		$fetch = array_shift($args);
 		$cachetype = reset($args);
@@ -1555,12 +1550,13 @@ class DALMP {
 			$cn = $this->cname;
 		}
 		// expected params
-		$eparams = count(explode('?',$sql,-1));
+		$eparams = count(explode('?',$sql,-1)); 
+		$args = is_array(current($args)) ? current($args) : $args;
 		if(count($args) > $eparams) {
 			$key = array_pop($args);
 			$params = $args;
-		} else {
-			$key = $fetch.implode('|',$args);
+		} else { 
+			$key = $fetch.implode('|',array_merge(array_keys($args),$args));
 			$params = $args;
 		}
 		array_unshift($args, $sql);
@@ -1572,9 +1568,17 @@ class DALMP {
 			return $cache;
 		} else {
 			if ($this->debug) {
-				$this->add2log('Cache', __METHOD__, "PreparedStatements no cache returned, executing query PExecute with args: ".implode(', ',$args));
+				$this->add2log('Cache', __METHOD__, "PreparedStatements no cache returned, executing query PExecute with args: ".implode('|',$args));
 			}
-			call_user_func_array(array($this,'PExecute'), $args);
+			$nargs = array();
+			foreach (array_keys($args) as $akey) { 
+				if (!is_int($akey)) {
+					$nargs['dalmp'][$akey] = $args[$akey];
+				} else {
+					$nargs[] = $args[$akey];
+				}
+			}
+			call_user_func_array(array($this,'PExecute'), $nargs); 
 			$cache = $this->_pFetch($fetch);
 			if (!$this->setCache($sql, $cache, $timeout, $key, $cn)) {
 				if ($this->debug) {
@@ -1587,30 +1591,35 @@ class DALMP {
 	}
 	
 	public function CachePgetAll() {
+		if ($this->debug) { $this->add2log('Cache', __METHOD__,'PreparedStatements'); }
 		$args = func_get_args();
 		array_unshift($args, 'all');
 		return call_user_func_array(array($this,'_CacheP'), $args);
 	}
 	
 	public function CachePgetRow() {
+		if ($this->debug) { $this->add2log('Cache', __METHOD__,'PreparedStatements'); }
 		$args = func_get_args();
 		array_unshift($args, 'row');
 		return call_user_func_array(array($this,'_CacheP'), $args);
 	}
 	
 	public function CachePgetCol() {
+		if ($this->debug) { $this->add2log('Cache', __METHOD__,'PreparedStatements'); }
 		$args = func_get_args();
 		array_unshift($args, 'col');
 		return call_user_func_array(array($this,'_CacheP'), $args);
 	}
 	
 	public function CachePgetOne() {
+		if ($this->debug) { $this->add2log('Cache', __METHOD__,'PreparedStatements'); }
 		$args = func_get_args();
 		array_unshift($args, 'one');
 		return call_user_func_array(array($this,'_CacheP'), $args);
 	}
 	
 	public function CachePgetASSOC() {
+		if ($this->debug) { $this->add2log('Cache', __METHOD__,'PreparedStatements'); }
 		$args = func_get_args();
 		array_unshift($args, 'assoc');
 		return call_user_func_array(array($this,'_CacheP'), $args);
@@ -1656,16 +1665,12 @@ class DALMP {
 	
 	protected function _sessionsRef($sid, $ref, $key, $destroy=null) {
 		$sessions_key = 'DALMP_SESSIONS_REF'.$key;
+		if($this->debug_sessions) {
+			$this->add2log('sessions',__METHOD__,"sid: $sid, ref:". $this->r_implode('|',$ref) .", key: $key, destroy: $destroy");	
+		}
 		$refs = $this->getCache('sessions_ref', $sessions_key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
 		if(!$refs) {
-			if ($this->debug_sessions) {
-				$this->add2log('sessions', __METHOD__, "getCache sessions REF: $this->dalmp_sessions_cache_type return: no values");
-			}
 			$refs = array();
-		} else {
-			if ($this->debug_sessions) {
-				$this->add2log('sessions', __METHOD__, "getCache sessions REF: $this->dalmp_sessions_cache_type returned values:".count(array_keys($refs)));
-			}
 		}
 		/**
 		 * expiry ref
@@ -1677,25 +1682,16 @@ class DALMP {
 		}
 		if (isset($destroy)) {
 			unset($refs[$sid]);
-			if ($this->debug_sessions) {
-				$this->add2log('sessions', __METHOD__, "destroy sessions REF: $this->dalmp_sessions_cache_type, session_key: $sessions_key, sid: $sid, ref: $ref");
-			}
 		} else {
 			$refs[$sid] = array($ref => time() + get_cfg_var('session.gc_maxlifetime'));
-			if ($this->debug_sessions) {
-				$this->add2log('sessions', __METHOD__, "update sessions REF: $this->dalmp_sessions_cache_type, session_key: $sessions_key, sid: $sid, ref:".serialize($ref));
-			}
 		}
 		$rs = $this->setCache('sessions_ref', $refs, 0, $sessions_key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
 		if(!$rs) {
 			if ($this->debug_sessions) {
-				$this->add2log('sessions', __METHOD__, 'error,', "setCache sessions REF: $this->dalmp_sessions_cache_type not running or responding, session_key: $sessions_key, sid: $sid, ref: $ref");
+				$this->add2log('sessions', __METHOD__, 'error');
 			}
 			return false;
 		} else {
-			if ($this->debug_sessions) {
-				$this->add2log('sessions', __METHOD__, "setCache sessions REF: $this->dalmp_sessions_cache_type, session_key: $sessions_key, sid: $sid, ref: $ref");
-			}
 			return true;
 		}
 	}
@@ -1749,7 +1745,7 @@ class DALMP {
 				$expiry = time();
 				$cache = ($rs = $this->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, $expiry, $this->dalmp_sessions_cname)) ? $rs : '';
 				if ($this->debug_sessions) {
-					$this->add2log('sessions', __METHOD__, "$this->dalmp_sessions_cache_type not running or responding, reading cache from DB, sid: $sid, cache: $cache");
+					$this->add2log('sessions', __METHOD__, "$this->dalmp_sessions_cache_type not running or responding, reading cache from DB, sid: $sid");
 				}
 				$this->debug = $this->debug2 ? true : false;
 				return $cache;
@@ -2108,6 +2104,24 @@ class DALMP {
 			return $uuid;
 		}
 	}
+	
+	/**
+	 * Recursive Implode
+	 */ 
+	public function r_implode($glue, $pieces) {
+		if(is_array($pieces)) {
+      foreach($pieces as $r_pieces) {
+			  if(is_array($r_pieces)) { 
+			    $retVal[] = $this->r_implode($glue, $r_pieces); 
+			  } else { 
+			    $retVal[] = $r_pieces; 
+			  } 
+		  }
+			return implode($glue, $retVal); 
+		} else {
+			return $pieces;
+		}
+	} 
 	
 	public function __call($name, $arguments) {
 		die("'$name' method does not exist, args: " . implode(', ', $arguments) . $this->isCli(1));
