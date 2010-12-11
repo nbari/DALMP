@@ -738,7 +738,7 @@ class DALMP {
 			$this->_stmt->store_result();
 			$this->numOfRows = $this->_stmt->num_rows;
 			$this->numOfFields = $this->_stmt->field_count;
-			return ($this->_stmt->affected_rows > 0) ? true : false;
+			return true;
 		} else {
 			if(array_key_exists($cn, $this->trans)) {
 			  $this->trans[$cn]['error']++;
@@ -908,8 +908,12 @@ class DALMP {
 				if ($this->debug) {
 					$this->add2log(__METHOD__, "returned object, sql: $sql, cn: $cn", "#rows: $this->numOfRows, #fields: $this->numOfFields");
 				}
+				if(!$this->numOfRows) {
+					$this->Close();
+					return false;
+				}
 			}
-			return (@$this->getConnection($cn)->affected_rows > 0) ? true : false;
+			return (@$this->getConnection($cn)->affected_rows > 0 || $rs) ? true : false;
 		} else {
 			if(array_key_exists($cn, $this->trans)) {
 			  $this->trans[$cn]['error']++;
@@ -936,7 +940,7 @@ class DALMP {
 			while ($row = $this->_fetch()) {
 				$rows[] = $row;
 			}
-			$this->Close($cn);
+			$this->Close();
 			return $rows;
 		} else {
 			return false;
@@ -947,7 +951,7 @@ class DALMP {
 		if ($this->debug) { $this->add2log(__METHOD__, $sql, $cn);}
 		if ($this->Execute($sql, $cn)) {
 			$row = $this->_fetch();
-			$this->Close($cn);
+			$this->Close();
 			return $row;
 		} else {
 			return false;
@@ -961,7 +965,7 @@ class DALMP {
 			while ($row = $this->_rs->fetch_row()) {
 				$col[] = reset($row);
 			}
-			$this->Close($cn);
+			$this->Close();
 			return $col;
 		} else {
 			return false;
@@ -972,7 +976,7 @@ class DALMP {
 		if ($this->debug) { $this->add2log(__METHOD__, $sql, $cn); }
 		if ($this->Execute($sql, $cn)) {
 			$field = reset($this->_rs->fetch_row());
-			$this->Close($cn);
+			$this->Close();
 			return $field;
 		} else {
 			return false;
@@ -997,7 +1001,7 @@ class DALMP {
 					$assoc[reset($row) ] = array_slice($row, 1);
 				}
 			}
-			$this->Close($cn);
+			$this->Close();
 			return $assoc;
 		} else {
 			return false;
@@ -1139,7 +1143,7 @@ class DALMP {
 		return $this->apcCache() ? apc_cache_info() : false;
 	}
 
-	public function redisCache($host, $port, $timeout=0) {
+	public function redisCache($host, $port, $timeout) {
 		if (!extension_loaded('redis')) {
 			if ($this->debug) {
 				$this->add2log('redis', __METHOD__, 'error', 'recis extension not loaded! - http://github.com/owlient/phpredis');
@@ -1149,7 +1153,11 @@ class DALMP {
 		}
 		$redis = new Redis();
 		$this->_redis = $redis;
+		$timeout = isset($timeout) ? $timeout : 1;
 		try {
+			if($this->debug) {
+				$this->add2log('redis', __METHOD__,"connect: $host, $port, $timeout");
+			}
 			return $this->_redis->connect($host, $port, $timeout);
 		} catch (RedisException $e) {
 			if($this->debug) {
