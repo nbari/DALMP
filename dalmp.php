@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
  * -----------------------------------------------------------------------------------------------------------------
  * @link http://code.dalmp.com
  * @copyright Nicolas de Bari Embriz <nbari@dalmp.com>
- * @version 0.9.221
+ * @version 0.9.240
  * -----------------------------------------------------------------------------------------------------------------
  */
 if (!defined('DALMP_DIR')) define('DALMP_DIR', dirname(__FILE__));
@@ -723,7 +723,7 @@ class DALMP {
 			unset($i);
 			array_unshift($params, $types);
 			if ($this->debug) {
-				$this->add2log('PreparedStatements', __METHOD__, $sql, $cn, 'params: ' . implode('|', $params));
+				$this->add2log('PreparedStatements', __METHOD__, $sql, $cn, 'params: ' . $this->r_implode('|', $params));
 			}
 			call_user_func_array(array($this->_stmt,'bind_param'), $params);
 		}
@@ -1223,6 +1223,11 @@ class DALMP {
 			return false;
 		}
 	}
+
+	public function Caches() {
+		return $this->_cacheOrder;
+	}
+
 	/**
 	 * setCache arguments: $sql, $object, $timeout, $key, $cn (connection name), $dc (use dir cache), $ct (cache type)
 	 */
@@ -1394,7 +1399,7 @@ class DALMP {
 					case 'apc':
 						$rs = apc_delete($hkey);
 						if ($this->debug) {
-							$this->add2log('Cache', 'APC', "flush hkey: $hkey");
+							$this->add2log('Cache', 'APC', "hkey: $hkey");
 							if(!$rs) {
 								$this->add2log('Cache', 'APC', 'error',"could not flush khey: $hkey");
 							}
@@ -1403,7 +1408,7 @@ class DALMP {
 					case 'memcache':
 						$rs = $this->isMemcacheConnected() ? $this->_memcache->delete($hkey) : false;
 						if ($this->debug) {
-							$this->add2log('Cache', 'memcache', "delete hkey: $hkey");
+							$this->add2log('Cache', 'memcache', "hkey: $hkey");
 							if(!$rs) {
 								$this->add2log('Cache','memcache','error',"could not delete hkey: $hkey");
 							}
@@ -1412,7 +1417,7 @@ class DALMP {
 					case 'redis':
 						$rs = $this->isRedisCacheConnected() ? $this->_redis->delete($hkey) : false;
 						if ($this->debug) {
-							$this->add2log('Cache', 'redis', "delete hkey: $hkey");
+							$this->add2log('Cache', 'redis', "hkey: $hkey");
 							if(!$rs) {
 								$this->add2log('Cache','redis','error',"could not delete hkey: $hkey");
 							}
@@ -1423,9 +1428,9 @@ class DALMP {
 						$dalmp_cache_dir = $dalmp_cache_dir.'/'.substr($hkey,0,2);
 						$cache_file = "$dalmp_cache_dir/dalmp_$hkey.cache";
 						if ($this->debug) {
-							$this->add2log('Cache', 'dirCache', "flush hkey: $hkey");
+							$this->add2log('Cache', 'dirCache', "hkey: $hkey");
 						}
-						$rs = @unlink($cache_file);
+						$rs = (isset($rs)) ? $rs : @unlink($cache_file);
 						break;
 				}
 			}
@@ -1733,7 +1738,7 @@ class DALMP {
 		$rs = array();
 		foreach ($refs as $key => $expiry) {
 		  if (key($expiry) == $ref) {
-				$rs[] = key($expiry);
+				$rs[$key] = key($expiry);
 			}
 		}
 		return $rs;
@@ -1862,7 +1867,7 @@ class DALMP {
 			$this->debug2 = true;
 		}
 		$field = defined('DALMP_SESSIONS_REF') ? DALMP_SESSIONS_REF : null;
-		$ref = isset($GLOBALS[$field]) ? $GLOBALS[$field] : null;
+		$ref = (isset($GLOBALS[$field]) && !empty($GLOBALS[$field])) ? $GLOBALS[$field] : null;
 
 		$timeout = ini_get('session.gc_maxlifetime');
 		if($this->dalmp_sessions_cache) {
