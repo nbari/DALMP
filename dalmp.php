@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
  * -----------------------------------------------------------------------------------------------------------------
  * @link http://code.dalmp.com
  * @copyright Nicolas de Bari Embriz <nbari@dalmp.com>
+ * @version 0.9.252
  * -----------------------------------------------------------------------------------------------------------------
  */
 if (!defined('DALMP_DIR')) define('DALMP_DIR', dirname(__FILE__));
@@ -546,7 +547,7 @@ class DALMP {
 
 			case 'assoc':
 				if ($this->numOfFields < 2) {
-					if ($this->debug) { $this->add2log('PreparedStatements',__METHOD__, 'ERROR',"$get num of columns < 2"); }
+					if ($this->debug) { $this->add2log('PreparedStatements',__METHOD__, 'ERROR', $get, 'num of columns < 2'); }
 					return false;
 				}
 				if ($this->numOfFields == 2) {
@@ -613,9 +614,7 @@ class DALMP {
 		$this->_stmt = $this->getConnection($cn)->prepare($sql);
 		if (!$this->_stmt) {
 			$this->closeConnection($cn);
-			$args = implode(', ', $args);
-			if ($this->debug) { $this->add2log('PreparedStatements', __METHOD__, 'ERROR', "unable to prepare: $sql on $cn args: ", $args, "available connections: " . array_keys($this->_connection)); }
-			trigger_error('error ' . __METHOD__ . ' ' . "Please check your sql statement, unable to prepare: $sql on $cn args: $args, available connections: " . implode(', ', array_keys($this->_connection)) , E_USER_ERROR);
+			trigger_error('ERROR -> '. __METHOD__ .": Please check your sql statement, unable to prepare: $sql on $cn with args: ".json_encode($args)." available connections: " . implode(', ', array_keys($this->_connection)) , E_USER_ERROR);
 		}
 		$params = array();
 		$types = null;
@@ -644,7 +643,7 @@ class DALMP {
 			}
 			unset($i);
 			array_unshift($params, $types);
-			if ($this->debug) { $this->add2log('PreparedStatements', __METHOD__, "sql: $sql cn: $cn params: $params"); }
+			if ($this->debug) { $this->add2log('PreparedStatements', __METHOD__, "sql: $sql params:", $params, "cn: $cn"); }
 			call_user_func_array(array($this->_stmt,'bind_param'), $params);
 		}
 		/**
@@ -663,8 +662,8 @@ class DALMP {
 			if(array_key_exists($cn, $this->trans)) {
 			  $this->trans[$cn]['error']++;
 			}
-			if ($this->debug) { $this->add2log('PreparedStatements',  __METHOD__, 'ERROR',"sql: $sql cn: $cn params: ",$params," error: $this->getConnection($cn)->error"); }
-			trigger_error('error ' . __METHOD__ . ' ' . $this->getConnection($cn)->error, E_USER_NOTICE);
+			if ($this->debug) { $this->add2log('PreparedStatements',  __METHOD__, 'ERROR',"sql: $sql cn: $cn params: ",$params," Errorcode:". $this->getConnection($cn)->errno); }
+			trigger_error('ERROR -> '. __METHOD__ .": sql: $sql on $cn with params: ".json_encode($params).' - '.$this->getConnection($cn)->error, E_USER_NOTICE);
 			return false;
 		}
 	}
@@ -714,7 +713,7 @@ class DALMP {
 			return false;
 		}
 		$cn = isset($cn) ? $cn : $this->cname;
-		if ($this->debug) { $this->add2log(__METHOD__, "$table $fields $mode $where $cn"); }
+		if ($this->debug) { $this->add2log(__METHOD__, 'args:', $table, $fields, $mode, $where, $cn); }
 		$mode = strtoupper($mode);
 		if ($mode == 'UPDATE' && !$where) {
 			if ($this->debug) { $this->add2log( __METHOD__, 'ERROR', 'WHERE clause missing'); }
@@ -730,7 +729,7 @@ class DALMP {
 				}
 			}
 			if (count($data) < 1) {
-				if ($this->debug) { $this->add2log(__METHOD__, 'ERROR', "no matching fields on table: $table with fields: $fields"); }
+				if ($this->debug) { $this->add2log(__METHOD__, 'ERROR', "no matching fields on table: $table with fields:", $fields); }
 				return false;
 			}
 		} else {
@@ -814,8 +813,8 @@ class DALMP {
 			if(array_key_exists($cn, $this->trans)) {
 			  $this->trans[$cn]['error']++;
 			}
-			if ($this->debug) { $this->add2log(__METHOD__, 'ERROR', "sql: $sql cn: $cn error: $this->getConnection($cn)->error"); }
-			trigger_error('error ' . __METHOD__ . ' ' . $this->getConnection($cn)->error, E_USER_NOTICE);
+			if ($this->debug) { $this->add2log(__METHOD__, 'ERROR', "sql: $sql cn: $cn Errorcode: ".$this->getConnection($cn)->errno); }
+			trigger_error('ERROR -> '. __METHOD__." : sql: $sql cn: $cn ".' - '.$this->getConnection($cn)->error, E_USER_NOTICE);
 			return false;
 		}
 	}
@@ -953,10 +952,10 @@ class DALMP {
 	}
 
 	public function memCache($hosts, $compress = false) {
-		if ($this->debug) { $this->add2log('memCache', __METHOD__, "hosts: $hosts, compress: $compress"); }
+		if ($this->debug) { $this->add2log('memCache', __METHOD__, "hosts: $hosts compress: $compress"); }
 		if (!extension_loaded('memcache')) {
 			if ($this->debug) { $this->add2log('memCache', __METHOD__, 'ERROR', 'Memcache PECL extension not loaded! - http://pecl.php.net/package/memcache'); }
-			trigger_error('error ' . __METHOD__ . ' Memcache PECL extension not loaded!', E_USER_NOTICE);
+			trigger_error('ERROR -> '. __METHOD__.': Memcache PECL extension not loaded! - http://pecl.php.net/package/memcache', E_USER_NOTICE);
 			return false;
 		}
 		$memcache = new MemCache;
@@ -1003,7 +1002,7 @@ class DALMP {
 	public function apcCache() {
 		if (!extension_loaded('apc') && !ini_get('apc.enabled')) {
 			if ($this->debug) { $this->add2log('apcCache', __METHOD__, 'ERROR', 'APC PECL extension is not loaded or enabled! - http://pecl.php.net/package/APC'); }
-			trigger_error('error ' . __METHOD__ . ' APC PECL extension not loaded or enabled!', E_USER_NOTICE);
+			trigger_error('ERROR -> '. __METHOD__.': APC PECL extension not loaded or enabled!', E_USER_NOTICE);
 			return false;
 		}
 		return true;
@@ -1016,14 +1015,14 @@ class DALMP {
 	public function redisCache($host, $port, $timeout) {
 		if (!extension_loaded('redis')) {
 			if ($this->debug) { $this->add2log('redis', __METHOD__, 'ERROR', 'recis extension not loaded! - http://github.com/owlient/phpredis'); }
-			trigger_error('error ' . __METHOD__ . ' redix extension not loaded! - http://github.com/owlient/phpredis', E_USER_NOTICE);
+			trigger_error('ERROR ->'. __METHOD__.': redix extension not loaded! - http://github.com/owlient/phpredis', E_USER_NOTICE);
 			return false;
 		}
 		$redis = new Redis();
 		$this->_redis = $redis;
 		$timeout = isset($timeout) ? $timeout : 1;
 		try {
-			if($this->debug) { $this->add2log('redis', __METHOD__,"connect: $host, $port, $timeout"); }
+			if($this->debug) { $this->add2log('redis', __METHOD__,"connecting to $host port: $port timeout: $timeout"); }
 			return $this->_redis->connect($host, $port, $timeout);
 		} catch (RedisException $e) {
 			if($this->debug) { $this->add2log('redis', __METHOD__,'ERROR',$e->getMessage()); }
@@ -1043,7 +1042,7 @@ class DALMP {
 			if ($this->debug) { $this->add2log('redis', __METHOD__, "select database: $db"); }
 			$rs =  $this->_redis->select($db) ? true : false;
 			if ($this->debug) {
-				if(!$rs) { $this->add2log('redis', __METHOD__,"could not set database. db: $db"); }
+				if(!$rs) { $this->add2log('redis', __METHOD__,"could not set database: $db"); }
 			}
 			return $rs;
 		} else {
@@ -1132,15 +1131,15 @@ class DALMP {
 			if ($this->debug) { $this->add2log('Cache','dirCache', "using dir cache: $dalmp_cache_dir"); }
 			if(!file_exists($dalmp_cache_dir)) {
 				if(!mkdir($dalmp_cache_dir,0750,true)) {
-				  if ($this->debug) { $this->add2log('Cache','dirCache','ERROR',"Cannot create: $dalmp_cache_dir"); }
-					trigger_error('error ' . __METHOD__ . "Cannot create $dalmp_cache_dir", E_USER_NOTICE);
+					if ($this->debug) { $this->add2log('Cache','dirCache','ERROR',"Cannot create: $dalmp_cache_dir"); }
+					trigger_error('ERROR -> '. __METHOD__ . ": dirCache - Cannot create: $dalmp_cache_dir", E_USER_NOTICE);
 					return false;
 				}
 			}
 			$cache_file = "$dalmp_cache_dir/dalmp_$hkey.cache";
 			if (!($fp = fopen($cache_file, 'w'))) {
 				if ($this->debug) { $this->add2log('Cache','dirCache','ERROR',"Cannot create cache file: $cache_file"); }
-				trigger_error('error ' . __METHOD__ . "Cannot create $dalmp_cache_dir", E_USER_NOTICE);
+				trigger_error('ERROR -> '. __METHOD__. ": dirCache - Cannot create cache file $cache_file", E_USER_NOTICE);
 				return false;
 			}
 			if (flock($fp, LOCK_EX) && ftruncate($fp, 0)) {
@@ -1158,7 +1157,7 @@ class DALMP {
 				}
 			} else {
 				if ($this->debug) { $this->add2log('Cache','dirCache','ERROR',"Cannot lock/truncate the cache file: $cache_file"); }
-				trigger_error('error ' . __METHOD__ . "Cannot create $cache_file", E_USER_NOTICE);
+				trigger_error('ERROR -> '. __METHOD__. ": dirCache Cannot lock/truncate the cache file: $cache_file", E_USER_NOTICE);
 				return false;
 			}
 		} else {
@@ -1304,13 +1303,6 @@ class DALMP {
 		}
 	}
 
-  /**
-	 * based on ADODB:
-   * Private function to erase all of the files and subdirectories in a directory.
-   *
-   * Just specify the directory, and tell it if you want to delete the directory or just clear it out.
-   * Note: $kill_top_level is used internally in the function to flush subdirectories.
-   */
 	private function _dirFlush($dir, $kill_top_level = false) {
     if(!$dh = @opendir($dir)) {
 			return;
@@ -1338,25 +1330,17 @@ class DALMP {
 	 */
 	protected function _Cache() {
 		$args = func_get_args();
-		if ($this->debug) { $this->add2log('Cache', __METHOD__, 'initial args: ', $args); }
+		if ($this->debug) { $this->add2log('Cache', __METHOD__, 'args: ', $args); }
 		$fetch = array_shift($args);
 		$cachetype = reset($args);
-		if(in_array(strtolower($cachetype),$this->_cacheOrder)) {
-			$cachetype = array_shift($args);
-		} else {
-			$cachetype = reset($this->_cacheOrder);
-		}
+		$cachetype = in_array(strtolower($cachetype), $this->_cacheOrder) ? array_shift($args) : reset($this->_cacheOrder);
 		$this->_cacheType = $cachetype;
 		$timeout = reset($args);
-		if (!is_numeric($timeout)) {
-			$timeout = $this->timeout;
-		} else {
-			$timeout = array_shift($args);
-		}
+		$timeout = (!is_numeric($timeout)) ? $this->timeout: array_shift($args);
 		$sql = array_shift($args);
 		$key = isset($args[0]) ? $args[0] : $fetch;
 		$cn = isset($args[1]) ? $args[1] : $this->cname;
-		if ($this->debug) { $this->add2log('Cache', __METHOD__, "method: $fetch, cachetype: $cachetype, timeout: $timeout, sql: $sql, key: $key, cn: $cn"); }
+		if ($this->debug) { $this->add2log('Cache', __METHOD__, "method: $fetch cachetype: $cachetype timeout: $timeout sql: $sql key: $key cn: $cn"); }
  		if ($cache = $this->getCache($sql, $key, $cn)) {
 			return $cache;
 		} else {
@@ -1379,8 +1363,8 @@ class DALMP {
 					break;
 			}
 			if (!$this->setCache($sql, $cache, $timeout, $key, $cn)) {
-				if ($this->debug) { $this->add2log('Cache', __METHOD__, 'ERROR', "setCache: Error saving data to cache sql: $sql, cache: $cache, timeout: $timeout, key: $key, cn: $cn"); }
-				trigger_error('error ' . __METHOD__ . 'setCache: Error saving data to cache', E_USER_NOTICE);
+				if ($this->debug) { $this->add2log('Cache', __METHOD__, 'ERROR', "setCache: Error saving data to cache sql: $sql, cache: ", $cache," timeout: $timeout, key: $key, cn: $cn"); }
+				trigger_error('ERROR -> '. __METHOD__ ." setCache: Error saving data to cache.", E_USER_NOTICE);
 			}
 			return $cache;
 		}
@@ -1434,21 +1418,13 @@ class DALMP {
 	 */
 	protected function _CacheP() {
 		$args = func_get_args();
-		if ($this->debug) { $this->add2log('Cache', __METHOD__, 'PreparedStatements initial args: ', $args); }
+		if ($this->debug) { $this->add2log('Cache', __METHOD__, 'PreparedStatements args: ', $args); }
 		$fetch = array_shift($args);
 		$cachetype = reset($args);
-		if(in_array(strtolower($cachetype),$this->_cacheOrder)) {
-			$cachetype = array_shift($args);
-		} else {
-			$cachetype = reset($this->_cacheOrder);
-		}
+		$cachetype = in_array(strtolower($cachetype),$this->_cacheOrder) ? array_shift($args) : reset($this->_cacheOrder);
 		$this->_cacheType = $cachetype;
 		$timeout = reset($args);
-		if (!is_numeric($timeout)) {
-			$timeout = $this->timeout;
-		} else {
-			$timeout = array_shift($args);
-		}
+		$timeout = (!is_numeric($timeout)) ? $this->timeout : array_shift($args);
 		$sql = array_shift($args);
 		$cn = end($args);
 		if (in_array($cn, array_keys($this->_connection))) {
@@ -1485,8 +1461,8 @@ class DALMP {
 			call_user_func_array(array($this,'PExecute'), $nargs);
 			$cache = $this->_pFetch($fetch);
 			if (!$this->setCache($sql, $cache, $timeout, $key, $cn)) {
-				if ($this->debug) { $this->add2log('Cache', __METHOD__, 'ERROR', "setCache: Error saving data to cache sql: $sql, params: ".implode('|',$params).", cache: $cache, timeout: $timeout, key: $key, cn: $cn"); }
-				trigger_error('error ' . __METHOD__ . "->$fetch setCache: Error saving data to cache", E_USER_NOTICE);
+				if ($this->debug) { $this->add2log('Cache', __METHOD__, 'ERROR', "setCache: Error saving data to cache sql: $sql, params: ".implode('|',$params).", cache: ",$cache," timeout: $timeout, key: $key, cn: $cn"); }
+				trigger_error('ERROR -> '. __METHOD__ ." setCache: Error saving data to cache.", E_USER_NOTICE);
 			}
 			return $cache;
 		}
@@ -1616,7 +1592,7 @@ class DALMP {
 			if ($this->debug_sessions) {
 				$this->add2log('sessions', __METHOD__, 'ERROR', $this->dalmp_sessions_cname, 'connection not available');
 			}
-			trigger_error('error ' . __METHOD__ . 'not connected', E_USER_NOTICE);
+			trigger_error('ERROR -> '. __METHOD__ .' :'. $this->dalmp_sessions_cname. 'connection not available', E_USER_NOTICE);
 		}
 		$this->debug = $this->debug2 ? true : false;
 		return $rs;
@@ -1644,26 +1620,20 @@ class DALMP {
 		if($this->dalmp_sessions_cache) {
 			$key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : $this->dalmp_sessions_table;
 			if ($cache = $this->getCache($sid, $key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type)) {
-				if ($this->debug_sessions) {
-					$this->add2log('sessions', __METHOD__, 'session cached', $cache);
-				}
+				if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, 'session cached', $cache); }
 				$this->debug = $this->debug2 ? true : false;
 				return $cache;
 			} else {
 				$expiry = time();
 				$cache = ($rs = $this->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, $expiry, $this->dalmp_sessions_cname)) ? $rs : '';
-				if ($this->debug_sessions) {
-					$this->add2log('sessions', __METHOD__, "$this->dalmp_sessions_cache_type not running or responding, reading cache from DB, sid: $sid");
-				}
+				if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, "$this->dalmp_sessions_cache_type not running or responding, reading cache from DB, sid: $sid"); }
 				$this->debug = $this->debug2 ? true : false;
 				return $cache;
 			}
 		} else {
 			$expiry = time();
 			$cache = ($rs = $this->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, $expiry, $this->dalmp_sessions_cname)) ? $rs : '';
-			if ($this->debug_sessions) {
-				$this->add2log('sessions', __METHOD__, "returned from db: $return");
-			}
+			if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, "returned from db: $cache"); }
 			$this->debug = $this->debug2 ? true : false;
 			return $cache;
 		}
@@ -1855,9 +1825,7 @@ class DALMP {
 	}
 
 	public function sqlite_table_exists($db, $table) {
-		if ($this->debug) {
-			$this->add2log(__METHOD__, "db: $db, table: $table");
-		}
+		if ($this->debug) { $this->add2log(__METHOD__, "db: $db, table: $table"); }
 		$rs = sqlite_query($db, "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='$table'");
 		$count = intval(sqlite_fetch_single($rs));
 		return $count > 0;
@@ -1939,22 +1907,24 @@ class DALMP {
 		}
 	}
 
-	public function readQueueURL($queue = null) {
-		if ($this->debug) {
-			$this->add2log(__METHOD__, $queue);
-		}
+	public function readQueueURL($print=false, $queue = null) {
+		if ($this->debug) { $this->add2log(__METHOD__, $queue); }
 		$queue = isset($queue) ? $queue : defined('DALMP_QUEUE_URL_DB') ? DALMP_QUEUE_URL_DB : $this->dalmp_queue_url_db;
 		$db = new SQLiteDatabase($queue);
 		$rs = $db->Query("SELECT * FROM url");
-		while ($rs->valid()) {
-			$row = $rs->current();
-			$id = $row['id'];
-			$queue = $row['queue'];
-			$url = $row['url'];
-			$eValue = $row['expectedValue'];
-			$cdate = $row['cdate'];
-			echo "$id|$queue|$url|$eValue|$cdate" . $this->isCli(1);
-			$rs->next();
+		if($print) {
+			while ($rs->valid()) {
+				$row = $rs->current();
+				$id = $row['id'];
+				$queue = $row['queue'];
+				$url = $row['url'];
+				$eValue = $row['expectedValue'];
+				$cdate = $row['cdate'];
+				echo "$id|$queue|$url|$eValue|$cdate" . $this->isCli(1);
+				$rs->next();
+			}
+		} else {
+			return $rs;
 		}
 	}
 
@@ -1984,13 +1954,6 @@ class DALMP {
 		return $major . '.' . $minor . '.' . $revision;
 	}
 
-	public function callingFunction($level = null) {
-		$level = isset($level) ? $level : 2;
-		$stack = debug_backtrace();
-		$function = $stack[$level]['function'];
-		return empty($function) ? 'unknown' : $function;
-	}
-
 	public function UUID() {
 		// http://us2.php.net/manual/en/function.com-create-guid.php#52354
 		// Version 4 (random)
@@ -2017,6 +1980,7 @@ class DALMP {
 			$status = null;
 			foreach (array_keys($this->_connection) as $cn) {
 				if($this->isConnected($cn)) {
+					$status .= 'DALMP :: ';
 					$status .= "connected to: $cn, ";
 					$status .= 'Character set: '.$this->getConnection($cn)->character_set_name();
 					$status .= ', '.$this->getConnection($cn)->host_info;
