@@ -1852,19 +1852,20 @@ class DALMP {
 		}
 	}
 
-	public function readQueue($queue = null) {
+	public function readQueue($print=false, $queue = null) {
 		if ($this->debug) { $this->add2log(__METHOD__, $queue); }
 		$queue = isset($queue) ? $queue : $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : $this->dalmp_queue_db;
 		$db = new SQLiteDatabase($queue);
 		$rs = $db->Query("SELECT * FROM sql");
-		$out = array();
-		while ($rs->valid()) {
-			$row = $rs->current();
-			$out[$row['id']]['sql'] = base64_decode($row['sql']);
-			$out[$row['id']]['cdate'] = $row['cdate'];
-			$rs->next();
+		if($print) {
+			while ($rs->valid()) {
+				$row = $rs->current();
+				echo $row['id'].'|'.base64_decode($row['sql']).'|'.$row['cdate'].$this->isCli(1);
+				$rs->next();
+			}
+		} else {
+			return $rs;
 		}
-		return $out;
 	}
 
 	public function http_client($url, $expectedValue = null, $SearchInPage = true, $queue = 'default') {
@@ -1915,12 +1916,7 @@ class DALMP {
 		if($print) {
 			while ($rs->valid()) {
 				$row = $rs->current();
-				$id = $row['id'];
-				$queue = $row['queue'];
-				$url = $row['url'];
-				$eValue = $row['expectedValue'];
-				$cdate = $row['cdate'];
-				echo "$id|$queue|$url|$eValue|$cdate" . $this->isCli(1);
+				echo $row['id'].'|'.$row['queue'].'|'.$row['url'].'|'.$row['expectedValue'].'|'.$row['cdate'].$this->isCli(1);
 				$rs->next();
 			}
 		} else {
@@ -1955,8 +1951,6 @@ class DALMP {
 	}
 
 	public function UUID() {
-		// http://us2.php.net/manual/en/function.com-create-guid.php#52354
-		// Version 4 (random)
 		if (function_exists('uuid_create')) {
 			$uuid = uuid_create();
 			if ($this->debug) { $this->add2log(__METHOD__, $uuid); }

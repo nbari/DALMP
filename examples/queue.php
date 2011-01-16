@@ -31,7 +31,7 @@ if (!$rs) {
  * this can be called on a cron or manually
  */
 foreach ($db->readQueue() as $key => $value) {
-  $sql = $value['sql'];
+  $sql = base64_decode($value['sql']);
   $cdate = $value['cdate'];
   echo "$sql - $cdate".$db->isCli(1);
   /**
@@ -40,6 +40,10 @@ foreach ($db->readQueue() as $key => $value) {
   # $rs = $db->Execute($sql);
 }
 
+/**
+ * helpful on CLI
+ */
+$db->readQueue(1);
 
 echo "\n".$timer->getPageLoadTime()." - ".$timer->getMemoryUsage();
 
