@@ -1261,60 +1261,58 @@ class DALMP {
 		if ($sql) {
 			$cn = isset($cn) ? $cn : $this->cname;
 		  $hkey = sha1('DALMP' . $sql . $key . $cn);
-			if (strncmp($sql,'group:',6) == 0) {
-				$group = $this->getCache('cache_group', $sql, $cn, false);
-				$group = is_array($group) ? $group : null;
-				if ($this->debug) { $this->add2log('CacheGroup', __METHOD__, "flushing $sql"); }
-			} else {
-				if ($this->debug) { $this->add2log('Cache', __METHOD__, "flush hkey: $hkey, sql: $sql, key: $key, cn: $cn on: ". (isset($cache) ? $cache : implode(', ', $this->_cacheOrder))); }
-			}
-
+			if ($this->debug) { $this->add2log('Cache', __METHOD__, "flush hkey: $hkey, sql: $sql, key: $key, cn: $cn on: ". (isset($cache) ? $cache : implode(', ', $this->_cacheOrder))); }
 
 			$this->_cacheOrder = in_array($cache, $this->_cacheOrder) ? array($cache) : $this->_cacheOrder;
 
 			foreach($this->_cacheOrder as $value) {
+				if ((strncmp($sql,'group:',6) == 0) AND $value != 'dir') {
+					$group = $this->getCache('cache_group', $sql, $cn, false, $value);
+					$group = is_array($group) ? $group : array();
+					$group[sha1("DALMPcache_group$sql$cn")] = $sql;
+					if ($this->debug) { $this->add2log('CacheGroup', __METHOD__, "flushing $sql on $value with keys:",$group); }
+				}
 				switch($value) {
 					case 'apc':
 						if (isset($group)) {
+							$rs = array();
 							foreach($group as $key => $timeout) {
-								$rs = apc_delete($key);
+								if(!apc_delete($key)) {
+									$rs[] = $key;
+								}
 							}
+							if ($this->debug) { count($rs) ? $this->add2log('CacheGroup',$value,'ERROR',"could not flush: $sql keys:", $rs) : $this->add2log('CacheGroup',$value,"flushed $sql"); }
 						} else {
 							$rs = apc_delete($hkey);
-						}
-						if ($this->debug) {
-							$this->add2log('Cache', 'APC', "hkey: $hkey");
-							if(!$rs) {
-								$this->add2log('Cache', 'APC', 'ERROR', "could not flush khey: $hkey");
-							}
+							if ($this->debug) { ($rs) ? $this->add2log('Cache', $value, "flushed hhey: $hkey") : $this->add2log('Cache', $value, 'ERROR', "could not flush hkey: $hkey"); }
 						}
 						break;
 					case 'memcache':
 						if (isset($group) AND $this->isMemcacheConnected()) {
+							$rs = array();
 							foreach($group as $key => $timeout) {
-								$rs = $this->_memcache->delete($key);
+								if(!$this->_memcache->delete($key)) {
+									$rs[] = $key;
+								}
 							}
+							if ($this->debug) { count($rs) ? $this->add2log('CacheGroup',$value,'ERROR',"could not flush: $sql keys:", $rs) : $this->add2log('CacheGroup',$value,"flushed $sql"); }
 						} else {
 							$rs = $this->isMemcacheConnected() ? $this->_memcache->delete($hkey) : false;
-						}
-						if ($this->debug) {
-							$this->add2log('Cache', 'memcache', "hkey: $hkey");
-							if(!$rs) { $this->add2log('Cache','memcache','ERROR',"could not delete hkey: $hkey"); }
+							if ($this->debug) { ($rs) ? $this->add2log('Cache', $value, "flushed hhey: $hkey") : $this->add2log('Cache', $value, 'ERROR', "could not flush hkey: $hkey"); }
 						}
 						break;
 					case 'redis':
 						if (isset($group) AND $this->isRedisCacheConnected()) {
+							$rs = array();
 							foreach($group as $key => $timeout) {
-								$rs = $this->_redis->delete($key);
+								if(!$this->_redis->delete($key)) {
+									$rs[] = $key;
+								}
 							}
+							if ($this->debug) { count($rs) ? $this->add2log('CacheGroup',$value,'ERROR',"could not flush: $sql keys:", $rs) : $this->add2log('CacheGroup',$value,"flushed $sql"); }
 						} else {
 							$rs = $this->isRedisCacheConnected() ? $this->_redis->delete($hkey) : false;
-						}
-						if ($this->debug) {
-							$this->add2log('Cache', 'redis', "hkey: $hkey");
-							if(!$rs) {
-								$this->add2log('Cache','redis','ERROR',"could not delete hkey: $hkey");
-							}
+							if ($this->debug) { ($rs) ? $this->add2log('Cache', $value, "flushed hhey: $hkey") : $this->add2log('Cache', $value, 'ERROR', "could not flush hkey: $hkey"); }
 						}
 						break;
 					case 'dir':
@@ -1334,30 +1332,15 @@ class DALMP {
 				switch($value) {
 					case 'apc':
 						$rs = apc_clear_cache('user');
-						if ($this->debug) {
-							$this->add2log('Cache', 'APC', "flush all");
-						  if(!$rs) {
-								$this->add2log('Cache','APC','ERROR','cannot flush all');
-							}
-						}
+						if ($this->debug) { ($rs) ? $this->add2log('Cache', $value, 'flushed all') : $this->add2log('Cache', $value, 'ERROR','could not flush all'); }
 						break;
 					case 'memcache':
 						$rs = $this->isMemcacheConnected() ? $this->_memcache->flush() : false;
-						if ($this->debug) {
-							$this->add2log('Cache', 'memcache', "flush all");
-						  if(!$rs) {
-								$this->add2log('Cache','memcache','ERROR','cannot flush all');
-							}
-						}
+						if ($this->debug) { ($rs) ? $this->add2log('Cache', $value, 'flushed all') : $this->add2log('Cache', $value, 'ERROR','could not flush all'); }
 						break;
 					case 'redis':
 						$rs = $this->isRedisCacheConnected() ? $this->_redis->flushDB() : false;
-						if ($this->debug) {
-							$this->add2log('Cache', 'redis', "flush db");
-						  if(!$rs) {
-								$this->add2log('Cache','redis','ERROR','cannot flush db');
-							}
-						}
+						if ($this->debug) { ($rs) ? $this->add2log('Cache', $value, 'flushed all') : $this->add2log('Cache', $value, 'ERROR','could not flush all'); }
 						break;
 					case 'dir':
 						$dalmp_cache_dir = defined('DALMP_CACHE_DIR') ? DALMP_CACHE_DIR : '/tmp/dalmp';
