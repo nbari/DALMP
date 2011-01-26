@@ -1094,7 +1094,7 @@ class DALMP {
 		$hkey = sha1('DALMP' . $sql . $key . $cn);
 		$ghkey = (isset($group) AND (strncmp($group,'group:',6) == 0)) ? sha1("DALMPcache_group$group$cn") : null;
 		if($ghkey) {
-			if ($this->debug) { $this->add2log('Cache group', __METHOD__, "$group key: $ghkey"); }
+			if ($this->debug) { $this->add2log('CacheGroup', __METHOD__, "$group key: $ghkey"); }
 		  $gCache = $this->getCache('cache_group', $group, $cn, false);
 			if(!$gCache) {
 				$gCache = array();
@@ -1116,9 +1116,9 @@ class DALMP {
 				if($ghkey && $rs) {
 					$rs2 = apc_store($ghkey, $gCache, 0);
 					if ($this->debug) {
-						$this->add2log('Cache group','APC',"$group STORE gkey: $ghkey object:",$gCache);
+						$this->add2log('CacheGroup','APC',"$group STORE gkey: $ghkey object:",$gCache);
 						if(!$rs2) {
-							$this->add2log('Cache group','APC','APC not responding');
+							$this->add2log('CacheGroup','APC','APC not responding');
 						}
 					}
 				}
@@ -1134,9 +1134,9 @@ class DALMP {
 				if($ghkey && $rs) {
 					$rs2 = $this->_memcache->set($ghkey, $gCache, $this->memCacheCompress, 0);
 					if ($this->debug) {
-						$this->add2log('Cache group','memCache',"$group SET gkey: $ghkey object:",$gCache,"returned: $rs2");
+						$this->add2log('CacheGroup','memCache',"$group SET gkey: $ghkey object:",$gCache,"returned: $rs2");
 						if(!$rs2) {
-						  $this->add2log('Cache group','memCache','memcache daemon not running or responding.');
+						  $this->add2log('CacheGroup','memCache','memcache daemon not running or responding.');
 						}
 					}
 				}
@@ -1156,9 +1156,9 @@ class DALMP {
 				if($ghkey && $rs) {
 					$rs2 = $this->_redis->set($ghkey, serialize($gCache));
 					if($this->debug) {
-						$this->add2log('Cache group','redis',"$group SET gkey: $ghkey object:", $gCache);
+						$this->add2log('CacheGroup','redis',"$group SET gkey: $ghkey object:", $gCache);
 						if(!$rs2) {
-							$this->add2log('Cache group','redis','redis daemon not running or responding.');
+							$this->add2log('CacheGroup','redis','redis daemon not running or responding.');
 						}
 					}
 				}
@@ -1263,7 +1263,8 @@ class DALMP {
 		  $hkey = sha1('DALMP' . $sql . $key . $cn);
 			if (strncmp($sql,'group:',6) == 0) {
 				$group = $this->getCache('cache_group', $sql, $cn, false);
-				if ($this->debug) { $this->add2log('Cache', __METHOD__, "flushing $sql"); }
+				$group = is_array($group) ? $group : null;
+				if ($this->debug) { $this->add2log('CacheGroup', __METHOD__, "flushing $sql"); }
 			} else {
 				if ($this->debug) { $this->add2log('Cache', __METHOD__, "flush hkey: $hkey, sql: $sql, key: $key, cn: $cn on: ". (isset($cache) ? $cache : implode(', ', $this->_cacheOrder))); }
 			}
