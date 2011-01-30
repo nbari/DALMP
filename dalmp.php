@@ -34,7 +34,7 @@
  * # if you want to use memcache
  * # $db->Cache('memcache',MEMCACHE_HOSTS);
  * # if you want to use redis
- * # $db->Cache('redis',REDIS_HOST, REDIS_PORT);
+ * # $db->Cache('redis',REDIS_HOST, REDIS_PORT, 3);
  *
  *
 -- ----------------------------
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
  * -----------------------------------------------------------------------------------------------------------------
  * @link http://code.dalmp.com
  * @copyright Nicolas de Bari Embriz <nbari@dalmp.com>
- * @version 0.9.267
+ * @version 0.9.284
  * -----------------------------------------------------------------------------------------------------------------
  */
 if (!defined('DALMP_DIR')) define('DALMP_DIR', dirname(__FILE__));
@@ -247,6 +247,13 @@ class DALMP {
 	private $dalmp_sessions_cache_type = null;
 
 	/**
+	 * group cache on group:session
+	 * #access private
+	 * @var string
+	 */
+	private $dalmp_sessions_group_cache = false;
+
+	/**
 	 * sqlite database to use for queueing
 	 *
 	 * @access private
@@ -314,7 +321,7 @@ class DALMP {
 	 * write debug output to file
 	 *
 	 * @access private
-	 * @var boolean
+	 * @var int
 	 */
 	private $debug2file = false;
 
@@ -356,6 +363,7 @@ class DALMP {
 	public function getLog() {
 		if ($this->debug2file) {
 			$debugFile = defined('DALMP_DEBUG_FILE') ? DALMP_DEBUG_FILE : DALMP_DIR . '.dalmp.log';
+			if ($this->debug2file > 1) { $debugFile .= '-'.microtime(true); }
 			$fh = fopen($debugFile, 'a+');
 			$start = str_repeat('-', 80) . PHP_EOL;
 			fwrite($fh, 'START ' . @date('r') . PHP_EOL);
@@ -394,7 +402,7 @@ class DALMP {
 
 	public function debug($log2file = null) {
 		if($log2file) {
-			$this->debug2file = true;
+			$this->debug2file = $log2file;
 		}
 		$this->debug = true;
 		$this->debug_time_start = microtime(true);
@@ -459,7 +467,7 @@ class DALMP {
 
 	public function isConnected($cn = null) {
 		$cn = isset($cn) ? $cn : $this->cname;
-		return empty($this->_connection[$cn]) ? false : ((bool)($this->_connection[$cn] instanceof mysqli));
+		return empty($this->_connection[$cn]) ? false : (bool)($this->_connection[$cn] instanceof mysqli);
 	}
 
 	public function closeConnection($cn = null) {
@@ -951,6 +959,15 @@ class DALMP {
 		}
 	}
 
+	public function renumber($table, $row='id', $cn=null) {
+		$cn = isset($cn) ? $cn : $this->cname;
+		if (isset($table)) {
+			return $this->Execute('SET @var_dalmp=0', $cn) ? ($this->Execute("UPDATE $table SET $row = (@var_dalmp := @var_dalmp +1)",$cn) ? $this->Execute("ALTER TABLE $table AUTO_INCREMENT = 1", $cn) : false) : false;
+		} else {
+			return false;
+		}
+	}
+
 	public function memCache($hosts, $compress = false) {
 		if ($this->debug) { $this->add2log('memCache', __METHOD__, "hosts: $hosts compress: $compress"); }
 		if (!extension_loaded('memcache')) {
@@ -1095,27 +1112,33 @@ class DALMP {
 		  $gCache = $this->getCache('cache_group', $group, $cn, false);
 			if(!$gCache) {
 				$gCache = array();
+			} else {
+				foreach ($gCache as $key => $expiry) {
+					if ($expiry < time()) {
+						unset($gCache[$key]);
+					}
+				}
 			}
-			$gCache[$hkey] = $timeout;
+			$gCache[$hkey] = time() + $timeout;
 		}
 		$ct = isset($ct) ? $ct : $this->_cacheType;
-		if ($this->debug) { $this->add2log('Cache', __METHOD__." - $ct","hkey: $hkey sql: $sql timeout: $timeout key: $key group: $group cn: $cn dc: $dc object: ",$object); }
+		if ($this->debug) { $this->add2log('Cache', __METHOD__." - $ct","hkey: $hkey object: $sql timeout: $timeout key: $key group: $group cn: $cn dc: $dc object: ",$object); }
 		$rs = false;
 		switch($ct) {
 			case 'apc':
 				$rs = $this->apcCache() ? apc_store($hkey, $object, $timeout) : false;
 				if ($this->debug) {
-					$this->add2log('Cache','APC',"STORE key: $hkey timeout: $timeout object:",$object);
+					$this->add2log('Cache',__METHOD__." - $ct","STORE key: $hkey timeout: $timeout object:",$object);
 				  if(!$rs) {
-						$this->add2log('Cache','APC','APC not responding');
+						$this->add2log('Cache',__METHOD__." - $ct",'APC not responding');
 					}
 				}
 				if($ghkey && $rs) {
 					$rs2 = apc_store($ghkey, $gCache, 0);
 					if ($this->debug) {
-						$this->add2log('CacheGroup','APC',"$group STORE gkey: $ghkey object:",$gCache);
+						$this->add2log('CacheGroup',__METHOD__." - $ct","$group STORE gkey: $ghkey object:",$gCache);
 						if(!$rs2) {
-							$this->add2log('CacheGroup','APC','APC not responding');
+							$this->add2log('CacheGroup',__METHOD__." - $ct",'APC not responding');
 						}
 					}
 				}
@@ -1123,17 +1146,17 @@ class DALMP {
 			case 'memcache':
 				$rs = $this->isMemcacheConnected() ? $this->_memcache->set($hkey, $object, $this->memCacheCompress, $timeout) : false;
 				if ($this->debug) {
-					$this->add2log('Cache','memCache',"SET key: $hkey compress: $this->memCacheCompress timeout: $timeout, object: ",$object);
+					$this->add2log('Cache',__METHOD__." - $ct","SET key: $hkey compress: $this->memCacheCompress timeout: $timeout, object: ",$object);
 				  if(!$rs) {
-						$this->add2log('Cache','memCache','memcache daemon not running or responding.');
+						$this->add2log('Cache',__METHOD__." - $ct",'memcache daemon not running or responding.');
 					}
 				}
 				if($ghkey && $rs) {
 					$rs2 = $this->_memcache->set($ghkey, $gCache, $this->memCacheCompress, 0);
 					if ($this->debug) {
-						$this->add2log('CacheGroup','memCache',"$group SET gkey: $ghkey object:",$gCache,"returned: $rs2");
+						$this->add2log('CacheGroup',__METHOD__." - $ct","$group SET gkey: $ghkey object:",$gCache,"returned: $rs2");
 						if(!$rs2) {
-						  $this->add2log('CacheGroup','memCache','memcache daemon not running or responding.');
+						  $this->add2log('CacheGroup',__METHOD__." - $ct",'memcache daemon not running or responding.');
 						}
 					}
 				}
@@ -1145,17 +1168,17 @@ class DALMP {
 					$rs = $this->isRedisCacheConnected() ? $this->_redis->setex($hkey, $timeout, serialize($object)) : false;
 				}
 				if ($this->debug) {
-					$this->add2log('Cache','redis',"SET key: $hkey timeout: $timeout object:", $object);
+					$this->add2log('Cache',__METHOD__." - $ct","SET key: $hkey timeout: $timeout object:", $object);
 				  if(!$rs) {
-						$this->add2log('Cache','redis','redis daemon not running or responding.');
+						$this->add2log('Cache',__METHOD__." - $ct",'redis daemon not running or responding.');
 					}
 				}
 				if($ghkey && $rs) {
 					$rs2 = $this->_redis->set($ghkey, serialize($gCache));
 					if($this->debug) {
-						$this->add2log('CacheGroup','redis',"$group SET gkey: $ghkey object:", $gCache);
+						$this->add2log('CacheGroup',__METHOD__." - $ct","$group SET gkey: $ghkey object:", $gCache);
 						if(!$rs2) {
-							$this->add2log('CacheGroup','redis','redis daemon not running or responding.');
+							$this->add2log('CacheGroup',__METHOD__." - $ct",'redis daemon not running or responding.');
 						}
 					}
 				}
@@ -1163,7 +1186,7 @@ class DALMP {
 		}
 		if(!$rs && $dc) {
 			if ($this->debug && $this->_cacheType != 'dir') {
-				$this->add2log('Cache', 'ERROR',"[$this->_cacheType] not responding using dir cache");
+				$this->add2log('Cache', __METHOD__." - $ct",'ERROR','not responding, using dir cache');
 			}
 			$dalmp_cache_dir = defined('DALMP_CACHE_DIR') ? DALMP_CACHE_DIR : '/tmp/dalmp';
 			$dalmp_cache_dir = $dalmp_cache_dir.'/'.substr($hkey,0,2);
@@ -1210,7 +1233,7 @@ class DALMP {
 	public function getCache($sql, $key, $cn, $dc=true, $ct=null) {
 		$hkey = sha1('DALMP' . $sql . $key. $cn);
 		$ct = isset($ct) ? $ct : $this->_cacheType;
-		if ($this->debug) { $this->add2log('Cache', __METHOD__." - $ct", "hkey: $hkey, sql: $sql, key: $key, cn: $cn, dc: $dc"); }
+		if ($this->debug) { $this->add2log('Cache', __METHOD__." - $ct", "hkey: $hkey, sql: $sql key: $key cn: $cn dc: $dc ct: $ct"); }
 		$rs = false;
 		switch($ct) {
 			case 'apc':
@@ -1622,9 +1645,7 @@ class DALMP {
 
 	protected function _sessionsRef($sid, $ref, $key, $destroy=null) {
 		$sessions_key = 'DALMP_SESSIONS_REF'.$key;
-		if($this->debug_sessions) {
-			$this->add2log('sessions',__METHOD__,"sid: $sid, ref: $ref, key: $key, destroy: $destroy");
-		}
+		if($this->debug_sessions) { $this->add2log('sessions',__METHOD__,"sid: $sid ref: $ref key: $key destroy: $destroy"); }
 		$refs = $this->getCache('sessions_ref', $sessions_key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
 		if(!$refs) {
 			$refs = array();
@@ -1659,12 +1680,33 @@ class DALMP {
 			$this->debug = false;
 			$this->debug2 = true;
 		}
-		$rs = $this->isConnected($this->dalmp_sessions_cname) ? true : false;
-		if (!$rs) {
-			if ($this->debug_sessions) {
-				$this->add2log('sessions', __METHOD__, 'ERROR', $this->dalmp_sessions_cname, 'connection not available');
+		if($this->dalmp_sessions_cache) {
+			switch($this->dalmp_sessions_cache_type) {
+				case 'memcache':
+					$rs = $this->isMemcacheConnected();
+					break;
+				case  'redis':
+					$rs = $this->isRedisCacheConnected();
+					break;
 			}
-			trigger_error('ERROR -> '. __METHOD__ .' :'. $this->dalmp_sessions_cname. 'connection not available', E_USER_NOTICE);
+			if(!$rs) {
+				if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, 'ERROR',"$this->dalmp_sessions_cache_type not running orresponding"); }
+				$write2db = true;
+				$this->dalmp_sessions_cache = false;
+				trigger_error("Cache: $this->dalmp_sessions_cache_type, not running or responding", E_USER_NOTICE);
+			} else {
+				if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, "cache $this->dalmp_sessions_cache_type ok"); }
+			}
+		}
+
+		if(isset($write2db) || defined('DALMP_SESSIONS_REDUNDANCY')) {
+			$rs =$this->isConnected($this->dalmp_sessions_cname);
+			if (!$rs) {
+				if ($this->debug_sessions) {
+					$this->add2log('sessions', __METHOD__, 'ERROR', $this->dalmp_sessions_cname, 'connection not available');
+					trigger_error('ERROR -> '. __METHOD__ .' :'. $this->dalmp_sessions_cname. 'connection not available', E_USER_NOTICE);
+				}
+			}
 		}
 		$this->debug = $this->debug2 ? true : false;
 		return $rs;
@@ -1691,14 +1733,15 @@ class DALMP {
 
 		if($this->dalmp_sessions_cache) {
 			$key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : $this->dalmp_sessions_table;
-			if ($cache = $this->getCache($sid, $key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type)) {
+			$cache =  $this->getCache($sid, $key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
+			if($cache) {
 				if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, 'session cached', $cache); }
 				$this->debug = $this->debug2 ? true : false;
 				return $cache;
 			} else {
 				$expiry = time();
 				$cache = ($rs = $this->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, $expiry, $this->dalmp_sessions_cname)) ? $rs : '';
-				if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, "$this->dalmp_sessions_cache_type not running or responding, reading cache from DB, sid: $sid"); }
+				if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, "sid not found in cache: $this->dalmp_sessions_cache_type reading cache from DB sid: $sid"); }
 				$this->debug = $this->debug2 ? true : false;
 				return $cache;
 			}
@@ -1724,16 +1767,14 @@ class DALMP {
 		$timeout = ini_get('session.gc_maxlifetime');
 		if($this->dalmp_sessions_cache) {
 			$key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : $this->dalmp_sessions_table;
-			$rs = $this->setCache($sid, $data, $timeout, $key, 'group:sessions', $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
+			$rs = $this->setCache($sid, $data, $timeout, $key, $this->dalmp_sessions_group_cache, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
 			if (!$rs) {
 				$write2db = true;
-				if ($this->debug_sessions) {
-					$this->add2log('sessions', __METHOD__, 'ERROR', "setCache, $this->dalmp_sessions_cache_type not running or responding, sid: $sid, data: $data, timeout: $timeout, cn: $this->dalmp_sessions_cname");
-				}
+				if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, 'ERROR', "setCache, $this->dalmp_sessions_cache_type not running or responding - sid: $sid data: $data timeout: $timeout cn: $this->dalmp_sessions_cname"); }
 				trigger_error("Cache: $this->dalmp_sessions_cache_type, not running or responding", E_USER_NOTICE);
 			} else {
 				if ($this->debug_sessions) {
-					$this->add2log('sessions', __METHOD__, "setCache -> $this->dalmp_sessions_cache_type, sid: $sid, data: $data, timeout: $timeout, cn: $this->dalmp_sessions_cname");
+					$this->add2log('sessions', __METHOD__, "setCache -> $this->dalmp_sessions_cache_type - sid: $sid data: $data timeout: $timeout cn: $this->dalmp_sessions_cname");
 				}
 				/**
 				 * store REF on cache
@@ -1753,7 +1794,7 @@ class DALMP {
 			$expiry = time() + ini_get('session.gc_maxlifetime');
 			$rs = $this->PExecute($sql, $sid, $expiry, $data, $ref, $this->dalmp_sessions_cname);
 			if ($this->debug_sessions) {
-				$this->add2log('sessions', __METHOD__, "writing to db: sql: $sql, data: $data, expiry: $expiry, sid: $sid, ref: $ref, cn: $this->dalmp_sessions_cname");
+				$this->add2log('sessions', __METHOD__, "writing to db: sql: $sql data: $data expiry: $expiry sid: $sid ref: $ref cn: $this->dalmp_sessions_cname");
 			}
 		}
 		$this->debug = $this->debug2 ? true : false;
@@ -1767,12 +1808,16 @@ class DALMP {
 			$this->debug = false;
 			$this->debug2 = true;
 		}
-		$sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE sid=?';
-		$rs = $this->PExecute($sql, $sid, $this->dalmp_sessions_cname);
 
 		if($this->dalmp_sessions_cache) {
 			$key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : $this->dalmp_sessions_table;
-			$this->CacheFlush($sid, $key, $this->dalmp_sessions_cname);
+			$rs = $this->CacheFlush($sid, $key, $this->dalmp_sessions_cname, $this->dalmp_sessions_cache_type);
+			if(!$rs) {
+				$alsoDB = true;
+				if ($this->debug_sessions) { $this->add2log('sessions',__METHOD__,'ERROR',"could not flush sid: $sid from cache: $this->dalmp_sessions_cache_type"); }
+			} else {
+				if ($this->debug_sessions) { $this->add2log('sessions',__METHOD__,"flushed sid: $sid from cache: $this->dalmp_sessions_cache_type"); }
+			}
 			/**
 			 * destroy REF on cache
 			 */
@@ -1781,6 +1826,14 @@ class DALMP {
 			if (isset($ref)) {
 				$rs = $this->_sessionsRef($sid, $ref, $key, true);
 			}
+		} else {
+			$alsoDB = true;
+		}
+
+		if(isset($alsoDB) || defined('DALMP_SESSIONS_REDUNDANCY')) {
+			if ($this->debug_sessions) { $this->add2log('sessions',__METHOD__,"deleting: $sid from DB"); }
+			$sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE sid=?';
+			$rs = $this->PExecute($sql, $sid, $this->dalmp_sessions_cname);
 		}
 		$this->debug = $this->debug2 ? true : false;
 		return $rs;
@@ -1800,9 +1853,8 @@ class DALMP {
 			$this->debug = $this->debug2 ? true : false;
 			return $rs;
 		} else {
-			if ($this->debug_sessions) {
-				$this->add2log('sessions', __METHOD__, 'ERROR', 'garbage collector');
-			}
+			if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, 'ERROR', 'garbage collector'); }
+			$this->debug = $this->debug2 ? true : false;
 			return false;
 		}
 	}
@@ -1820,7 +1872,7 @@ class DALMP {
 			if ($num_blocks > 4) {
 				$num_blocks = 4;
 			}
-			if (isset($_SERVER['REMOTE_ADDR'])) { // pendinv validationg for ipv6
+			if (isset($_SERVER['REMOTE_ADDR'])) { // pending validation for ipv6
 				$blocks = explode('.', $_SERVER['REMOTE_ADDR']);
 				for ($i = 0; $i < $num_blocks; $i++) {
 					$fingerprint.= $blocks[$i] . '.';
@@ -1832,38 +1884,47 @@ class DALMP {
 		}
 		$fingerprint = sha1($fingerprint);
 		$old_sid = session_id();
-		if ((isset($_SESSION['fingerprint']) && $_SESSION['fingerprint'] != $fingerprint)) {
+		if ( (isset($_SESSION['fingerprint']) && $_SESSION['fingerprint'] != $fingerprint) ) {
 			$_SESSION = array();
 			session_destroy();
 			if ($this->debug_sessions) {
 				$this->add2log('sessions', __METHOD__, 'Session fixation', "session destroyed: sid: $old_sid, fingerprint: $fingerprint");
 			}
+			$this->debug = $this->debug2 ? true : false;
+			return false;
+		}
+		if(session_regenerate_id(true)) {
+			$_SESSION['fingerprint'] = $fingerprint;
+			if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, "old sid: $old_sid new sid: ".session_id()." fingerprint: $fingerprint"); }
+			$this->debug = $this->debug2 ? true : false;
+			return true;
 		} else {
-			session_regenerate_id(1);
+			if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, 'ERROR', "could not regenerate session old sid: $old_sid fingerprint: $fingerprint"); }
+			$this->debug = $this->debug2 ? true : false;
+			return false;
 		}
-		$_SESSION['fingerprint'] = $fingerprint;
-		if ($this->debug_sessions) {
-			$sid = session_id();
-			$this->add2log('sessions', __METHOD__, "old sid: $old_sid, new sid: $sid, fingerprint: $fingerprint");
-		}
-		$this->debug = $this->debug2 ? true : false;
-		return;
 	}
 
-	public function SessionStart($start = null, $cache = null, $cn = null) {
+	/**
+	 * arguments: bool, cache type, 'group:name', connection name
+	 * example: SessionStart(1, memcache, 'group:sessions',db1);
+	 */
+	 public function SessionStart($start = null, $cache = null, $group=null, $cn = null) {
 		if (isset($start) and $start == 1) {
 			$start = 1;
 		} else {
+			$sgroup = (strncmp($cache,'group:',6) == 0) ? $cache : false;
+			$cn = (!$sgroup) ? $cache : $group;
 			$cache = $start;
-			$cn = $cache;
 			$start = 0;
 		}
 		if (in_array($cache, $this->_cacheOrder)) {
 			$this->dalmp_sessions_cache_type = $cache;
 			$this->dalmp_sessions_cache = true;
-		} else {
-			$cache = null;
 		}
+		$sgroup = (strncmp($group,'group:',6) == 0) ? $group : false;
+		$cn = (!$sgroup) ? $group : $cn;
+		$this->dalmp_sessions_group_cache = $sgroup;
 		$this->dalmp_sessions_cname = in_array($cn, array_keys($this->_connection)) ? $cn : $this->cname;
 		$this->dalmp_sessions_table = defined('DALMP_SESSIONS_TABLE') ? DALMP_SESSIONS_TABLE : $this->dalmp_sessions_table;
 		if (isset($_SESSION)) {
@@ -1891,7 +1952,7 @@ class DALMP {
 				session_start();
 			}
 			if ($this->debug_sessions) {
-				$this->add2log('sessions', __METHOD__, "start: $start, cache: $cache, cn: $this->dalmp_sessions_cname, sessions table: $this->dalmp_sessions_table");
+				$this->add2log('sessions', __METHOD__, "start: $start cache: $this->dalmp_sessions_cache_type group: $sgroup cn: $this->dalmp_sessions_cname sessions table: $this->dalmp_sessions_table");
 			}
 		}
 	}
