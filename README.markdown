@@ -13,6 +13,7 @@ Details
   * *redis* support (http://code.google.com/p/redis/)
   * *memcache*  single or multiple hosts and socket support (http://code.google.com/p/memcached/)
   * *apc* support (http://pecl.php.net/package/APC)
+  * *Group caching* cache by groups and flush by groups or individual keys 
   * Disk cache support.
   * Prepared statements ready.
   * Ability to use different cache types at the same time.
@@ -21,6 +22,7 @@ Details
   * Nested Transactions (SAVEPOINT / ROLLBACK TO SAVEPOINT).
   * Common methods are named exactly like ADOdb in case you want to try DALMP with an existing code that uses ADOdb.
   * sql queue.
+  * helpful methods, renumber('table') or renumber('table','uid') - renumbers a table, UUID - create an 'universally unique identifiers'. 
   * http client + queue (for sending data via http to another server expecting an answer, if expected was ok then proceed other wise queue the http request).
   * trace everything enabling the debugger by just setting something like $db->debug(1).
 
