@@ -1100,6 +1100,77 @@ class DALMP {
 		return $this->_cacheOrder;
 	}
 
+  public function set($cache=null, $key=null, $value=null, $timeout=0){
+		$caches = $this->_cacheOrder;
+		array_pop($caches);
+		$ct = in_array(strtolower($cache), $caches) ? $cache : false;
+		if(!$ct) {
+			$value = $key;
+			$key = $cache;
+			$ct = reset($caches);
+		}
+		if ($this->debug) { $this->add2log(__METHOD__, $ct, "key: $key value: $value timeout: $timeout"); }
+		switch($ct){
+			case 'apc':
+				return $this->apcCache() ? apc_store($key, $value, $timeout) : false;
+				break;
+			case 'memcache':
+				return $this->isMemcacheConnected() ? $this->_memcache->set($key, $value, $this->memCacheCompress, $timeout) : false;
+				break;
+			case 'redis':
+				if ($timeout == 0 || $timeout == -1) {
+					return $this->isRedisCacheConnected() ? $this->_redis->set($key, $value) : false;
+				} else {
+					return $this->isRedisCacheConnected() ? $this->_redis->setex($key, $timeout, $value) : false;
+				}
+				break;
+		}
+	}
+
+	public function get($cache=null, $key=null){
+		$caches = $this->_cacheOrder;
+		array_pop($caches);
+		$ct = in_array(strtolower($cache), $caches) ? $cache : false;
+		if(!$ct) {
+			$key = $cache;
+			$ct = reset($caches);
+		}
+		if ($this->debug) { $this->add2log(__METHOD__, $ct, "key: $key"); }
+		switch($ct){
+			case 'apc':
+				return $this->apcCache() ? apc_fetch($key) : false;
+				break;
+			case 'memcache':
+				return $this->isMemcacheConnected() ? $this->_memcache->get($key) : false;
+				break;
+			case 'redis':
+				return $this->isRedisCacheConnected() ? $this->_redis->get($key) : false;
+				break;
+		}
+	}
+
+	public function delete($cache=null, $key=null){
+		$caches = $this->_cacheOrder;
+		array_pop($caches);
+		$ct = in_array(strtolower($cache), $caches) ? $cache : false;
+		if(!$ct) {
+			$key = $cache;
+			$ct = reset($caches);
+		}
+		if ($this->debug) { $this->add2log(__METHOD__, $ct, "key: $key"); }
+		switch($ct){
+			case 'apc':
+				return apc_delete($key);
+				break;
+			case 'memcache':
+				return $this->isMemcacheConnected() ? $this->_memcache->delete($key) : false;
+				break;
+			case 'redis':
+				return $this->isRedisCacheConnected() ? $this->_redis->delete($key) : false;
+				break;
+		}
+	}
+
 	/**
 	 * setCache arguments: $sql, $object, $timeout, $key, $group, $cn (connection name), $dc (use dir cache), $ct (cache type)
 	 */
