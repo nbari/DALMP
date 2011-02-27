@@ -17,7 +17,7 @@ Details
   * Disk cache support.
   * Prepared statements ready.
   * Ability to use different cache types at the same time.
-  * Simple store of session on database or a cache like redis/memcache/apc.
+  * Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.
   * Easy to use/install/adapt DALMP is just a single file. 
   * Nested Transactions (SAVEPOINT / ROLLBACK TO SAVEPOINT).
   * Common methods are named exactly like ADOdb in case you want to try DALMP with an existing code that uses ADOdb.
