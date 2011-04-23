@@ -667,7 +667,7 @@ class DALMP {
         $this->trans[$cn]['error']++;
       }
       if ($this->debug) { $this->add2log('PreparedStatements',  __METHOD__, 'ERROR',"sql: $sql cn: $cn params: ",$params," Errorcode:". $this->getConnection($cn)->errno); }
-      trigger_error('ERROR -> '. __METHOD__ .": sql: $sql on $cn with params: ".json_encode($params).' - '.$this->getConnection($cn)->error, E_USER_NOTICE);
+      throw new ErrorException('ERROR -> '. __METHOD__ .": sql: $sql on $cn with params: ".json_encode($params).' - '.$this->getConnection($cn)->error);
       return false;
     }
   }
@@ -818,7 +818,7 @@ class DALMP {
         $this->trans[$cn]['error']++;
       }
       if ($this->debug) { $this->add2log(__METHOD__, 'ERROR', "sql: $sql cn: $cn Errorcode: ".$this->getConnection($cn)->errno); }
-      trigger_error('ERROR -> '. __METHOD__." : sql: $sql cn: $cn ".' - '.$this->getConnection($cn)->error, E_USER_NOTICE);
+      throw new ErrorException('ERROR -> '. __METHOD__." : sql: $sql cn: $cn ".' - '.$this->getConnection($cn)->error);
       return false;
     }
   }
