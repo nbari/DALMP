@@ -24,6 +24,7 @@
  * # define('DALMP_SESSIONS_KEY', 'mykey');
  * # define('DALMP_SESSIONS_REDUNDANCY', true);
  * # define('DALMP_HTTP_CLIENT_CONNECT_TIMEOUT', 1);
+ * # define('DALMP_QUEUE_DB', '/tmp/queue.db');
  * # define('DALMP_DEBUG_FILE', '/tmp/dalmp/debug.log');
  * # define('DALMP_CACHE_DIR', '/tmp/dalmp/cache/');
  *
@@ -55,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
  * -----------------------------------------------------------------------------------------------------------------
  * @link http://code.dalmp.com
  * @copyright Nicolas de Bari Embriz <nbari@dalmp.com>
- * @version 0.9.302
+ * @version 0.9.308
  * -----------------------------------------------------------------------------------------------------------------
  */
 if (!defined('DALMP_DIR')) define('DALMP_DIR', dirname(__FILE__));
@@ -357,12 +358,12 @@ class DALMP {
     if ($this->debug2file) {
       $debugFile = defined('DALMP_DEBUG_FILE') ? DALMP_DEBUG_FILE : DALMP_DIR . '.dalmp.log';
       if(!file_exists($debugFile)) {
-        mkdir(dirname($debugFile),0700,true);
+        @mkdir(dirname($debugFile),0700,true);
       }
       if ($this->debug2file > 1) { $debugFile .= '-'.microtime(true); }
       $fh = fopen($debugFile, 'a+');
       $start = str_repeat('-', 80) . PHP_EOL;
-      fwrite($fh, 'START ' . @date('r') . PHP_EOL);
+      fwrite($fh, 'START ' . @date('c') . PHP_EOL);
       fwrite($fh, $start);
     } elseif($this->isCli()) {
       echo str_repeat('-', 80) . PHP_EOL;
@@ -386,7 +387,7 @@ class DALMP {
 
     if($this->debug2file) {
       fwrite($fh, $start);
-      fwrite($fh, 'END ' . @date('r') . PHP_EOL);
+      fwrite($fh, 'END ' . @date('c') . PHP_EOL);
       fwrite($fh, $start);
       fclose($fh);
     } elseif ($this->isCli()) {
@@ -632,6 +633,9 @@ class DALMP {
           $params[] = &$args[$key];
         }
         if (!in_array($key, $this->_allowedParams, true)) {
+          if (is_numeric($param)) {
+            $param = !strcmp(intval($param), $param) ? (int)$param : (!strcmp(floatval($param), $param) ? (float)$param : $param);
+          }
           if (is_int($param)) {
             $key = 'i';
           } elseif (is_float($param)) {
@@ -667,7 +671,7 @@ class DALMP {
         $this->trans[$cn]['error']++;
       }
       if ($this->debug) { $this->add2log('PreparedStatements',  __METHOD__, 'ERROR',"sql: $sql cn: $cn params: ",$params," Errorcode:". $this->getConnection($cn)->errno); }
-      throw new ErrorException('ERROR -> '. __METHOD__ .": sql: $sql on $cn with params: ".json_encode($params).' - '.$this->getConnection($cn)->error);
+      throw new ErrorException(__METHOD__.'ERROR -> '.$this->getConnection($cn)->error." - sql: $sql on $cn with params: ".json_encode($params));
       return false;
     }
   }
@@ -818,7 +822,7 @@ class DALMP {
         $this->trans[$cn]['error']++;
       }
       if ($this->debug) { $this->add2log(__METHOD__, 'ERROR', "sql: $sql cn: $cn Errorcode: ".$this->getConnection($cn)->errno); }
-      throw new ErrorException('ERROR -> '. __METHOD__." : sql: $sql cn: $cn ".' - '.$this->getConnection($cn)->error);
+      throw new ErrorException(__METHOD__.'ERROR -> '.$this->getConnection($cn)->error." - sql: $sql on $cn");
       return false;
     }
   }
