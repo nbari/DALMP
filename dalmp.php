@@ -31,7 +31,7 @@
  * initialize the class:
  *
  * $db = DALMP::getInstance();
- * $db->database(DSN);
+ * $db->database(DSN, $ssl);  #$ssl = array('key' => null, 'cert' => null, 'ca' => 'mysql-ssl.ca-cert.pem', 'capath' => null, 'cipher' => null);
  * # if you want to use APC
  * # $db->Cache('apc');
  * # if you want to use memcache
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
   `sid` varchar(40) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
   `expiry` int(11) unsigned NOT NULL DEFAULT '0',
   `data` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  `ref` int(11) unsigned DEFAULT NULL,
+  `ref` varchar(255) DEFAULT NULL,
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`sid`),
   KEY `index` (`ref`,`sid`,`expiry`)
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
  * -----------------------------------------------------------------------------------------------------------------
  * @link http://code.dalmp.com
  * @copyright Nicolas de Bari Embriz <nbari@dalmp.com>
- * @version 0.9.308
+ * @version 0.9.315
  * -----------------------------------------------------------------------------------------------------------------
  */
 if (!defined('DALMP_DIR')) define('DALMP_DIR', dirname(__FILE__));
@@ -422,7 +422,7 @@ class DALMP {
     $this->log[][$etime] = $log;
   }
 
-  public function database($dsn = null) {
+  public function database($dsn = null, $ssl = null) {
     if ($dsn) {
       if ($this->debug) { $this->add2log('DSN', $dsn); }
       $dsn = parse_url($dsn);
@@ -434,13 +434,13 @@ class DALMP {
       $this->dsn['dbName'] = isset($dsn['path']) ? rawurldecode(substr($dsn['path'], 1)) : null;
       $this->dsn['cname'] = isset($dsn['query']) ? rawurldecode($dsn['query']) : $this->dsn['dbName'];
       if ($this->debug) { $this->add2log(__METHOD__, $this->dsn); }
-      $this->_connect($this->dsn['cname']);
+      $this->_connect($this->dsn['cname'], $ssl);
     } else {
       die("DSN missing: define('DSN', DB_CHARSET.'://'.DB_USERNAME.':'.DB_PASSWORD.'@'.DB_HOST.':'.DB_PORT.'/'.DB_DATABASE.'?'.DB_CNAME);");
     }
   }
 
-  protected function _connect($cn) {
+  protected function _connect($cn, $ssl = false) {
     if ($this->isConnected($cn)) {
       if ($this->debug) { $this->add2log(__METHOD__, $cn, 'still connected'); }
       return;
@@ -451,6 +451,10 @@ class DALMP {
     $this->_connection[$cn] = mysqli_init();
     $timeout = defined('DALMP_CONNECT_TIMEOUT') ? DALMP_CONNECT_TIMEOUT : $this->connect_timeout;
     mysqli_options($this->_connection[$cn], MYSQLI_OPT_CONNECT_TIMEOUT, $timeout);
+    if (is_array($ssl)) {
+      if ($this->debug) { $this->add2log('DSN - SSL', $ssl); }
+      mysqli_ssl_set($this->_connection[$cn], $ssl['key'], $ssl['cert'], $ssl['ca'], $ssl['capath'], $ssl['cipher']);
+    }
     $rs = mysqli_real_connect($this->_connection[$cn], $this->dsn['host'], $this->dsn['user'], $this->dsn['pass'], $this->dsn['dbName'], $this->dsn['port']);
     if ($rs === false || mysqli_connect_errno()) {
       if ($this->debug) { $this->add2log(__METHOD__, 'ERROR', 'mysqli connection error'); }
@@ -1074,6 +1078,14 @@ class DALMP {
     return $this->isRedisCacheConnected() ? $this->_redis->dbSize() : false;
   }
 
+  public function redisX() {
+    return  $this->isRedisCacheConnected() ? $this->_redis : false;
+  }
+
+  public function memCacheX() {
+    return $this->isMemcacheConnected() ? $this->_memcache : false;
+  }
+
   public function Cache($cache=null, $arg1=null, $arg2=null, $arg3=null) {
     $cache = isset($cache) ? $cache : 'dir';
     if(in_array(strtolower($cache),$this->_cacheOptions)) {
@@ -1672,15 +1684,15 @@ class DALMP {
     return call_user_func_array(array($this,'_CacheP'), $args);
   }
 
-  public function getSessionsRefs() {
+  public function getSessionsRefs($expiry=null) {
     $key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : $this->dalmp_sessions_table;
     $sessions_key = 'DALMP_SESSIONS_REF'.$key;
     if ($this->debug) { $this->add2log('sessions', __METHOD__, $sessions_key); }
     $cached_refs = $this->getCache('sessions_ref', $sessions_key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
     if($this->dalmp_sessions_cname == 'sqlite') {
-      $db_refs = sqlite_array_query($this->_sdb, "SELECT sid, ref, expiry FROM $this->dalmp_sessions_table", SQLITE_ASSOC);
+      $db_refs = isset($expiry) ? sqlite_array_query($this->_sdb, "SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > strftime('%s','now')", SQLITE_ASSOC) : sqlite_array_query($this->_sdb, "SELECT sid, ref, expiry FROM $this->dalmp_sessions_table", SQLITE_ASSOC);
     } else {
-      $db_refs = $this->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
+      $db_refs = isset($expiry) ? $this->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > UNIX_TIMESTAMP()") : $this->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
     }
     $dba = array();
     if ($db_refs) {
@@ -1792,7 +1804,7 @@ class DALMP {
             sid varchar(40) NOT NULL,
             expiry INTEGER NOT NULL,
             data text,
-            ref INTEGER,
+            ref text,
             PRIMARY KEY(sid))');
 
           $rs = sqlite_query($this->_sdb, 'CREATE INDEX "dalmp" ON "dalmp_sessions"("sid" DESC, "expiry" DESC, "ref" DESC)');
@@ -2094,40 +2106,41 @@ class DALMP {
     return $count > 0;
   }
 
-  public function queue($sql = null) {
-    if ($this->debug) { $this->add2log(__METHOD__, $sql); }
-    if ($sql) {
-      $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : $this->dalmp_queue_db;
-      $sdb = sqlite_open($queue_db);
-      if (!$this->sqlite_table_exists($sdb, 'sql')) {
-        sqlite_query($sdb, 'CREATE TABLE sql (
-                            id INTEGER PRIMARY KEY,
-                            sql TEXT,
-                            cdate DATE)');
-      }
-      $sql64 = base64_encode(preg_replace('/\s+/', ' ', $sql));
-      $cdate = @date('Y-m-d H:i:s');
-      $sql = "INSERT INTO sql VALUES (NULL, '$sql64', '$cdate')";
-      $rs = sqlite_query($sdb, $sql);
-      if (!$rs) {
-        trigger_error("queue: could not save $sql on $queue_db", E_USER_NOTICE);
-      }
+  public function queue($data, $queue = 'default') {
+    if ($this->debug) { $this->add2log(__METHOD__, $data, $queue); }
+    $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : $this->dalmp_queue_db;
+    $sdb = sqlite_open($queue_db);
+    if (!$this->sqlite_table_exists($sdb, 'queues')) {
+      sqlite_query($sdb, 'CREATE TABLE queues (
+                          id INTEGER PRIMARY KEY,
+                          queue VARCHAR (50) NOT NULL,
+                          data TEXT,
+                          cdate DATE)');
+    }
+    $sql = "INSERT INTO queues VALUES (NULL, '$queue', '".base64_encode($data)."', '".@date('Y-m-d H:i:s')."')";
+    $rs = sqlite_query($sdb, $sql);
+    if (!$rs) {
+      trigger_error("queue: could not save $data - $queue on $queue_db", E_USER_NOTICE);
     }
   }
 
-  public function readQueue($print=false, $queue = null) {
+  public function readQueue($queue = '*', $print = false) {
     if ($this->debug) { $this->add2log(__METHOD__, $queue); }
-    $queue = isset($queue) ? $queue : $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : $this->dalmp_queue_db;
-    $db = new SQLiteDatabase($queue);
-    $rs = $db->Query("SELECT * FROM sql");
-    if($print) {
-      while ($rs->valid()) {
-        $row = $rs->current();
-        echo $row['id'].'|'.base64_decode($row['sql']).'|'.$row['cdate'].$this->isCli(1);
-        $rs->next();
+    $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : $this->dalmp_queue_db;
+    $sdb = new SQLiteDatabase($queue_db);
+    $rs = ($queue === '*') ? @$sdb->Query('SELECT * FROM queues') : @$sdb->Query("SELECT * FROM queues WHERE queue='$queue'");
+    if ($rs) {
+      if($print) {
+        while ($rs->valid()) {
+          $row = $rs->current();
+          echo $row['id'].'|'.$row['queue'].'|'.base64_decode($row['data']).'|'.$row['cdate'].$this->isCli(1);
+          $rs->next();
+        }
+      } else {
+        return $rs;
       }
     } else {
-      return $rs;
+      return array();
     }
   }
 
@@ -2159,8 +2172,7 @@ class DALMP {
                            expectedValue VARCHAR (255) NOT NULL,
                            cdate DATE)');
       }
-      $cdate = @date('Y-m-d H:i:s');
-      $sql = "INSERT INTO url VALUES (NULL, '$queue', '$url', '$expectedValue', '$cdate')";
+      $sql = "INSERT INTO url VALUES (NULL, '$queue', '$url', '$expectedValue', '".@date('Y-m-d H:i:s')."')";
       $rs = sqlite_query($sdb, $sql);
       if (!$rs) {
         trigger_error("queue: could not save $url on $queue_db", E_USER_NOTICE);
@@ -2171,19 +2183,23 @@ class DALMP {
     }
   }
 
-  public function readQueueURL($print=false, $queue = null) {
+  public function readQueueURL($queue = '*', $print = false) {
     if ($this->debug) { $this->add2log(__METHOD__, $queue); }
-    $queue = isset($queue) ? $queue : defined('DALMP_QUEUE_URL_DB') ? DALMP_QUEUE_URL_DB : $this->dalmp_queue_url_db;
-    $db = new SQLiteDatabase($queue);
-    $rs = $db->Query("SELECT * FROM url");
-    if($print) {
-      while ($rs->valid()) {
-        $row = $rs->current();
-        echo $row['id'].'|'.$row['queue'].'|'.$row['url'].'|'.$row['expectedValue'].'|'.$row['cdate'].$this->isCli(1);
-        $rs->next();
+    $queue_db = defined('DALMP_QUEUE_URL_DB') ? DALMP_QUEUE_URL_DB : $this->dalmp_queue_url_db;
+    $sdb = new SQLiteDatabase($queue_db);
+    $rs = ($queue === '*') ? @$sdb->Query('SELECT * FROM url') : @$sdb->Query("SELECT * FROM url WHERE queue='$queue'");
+    if ($rs) {
+      if($print) {
+        while ($rs->valid()) {
+          $row = $rs->current();
+          echo $row['id'].'|'.$row['queue'].'|'.$row['url'].'|'.$row['expectedValue'].'|'.$row['cdate'].$this->isCli(1);
+          $rs->next();
+        }
+      } else {
+        return $rs;
       }
     } else {
-      return $rs;
+      return array();
     }
   }
 
