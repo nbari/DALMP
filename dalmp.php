@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
  * -----------------------------------------------------------------------------------------------------------------
  * @link http://code.dalmp.com
  * @copyright Nicolas de Bari Embriz <nbari@dalmp.com>
- * @version 0.9.315
+ * @version 0.9.319
  * -----------------------------------------------------------------------------------------------------------------
  */
 if (!defined('DALMP_DIR')) define('DALMP_DIR', dirname(__FILE__));
@@ -162,20 +162,6 @@ class DALMP {
   protected $_cacheType = 'dir';
 
   /**
-   * memcache hosts
-   * @access private
-   * @var array
-   */
-  private $memCacheHosts = array();
-
-  /**
-   * Use memcache compression
-   * @access private
-   * @var boolean
-   */
-  private $memCacheCompress = 0;
-
-  /**
    * memcache connection
    * @access protected
    * @var mixed
@@ -190,6 +176,27 @@ class DALMP {
   protected $_redis = null;
 
   /**
+   * sqlite object
+   * @access protected
+   * @var object
+   */
+  protected $_sdb = null;
+
+  /**
+   * memcache hosts
+   * @access private
+   * @var array
+   */
+  private $memCacheHosts = array();
+
+  /**
+   * Use memcache compression
+   * @access private
+   * @var boolean
+   */
+  private $memCacheCompress = 0;
+
+  /**
    * cache timeout in seconds, default to 1h
    * @access private
    * @var mixed
@@ -202,6 +209,13 @@ class DALMP {
    * @var array
    */
   private $trans = array();
+
+  /**
+   * Contains the prepared statments parameters
+   * @access private
+   * @var array
+   */
+  private $stmtParams = array();
 
   /**
    * connection name to use for storing sessions
@@ -244,13 +258,6 @@ class DALMP {
    * @var mixed
    */
   private $dalmp_sessions_sqlite_db = 'dalmp_sessions.db';
-
-  /**
-   * sqlite object
-   * @access protected
-   * @var object
-   */
-  protected $_sdb = null;
 
   /**
    * sqlite database to use for queueing
@@ -602,12 +609,40 @@ class DALMP {
     return $rs;
   }
 
+  public function Prepare() {
+    switch(func_num_args()) {
+      case 1:
+        $param = func_get_arg(0);
+        $clean = true;
+      break;
+      case 2:
+        $key = func_get_arg(0);
+        $param = func_get_arg(1);
+        if (in_array($key, $this->_allowedParams, true)) {
+          $this->stmtParams[] = array($key => $param);
+        } else {
+          $clean = true;
+        }
+      break;
+      default:
+        return $this->stmtParams;
+      break;
+    }
+    if (isset($clean)) {
+      if (is_numeric($param)) {
+        $param = !strcmp(intval($param), $param) ? (int)$param : (!strcmp(floatval($param), $param) ? (float)$param : $param);
+      }
+      $key = is_int($param) ? 'i' : (is_float($param) ? 'd' : (is_string($param) ? 's' : 'b'));
+      return $this->stmtParams[] = array($key => $param);
+    }
+  }
+
   /**
    * Prepared Statements
    * arguments: $sql, $params, $cn
    * example: PGetAll('SELECT * FROM users WHERE name=? AND id=?', 'name', 1, 'db1')
    * user also can define  the corresponding type of the bind variables (i, d, s, b): http://pt.php.net/manual/en/mysqli-stmt.bind-param.php
-   * example: PGetAll('SELECT * FROM table WHERE name=? AND id=?', array('s'=>'name', 'i'=>1), 'db1');
+   * example: PGetAll('SELECT * FROM table WHERE name=? AND id=?', array('s'=>'name', 'i'=>1), 'db1'); or use the Prepare() method
    */
   public function PExecute() {
     $args = func_get_args();
@@ -630,28 +665,30 @@ class DALMP {
     $i = 0;
     $args = is_array(current($args)) ? current($args) : $args;
     if (!empty($args)) {
-      foreach ($args as $key => $param) {
-        if (is_int($key)) {
-          $params[] = &$args[$i];
-        } else {
-          $params[] = &$args[$key];
-        }
-        if (!in_array($key, $this->_allowedParams, true)) {
-          if (is_numeric($param)) {
-            $param = !strcmp(intval($param), $param) ? (int)$param : (!strcmp(floatval($param), $param) ? (float)$param : $param);
+      if (is_array(current($args))) {
+        foreach ($args as $arg) {
+          foreach ($arg as $key => $param) {
+            $types .= $key;
+            $params[] = &$args[$i][$key];
+            $i++;
           }
-          if (is_int($param)) {
-            $key = 'i';
-          } elseif (is_float($param)) {
-            $key = 'd';
-          } elseif (is_string($param)) {
-            $key = 's';
+        }
+      } else {
+        foreach ($args as $key => $param) {
+          if (is_int($key)) {
+            $params[] = &$args[$i];
           } else {
-            $key = 'b';
+            $params[] = &$args[$key];
           }
+          if (!in_array($key, $this->_allowedParams, true)) {
+            if (is_numeric($param)) {
+              $param = !strcmp(intval($param), $param) ? (int)$param : (!strcmp(floatval($param), $param) ? (float)$param : $param);
+            }
+            $key = is_int($param) ? 'i' : (is_float($param) ? 'd' : (is_string($param) ? 's' : 'b'));
+          }
+          $types.= $key;
+          $i++;
         }
-        $types.= $key;
-        $i++;
       }
       unset($i);
       array_unshift($params, $types);
@@ -778,6 +815,10 @@ class DALMP {
   public function ErrorMsg($cn = null) {
     $cn = isset($cn) ? $cn : $this->cname;
     return $this->getConnection($cn)->error;
+  }
+  public function ErrorNum ($cn = null) {
+    $cn = isset($cn) ? $cn : $this->cname;
+    return $this->getConnection($cn)->errno;
   }
 
   public function qstr($value, $cn = null) {
@@ -1311,6 +1352,7 @@ class DALMP {
       return $rs;
     }
   }
+
   /**
    * getCache arguments: $sql, $key, $cn (connection name), $dc (use dir cache), $ct (cache type)
    */
@@ -1468,7 +1510,6 @@ class DALMP {
         continue;
       }
       $x = $dir.'/'.$obj;
-
       if (strpos($obj,'.cache')) {
         @unlink($x);
       }

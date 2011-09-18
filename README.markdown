@@ -15,7 +15,7 @@ Details
   * *apc* support (http://pecl.php.net/package/APC)
   * *Group caching* cache by groups and flush by groups or individual keys 
   * Disk cache support.
-  * Prepared statements ready.
+  * Prepared statements ready, support dynamic building queries.
   * Secure connections with SSL.
   * Ability to use different cache types at the same time.
   * Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.
@@ -26,5 +26,6 @@ Details
   * helpful methods, renumber('table') or renumber('table','uid') - renumbers a table, UUID - create an 'universally unique identifiers'. 
   * http client + queue (for sending data via http to another server expecting an answer, if expected was ok then proceed other wise queue the http request).
   * trace everything enabling the debugger by just setting something like $db->debug(1).
+  * works with Cloud databases like Xeround & Amazon RDS
 
 _share knowledge:_ irc.freenode.net #dalmp

@@ -22,7 +22,7 @@ $db->database(DSN);
 
 $db->FetchMode('NUM');
 
-$sql = "SELECT * FROM test";
+$sql = 'SELECT * FROM test';
 $rs = $db->Execute($sql);
 
 if($rs) {
