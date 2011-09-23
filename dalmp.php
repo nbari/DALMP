@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
  * -----------------------------------------------------------------------------------------------------------------
  * @link http://code.dalmp.com
  * @copyright Nicolas de Bari Embriz <nbari@dalmp.com>
- * @version 0.9.319
+ * @version 1.320
  * -----------------------------------------------------------------------------------------------------------------
  */
 if (!defined('DALMP_DIR')) define('DALMP_DIR', dirname(__FILE__));
@@ -176,7 +176,7 @@ class DALMP {
   protected $_redis = null;
 
   /**
-   * sqlite object
+   * sqlite3 object
    * @access protected
    * @var object
    */
@@ -1730,15 +1730,18 @@ class DALMP {
     $sessions_key = 'DALMP_SESSIONS_REF'.$key;
     if ($this->debug) { $this->add2log('sessions', __METHOD__, $sessions_key); }
     $cached_refs = $this->getCache('sessions_ref', $sessions_key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
+    $dba = array();
     if($this->dalmp_sessions_cname == 'sqlite') {
-      $db_refs = isset($expiry) ? sqlite_array_query($this->_sdb, "SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > strftime('%s','now')", SQLITE_ASSOC) : sqlite_array_query($this->_sdb, "SELECT sid, ref, expiry FROM $this->dalmp_sessions_table", SQLITE_ASSOC);
+      $db_refs = isset($expiry) ? $this->_sdb->query("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > strftime('%s','now')") : $this->_sdb->query("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
+      while($value = $db_refs->fetchArray(SQLITE3_ASSOC)) {
+        $dba[$value['sid']] = array($value['ref'] => $value['expiry']);
+      }
     } else {
       $db_refs = isset($expiry) ? $this->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > UNIX_TIMESTAMP()") : $this->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
-    }
-    $dba = array();
-    if ($db_refs) {
-      foreach ($db_refs as $value) {
-        $dba[$value['sid']] = array($value['ref'] => $value['expiry']);
+      if ($db_refs) {
+        foreach ($db_refs as $value) {
+          $dba[$value['sid']] = array($value['ref'] => $value['expiry']);
+        }
       }
     }
     return array_merge($dba, (is_array($cached_refs) ? $cached_refs : array())); // give priority to cache
@@ -1771,12 +1774,7 @@ class DALMP {
       }
       $rs = $this->setCache('sessions_ref', $refs, 0, $sessions_key, false, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
     }
-    if($this->dalmp_sessions_cname == 'sqlite') {
-      $rs = sqlite_query($this->_sdb, "DELETE FROM $this->dalmp_sessions_table WHERE ref='$ref'");
-    } else {
-      $rs = $this->PExecute('DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE ref=?', $ref);
-    }
-    return $rs;
+    return ($this->dalmp_sessions_cname == 'sqlite') ? $this->_sdb->exec("DELETE FROM $this->dalmp_sessions_table WHERE ref='$ref'") : $this->PExecute('DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE ref=?', $ref);
   }
 
   protected function _sessionsRef($sid, $ref, $key, $destroy=null) {
@@ -1839,18 +1837,8 @@ class DALMP {
 
     if(isset($write2db) || defined('DALMP_SESSIONS_REDUNDANCY')) {
       if($this->dalmp_sessions_cname == 'sqlite') {
-        $this->_sdb = sqlite_open($this->dalmp_sessions_sqlite_db);
-        if(!$this->sqlite_table_exists($this->_sdb, $this->dalmp_sessions_table)){
-          $rs = sqlite_query($this->_sdb, 'CREATE TABLE '. $this->dalmp_sessions_table .' (
-            sid varchar(40) NOT NULL,
-            expiry INTEGER NOT NULL,
-            data text,
-            ref text,
-            PRIMARY KEY(sid))');
-
-          $rs = sqlite_query($this->_sdb, 'CREATE INDEX "dalmp" ON "dalmp_sessions"("sid" DESC, "expiry" DESC, "ref" DESC)');
-        }
-        $rs = true;
+        $this->_sdb = new SQLite3($this->dalmp_sessions_sqlite_db);
+        $rs = $this->_sdb->exec('CREATE TABLE IF NOT EXISTS '. $this->dalmp_sessions_table .' (sid varchar(40) NOT NULL, expiry INTEGER NOT NULL, data text, ref text, PRIMARY KEY(sid)); CREATE INDEX IF NOT EXISTS "dalmp_index" ON '. $this->dalmp_sessions_table .' ("sid" DESC, "expiry" DESC, "ref" DESC)');
       } else {
         $rs =$this->isConnected($this->dalmp_sessions_cname);
         if (!$rs) {
@@ -1861,7 +1849,7 @@ class DALMP {
         }
       }
     }
-    $this->debug = $this->debug2 ? true : false;
+    $this->debug = $this->debug2 ?: false;
     return $rs;
   }
 
@@ -1873,9 +1861,9 @@ class DALMP {
       $this->debug2 = true;
     }
     if($this->dalmp_sessions_cname == 'sqlite') {
-      sqlite_close($this->_sdb);
+      $this->_sdb->close();
     }
-    $this->debug = $this->debug2 ? true : false;
+    $this->debug = $this->debug2 ?: false;
     return true;
   }
 
@@ -1891,22 +1879,18 @@ class DALMP {
       $key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : $this->dalmp_sessions_table;
       $cache = $this->getCache($sid, $key, $this->dalmp_sessions_cname, false, $this->dalmp_sessions_cache_type);
       if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, 'session cached', $cache); }
-      $this->debug = $this->debug2 ? true : false;
+      $this->debug = $this->debug2 ?: false;
       return $cache;
     } else {
       $expiry = time();
       if($this->dalmp_sessions_cname == 'sqlite') {
-        $rs = sqlite_query($this->_sdb, "SELECT data FROM $this->dalmp_sessions_table WHERE sid='$sid' AND expiry >= $expiry");
-        if ($rs && sqlite_num_rows($rs) > 0) {
-          $cache = sqlite_fetch_single($rs);
-        } else {
-          $cache = false;
-        }
+        $rs = $this->_sdb->querySingle("SELECT data FROM $this->dalmp_sessions_table WHERE sid='$sid' AND expiry >= $expiry");
+        $cache = $rs ?: false;
       } else {
         $cache = ($rs = $this->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, $expiry, $this->dalmp_sessions_cname)) ? $rs : '';
       }
       if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, "returned from db: $cache"); }
-      $this->debug = $this->debug2 ? true : false;
+      $this->debug = $this->debug2 ?: false;
       return $cache;
     }
   }
@@ -1950,7 +1934,7 @@ class DALMP {
       $expiry = time() + ini_get('session.gc_maxlifetime');
       if($this->dalmp_sessions_cname == 'sqlite') {
         $sql = "INSERT OR REPLACE INTO $this->dalmp_sessions_table (sid, expiry, data, ref) VALUES ('$sid',$expiry,'$data','$ref')";
-        sqlite_query($this->_sdb, $sql);
+        $this->_sdb->exec($sql);
       } else {
         $sql = "REPLACE INTO $this->dalmp_sessions_table (sid, expiry, data, ref) VALUES(?,?,?,?)";
         $this->PExecute($sql, $sid, $expiry, $data, $ref, $this->dalmp_sessions_cname);
@@ -1959,7 +1943,7 @@ class DALMP {
         $this->add2log('sessions', __METHOD__, "writing to db: sql: $sql data: $data expiry: $expiry sid: $sid ref: $ref cn: $this->dalmp_sessions_cname");
       }
     }
-    $this->debug = $this->debug2 ? true : false;
+    $this->debug = $this->debug2 ?: false;
     return true;
   }
 
@@ -1996,13 +1980,13 @@ class DALMP {
       if ($this->debug_sessions) { $this->add2log('sessions',__METHOD__,"deleting: $sid from DB"); }
       if($this->dalmp_sessions_cname == 'sqlite') {
         $sql = "DELETE FROM $this->dalmp_sessions_table WHERE sid='$sid'";
-        $rs = sqlite_query($this->_sdb, $sql);
+        $rs = $this->_sdb->exec($sql);
       } else {
         $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE sid=?';
         $rs = $this->PExecute($sql, $sid, $this->dalmp_sessions_cname);
       }
     }
-    $this->debug = $this->debug2 ? true : false;
+    $this->debug = $this->debug2 ?: false;
     return $rs;
   }
 
@@ -2015,20 +1999,20 @@ class DALMP {
     }
     if($this->dalmp_sessions_cname == 'sqlite') {
       $sql = "DELETE FROM $this->dalmp_sessions_table WHERE expiry < ".time();
-      sqlite_query($this->_sdb, $sql);
-      sqlite_query($this->_sdb, 'VACUUM');
-      $this->debug = $this->debug2 ? true : false;
+      $this->_sdb->exec($sql);
+      $this->_sdb->exec('VACUUM');
+      $this->debug = $this->debug2 ?: false;
       return true;
     } else {
       $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE expiry < UNIX_TIMESTAMP()';
       if ($this->PExecute($sql, $this->dalmp_sessions_cname)) {
         $sql = 'OPTIMIZE TABLE ' . $this->dalmp_sessions_table;
         $rs = $this->PExecute($sql, $this->dalmp_sessions_cname);
-        $this->debug = $this->debug2 ? true : false;
+        $this->debug = $this->debug2 ?: false;
         return $rs;
       } else {
         if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, 'ERROR', 'garbage collector'); }
-        $this->debug = $this->debug2 ? true : false;
+        $this->debug = $this->debug2 ?: false;
         return false;
       }
     }
@@ -2065,17 +2049,17 @@ class DALMP {
       if ($this->debug_sessions) {
         $this->add2log('sessions', __METHOD__, 'Session fixation', "session destroyed: sid: $old_sid, fingerprint: $fingerprint");
       }
-      $this->debug = $this->debug2 ? true : false;
+      $this->debug = $this->debug2 ?: false;
       return false;
     }
     if(session_regenerate_id(true)) {
       $_SESSION['fingerprint'] = $fingerprint;
       if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, "old sid: $old_sid new sid: ".session_id()." fingerprint: $fingerprint"); }
-      $this->debug = $this->debug2 ? true : false;
+      $this->debug = $this->debug2 ?: false;
       return true;
     } else {
       if ($this->debug_sessions) { $this->add2log('sessions', __METHOD__, 'ERROR', "could not regenerate session old sid: $old_sid fingerprint: $fingerprint"); }
-      $this->debug = $this->debug2 ? true : false;
+      $this->debug = $this->debug2 ?: false;
       return false;
     }
   }
@@ -2150,16 +2134,10 @@ class DALMP {
   public function queue($data, $queue = 'default') {
     if ($this->debug) { $this->add2log(__METHOD__, $data, $queue); }
     $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : $this->dalmp_queue_db;
-    $sdb = sqlite_open($queue_db);
-    if (!$this->sqlite_table_exists($sdb, 'queues')) {
-      sqlite_query($sdb, 'CREATE TABLE queues (
-                          id INTEGER PRIMARY KEY,
-                          queue VARCHAR (50) NOT NULL,
-                          data TEXT,
-                          cdate DATE)');
-    }
+    $sdb = new SQLite3($queue_db);
+    $sdb->exec('CREATE TABLE IF NOT EXISTS queues (id INTEGER PRIMARY KEY, queue VARCHAR (64) NOT NULL, data TEXT, cdate DATE)');
     $sql = "INSERT INTO queues VALUES (NULL, '$queue', '".base64_encode($data)."', '".@date('Y-m-d H:i:s')."')";
-    $rs = sqlite_query($sdb, $sql);
+    $rs = $sdb->exec($sql);
     if (!$rs) {
       trigger_error("queue: could not save $data - $queue on $queue_db", E_USER_NOTICE);
     }
@@ -2168,14 +2146,12 @@ class DALMP {
   public function readQueue($queue = '*', $print = false) {
     if ($this->debug) { $this->add2log(__METHOD__, $queue); }
     $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : $this->dalmp_queue_db;
-    $sdb = new SQLiteDatabase($queue_db);
-    $rs = ($queue === '*') ? @$sdb->Query('SELECT * FROM queues') : @$sdb->Query("SELECT * FROM queues WHERE queue='$queue'");
+    $sdb = new SQLite3($queue_db);
+    $rs = ($queue === '*') ? @$sdb->query('SELECT * FROM queues') : @$sdb->query("SELECT * FROM queues WHERE queue='$queue'");
     if ($rs) {
       if($print) {
-        while ($rs->valid()) {
-          $row = $rs->current();
+        while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
           echo $row['id'].'|'.$row['queue'].'|'.base64_decode($row['data']).'|'.$row['cdate'].$this->isCli(1);
-          $rs->next();
         }
       } else {
         return $rs;
@@ -2204,17 +2180,10 @@ class DALMP {
     }
     if (curl_errno($ch) || $qurl) {
       $queue_db = defined('DALMP_QUEUE_URL_DB') ? DALMP_QUEUE_URL_DB : $this->dalmp_queue_url_db;
-      $sdb = sqlite_open($queue_db);
-      if (!$this->sqlite_table_exists($sdb, 'url')) {
-        sqlite_query($sdb, 'CREATE TABLE url (
-                           id INTEGER PRIMARY KEY,
-                           queue VARCHAR (50) NOT NULL,
-                           url VARCHAR (255) NOT NULL,
-                           expectedValue VARCHAR (255) NOT NULL,
-                           cdate DATE)');
-      }
+      $sdb = new SQLite3($queue_db);
+      $sdb->exec('CREATE TABLE IF NOT EXISTS url (id INTEGER PRIMARY KEY, queue VARCHAR (64) NOT NULL, url VARCHAR (255) NOT NULL, expectedValue VARCHAR (255) NOT NULL, cdate DATE)');
       $sql = "INSERT INTO url VALUES (NULL, '$queue', '$url', '$expectedValue', '".@date('Y-m-d H:i:s')."')";
-      $rs = sqlite_query($sdb, $sql);
+      $rs = $sdb->exec($sql);
       if (!$rs) {
         trigger_error("queue: could not save $url on $queue_db", E_USER_NOTICE);
       }
@@ -2227,14 +2196,12 @@ class DALMP {
   public function readQueueURL($queue = '*', $print = false) {
     if ($this->debug) { $this->add2log(__METHOD__, $queue); }
     $queue_db = defined('DALMP_QUEUE_URL_DB') ? DALMP_QUEUE_URL_DB : $this->dalmp_queue_url_db;
-    $sdb = new SQLiteDatabase($queue_db);
-    $rs = ($queue === '*') ? @$sdb->Query('SELECT * FROM url') : @$sdb->Query("SELECT * FROM url WHERE queue='$queue'");
+    $sdb = new SQLite3($queue_db);
+    $rs = ($queue === '*') ? @$sdb->query('SELECT * FROM url') : @$sdb->query("SELECT * FROM url WHERE queue='$queue'");
     if ($rs) {
       if($print) {
-        while ($rs->valid()) {
-          $row = $rs->current();
+        while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
           echo $row['id'].'|'.$row['queue'].'|'.$row['url'].'|'.$row['expectedValue'].'|'.$row['cdate'].$this->isCli(1);
-          $rs->next();
         }
       } else {
         return $rs;
@@ -2248,7 +2215,7 @@ class DALMP {
     if ($rlb) { // return line break
       return (php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR'])) ? PHP_EOL : '<br />';
     } else {
-      return (php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR'])) ? true : false;
+      return (php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR'])) ?: false;
     }
   }
 
