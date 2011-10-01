@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
  * -----------------------------------------------------------------------------------------------------------------
  * @link http://code.dalmp.com
  * @copyright Nicolas de Bari Embriz <nbari@dalmp.com>
- * @version 1.320
+ * @version 1.321
  * -----------------------------------------------------------------------------------------------------------------
  */
 if (!defined('DALMP_DIR')) define('DALMP_DIR', dirname(__FILE__));
@@ -1838,6 +1838,7 @@ class DALMP {
     if(isset($write2db) || defined('DALMP_SESSIONS_REDUNDANCY')) {
       if($this->dalmp_sessions_cname == 'sqlite') {
         $this->_sdb = new SQLite3($this->dalmp_sessions_sqlite_db);
+        $this->_sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
         $rs = $this->_sdb->exec('CREATE TABLE IF NOT EXISTS '. $this->dalmp_sessions_table .' (sid varchar(40) NOT NULL, expiry INTEGER NOT NULL, data text, ref text, PRIMARY KEY(sid)); CREATE INDEX IF NOT EXISTS "dalmp_index" ON '. $this->dalmp_sessions_table .' ("sid" DESC, "expiry" DESC, "ref" DESC)');
       } else {
         $rs =$this->isConnected($this->dalmp_sessions_cname);
@@ -2124,17 +2125,11 @@ class DALMP {
     }
   }
 
-  public function sqlite_table_exists($db, $table) {
-    if ($this->debug) { $this->add2log(__METHOD__, "db: $db, table: $table"); }
-    $rs = sqlite_query($db, "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='$table'");
-    $count = intval(sqlite_fetch_single($rs));
-    return $count > 0;
-  }
-
   public function queue($data, $queue = 'default') {
     if ($this->debug) { $this->add2log(__METHOD__, $data, $queue); }
     $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : $this->dalmp_queue_db;
     $sdb = new SQLite3($queue_db);
+    $sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
     $sdb->exec('CREATE TABLE IF NOT EXISTS queues (id INTEGER PRIMARY KEY, queue VARCHAR (64) NOT NULL, data TEXT, cdate DATE)');
     $sql = "INSERT INTO queues VALUES (NULL, '$queue', '".base64_encode($data)."', '".@date('Y-m-d H:i:s')."')";
     $rs = $sdb->exec($sql);
@@ -2181,6 +2176,7 @@ class DALMP {
     if (curl_errno($ch) || $qurl) {
       $queue_db = defined('DALMP_QUEUE_URL_DB') ? DALMP_QUEUE_URL_DB : $this->dalmp_queue_url_db;
       $sdb = new SQLite3($queue_db);
+      $sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
       $sdb->exec('CREATE TABLE IF NOT EXISTS url (id INTEGER PRIMARY KEY, queue VARCHAR (64) NOT NULL, url VARCHAR (255) NOT NULL, expectedValue VARCHAR (255) NOT NULL, cdate DATE)');
       $sql = "INSERT INTO url VALUES (NULL, '$queue', '$url', '$expectedValue', '".@date('Y-m-d H:i:s')."')";
       $rs = $sdb->exec($sql);
