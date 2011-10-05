@@ -3,9 +3,9 @@
  * -----------------------------------------------------------------------------------------------------------------
  * DALMP - Database Abstraction Layer for MySQL using PHP
  * -----------------------------------------------------------------------------------------------------------------
- * @link http://dalmp.googlecode.com
+ * @link http://dalmp.googlecode.com / git://github.com/nbari/DALMP.git
  * @copyright Nicolas de Bari Embriz <nbari@dalmp.com>
- * @version 1.323
+ * @version 1.324
  * -----------------------------------------------------------------------------------------------------------------
  */
 if (!defined('DALMP_DIR')) define('DALMP_DIR', dirname(__FILE__));
@@ -423,7 +423,7 @@ class DALMP {
       if ($this->debug) { $this->add2log(__METHOD__, $this->dsn); }
       $this->_connect($this->dsn['cname'], $ssl);
     } else {
-      die("DSN missing: define('DSN', DB_CHARSET.'://'.DB_USERNAME.':'.DB_PASSWORD.'@'.DB_HOST.':'.DB_PORT.'/'.DB_DATABASE.'?'.DB_CNAME);");
+      die('DSN missing: charset://username:password@host:port/database?cname');
     }
   }
 
