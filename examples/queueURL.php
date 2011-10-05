@@ -10,7 +10,7 @@ define('DB_DATABASE', 'dalmptest');
 define('DB_CHARSET', 'utf8');
 define('DB_CNAME', 'db1');
 define('DALMP_SESSIONS_REF', 'UID');
-define('DALMP_QUEUE_URL_DB','myURLqueue.db');
+define('DALMP_QUEUE_URL_DB','/tmp/myURLqueue.db');
 define('DSN', DB_CHARSET.'://'.DB_USERNAME.':'.DB_PASSWORD.'@'.DB_HOST.':'.DB_PORT.'/'.DB_DATABASE.'?'.DB_CNAME);
 require_once '../dalmp.php';
 
@@ -40,6 +40,5 @@ echo $db->isCli(1);
 // read a single queue
 $db->readQueueURL('site1', 1);
 
-echo "\n".$timer->getPageLoadTime()." - ".$timer->getMemoryUsage();
-
+echo PHP_EOL,$timer->getPageLoadTime()," - ",$timer->getMemoryUsage(),PHP_EOL;
 ?>

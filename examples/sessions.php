@@ -2,12 +2,31 @@
 require_once '../mplt.php';
 $timer = new mplt();
 
+/**
+ * -----------------------------------------------------------------------------------------------------------------
+ *
+-- ----------------------------
+--  Table structure for `dalmp_sessions`
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
+  `sid` varchar(40) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `expiry` int(11) unsigned NOT NULL DEFAULT '0',
+  `data` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `ref` varchar(255) DEFAULT NULL,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`sid`),
+  KEY `index` (`ref`,`sid`,`expiry`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+ *
+ * -----------------------------------------------------------------------------------------------------------------
+ */
+
 define('DB_USERNAME', 'dalmp');
 define('DB_PASSWORD', 'password');
 define('DB_HOST', 'localhost');
 define('DB_PORT', 3306);
 define('DB_DATABASE', 'dalmptest');
-define('DB_CHARSET', 'utf8'); 
+define('DB_CHARSET', 'utf8');
 define('DB_CNAME', 'db1');
 define('DALMP_SESSIONS_REF', 'UID');
 define('MEMCACHE_HOSTS','127.0.0.1');
@@ -45,6 +64,6 @@ if ((mt_rand() % 10) == 0) {
   $db->DALMP_session_regenerate_id(4);  // always after your $GLOBALS
 }
 
-echo "\n".$timer->getPageLoadTime()." - ".$timer->getMemoryUsage();
+echo PHP_EOL,$timer->getPageLoadTime()," - ",$timer->getMemoryUsage(),PHP_EOL;
 
 ?>

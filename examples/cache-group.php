@@ -7,7 +7,7 @@ define('DB_PASSWORD', 'password');
 define('DB_HOST', 'localhost');
 define('DB_PORT', 3306);
 define('DB_DATABASE', 'dalmptest');
-define('DB_CHARSET', 'utf8'); 
+define('DB_CHARSET', 'utf8');
 define('DB1_CNAME', 'db1');
 define('MEMCACHE_HOSTS','127.0.0.1');
 define('REDIS_HOST','127.0.0.1');
@@ -23,9 +23,9 @@ $db->Cache('memcache',MEMCACHE_HOSTS, true); // true enables MEMCACHE_COMPRESSED
 
 
 /**
- * it is recommended to set the connection name DB1_CNAME in case later you need to connect to a second database and flush a specific cache 
+ * it is recommended to set the connection name DB1_CNAME in case later you need to connect to a second database and flush a specific cache
  */
-// add this query to the cache group:memcache 
+// add this query to the cache group:memcache
 $rs = $db->CachePGetAll('memcache', 300, 'SELECT * FROM test WHERE r1=?', 'test', 'group:memcache', DB1_CNAME);
 
 // cache with default timeout 3600 (1 hour), and also added to the cache group:memcache
@@ -35,7 +35,7 @@ $rs = $db->CachePGetAll('memcache', 'SELECT * FROM test WHERE r1=?', 'row 2', 'g
 $rs = $db->CachePGetAll('SELECT * FROM test WHERE r2=?', 'col b', 'group:redis', DB1_CNAME);
 
 /**
- * get all the keys stored for a certain group 
+ * get all the keys stored for a certain group
  */
 #$groups = $db->getCache('cache_group', 'group:memcache',DB1_CNAME);
 #print_r($groups);
@@ -48,6 +48,6 @@ if ((mt_rand() % 10) == 0) {
   $db->CacheFlush('group:sessions');
 }
 
-echo "\n".$timer->getPageLoadTime()." - ".$timer->getMemoryUsage();
+echo PHP_EOL,$timer->getPageLoadTime()," - ",$timer->getMemoryUsage(),PHP_EOL;
 
 ?>

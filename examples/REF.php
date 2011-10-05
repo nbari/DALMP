@@ -7,7 +7,7 @@ define('DB_PASSWORD', 'password');
 define('DB_HOST', 'localhost');
 define('DB_PORT', 3306);
 define('DB_DATABASE', 'dalmptest');
-define('DB_CHARSET', 'utf8'); 
+define('DB_CHARSET', 'utf8');
 define('DB_CNAME', 'db1');
 define('DALMP_SESSIONS_REF', 'UID');
 /**
@@ -30,10 +30,10 @@ $db->SessionStart(1,'memcache');
 $db->FetchMode('ASSOC');
 
 /**
- * here you can declare the user ID so later check how many users are logged in or also avoid users to login twice 
+ * here you can declare the user ID so later check how many users are logged in or also avoid users to login twice
  */
 $uid = 1;
-$GLOBALS['UID'] = $uid; 
+$GLOBALS['UID'] = $uid;
 
 /**
  * get the REF stored on DB or Cache
@@ -57,6 +57,6 @@ if ((mt_rand() % 10) == 0) {
   $db->DALMP_session_regenerate_id(4);  // always after your $GLOBALS
 }
 
-echo "\n".$timer->getPageLoadTime()." - ".$timer->getMemoryUsage();
+echo PHP_EOL,$timer->getPageLoadTime()," - ",$timer->getMemoryUsage(),PHP_EOL;
 
 ?>

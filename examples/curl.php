@@ -8,8 +8,8 @@ require_once '../mplt.php';
 $timer = new mplt();
 
 function checkSite($url,$page=null) {
-  $cookie = "/tmp/cookie.txt";
-  $agent = "-( DALMP )-";
+  $cookie = '/tmp/cookie.txt';
+  $agent = '-( DALMP )-';
   $ch=curl_init();
   curl_setopt ($ch, CURLOPT_URL,$url );
   curl_setopt ($ch, CURLOPT_USERAGENT, $agent);
@@ -37,5 +37,7 @@ for ($i=0; $i <10 ; $i++) {
   }
   @unlink('/tmp/cookie.txt');
 }
-echo "\n".$timer->getPageLoadTime()." - ".$timer->getMemoryUsage();
+
+echo PHP_EOL,$timer->getPageLoadTime()," - ",$timer->getMemoryUsage(),PHP_EOL;
+
 ?>

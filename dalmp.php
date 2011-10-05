@@ -3,60 +3,9 @@
  * -----------------------------------------------------------------------------------------------------------------
  * DALMP - Database Abstraction Layer for MySQL using PHP
  * -----------------------------------------------------------------------------------------------------------------
- * for use you must define the following:
- *
- * define('DB_USERNAME', 'username');
- * define('DB_PASSWORD', 'password');
- * define('DB_HOST', 'localhost');
- * define('DB_PORT', 3306);
- * define('DB_DATABASE', 'database');
- * define('DB_CHARSET', 'utf8');
- * define('DB1_CNAME', 'db1');
- * define('DSN', DB_CHARSET.'://'.DB_USERNAME.':'.DB_PASSWORD.'@'.DB_HOST.':'.DB_PORT.'/'.DB_DATABASE.'?'.DB1_CNAME);
- * # optional
- * # define('MEMCACHE_HOSTS','127.0.0.1;192.168.0.1:11234');
- * # define('REDIS_HOST','127.0.0.1');
- * # define('REDIS_PORT', 6379);
- * # define('DALMP_CONNECT_TIMEOUT', 30);
- * # define('DALMP_SITE_KEY','dalmp.com');
- * # define('DALMP_SESSIONS_SQLITE_DB','/home/sites/sessions.db');
- * # define('DALMP_SESSIONS_REF', 'UID');
- * # define('DALMP_SESSIONS_KEY', 'mykey');
- * # define('DALMP_SESSIONS_REDUNDANCY', true);
- * # define('DALMP_HTTP_CLIENT_CONNECT_TIMEOUT', 1);
- * # define('DALMP_QUEUE_DB', '/tmp/queue.db');
- * # define('DALMP_DEBUG_FILE', '/tmp/dalmp/debug.log');
- * # define('DALMP_CACHE_DIR', '/tmp/dalmp/cache/');
- *
- * initialize the class:
- *
- * $db = DALMP::getInstance();
- * $db->database(DSN, $ssl);  #$ssl = array('key' => null, 'cert' => null, 'ca' => 'mysql-ssl.ca-cert.pem', 'capath' => null, 'cipher' => null);
- * # if you want to use APC
- * # $db->Cache('apc');
- * # if you want to use memcache
- * # $db->Cache('memcache',MEMCACHE_HOSTS);
- * # if you want to use redis
- * # $db->Cache('redis',REDIS_HOST, REDIS_PORT, 3);
- *
- *
--- ----------------------------
---  Table structure for `dalmp_sessions`
--- ----------------------------
-CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
-  `sid` varchar(40) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
-  `expiry` int(11) unsigned NOT NULL DEFAULT '0',
-  `data` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  `ref` varchar(255) DEFAULT NULL,
-  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`sid`),
-  KEY `index` (`ref`,`sid`,`expiry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
- *
- * -----------------------------------------------------------------------------------------------------------------
- * @link http://code.dalmp.com
+ * @link http://dalmp.googlecode.com
  * @copyright Nicolas de Bari Embriz <nbari@dalmp.com>
- * @version 1.321
+ * @version 1.323
  * -----------------------------------------------------------------------------------------------------------------
  */
 if (!defined('DALMP_DIR')) define('DALMP_DIR', dirname(__FILE__));
@@ -335,17 +284,9 @@ class DALMP {
   private $log = array();
 
   /**
-   * start of class
+   * start of class - Singleton pattern
    */
   private function __construct() {
-  }
-
-  public static function getInstance() {
-    if (!isset(self::$db_instance)) {
-      $object = __CLASS__;
-      self::$db_instance = new $object;
-    }
-    return self::$db_instance;
   }
 
   public function __clone() {
@@ -356,9 +297,40 @@ class DALMP {
     foreach (array_keys($this->_connection) as $cn) {
       $this->closeConnection($cn);
     }
-    if ($this->debug) {
-      $this->getLog();
+    if ($this->debug) { $this->getLog(); }
+  }
+
+  public function __call($name, $arguments) {
+    die("'$name' method does not exist, args: " . implode('|', $arguments) . $this->isCli(1));
+  }
+
+  public function __toString() {
+    if (count(array_keys($this->_connection)) > 0) {
+      $status = '';
+      foreach (array_keys($this->_connection) as $cn) {
+        if($this->isConnected($cn)) {
+          $status .= 'DALMP :: ';
+          $status .= "connected to: $cn, ";
+          $status .= 'Character set: '.$this->getConnection($cn)->character_set_name();
+          $status .= ', '.$this->getConnection($cn)->host_info;
+          $status .= ', Server version: '.$this->getServerVersion($cn);
+          $status .= ', Client version: '.$this->getClientVersion($cn);
+          $status .= ', System status: '.$this->getConnection($cn)->stat();
+        }
+      }
+    } else {
+      $status = 'no connections';
     }
+    if ($this->debug) {$this->add2log(__METHOD__, $status); }
+    return $status;
+  }
+
+  public static function getInstance() {
+    if (!isset(self::$db_instance)) {
+      $object = __CLASS__;
+      self::$db_instance = new $object;
+    }
+    return self::$db_instance;
   }
 
   public function getLog() {
@@ -394,7 +366,7 @@ class DALMP {
 
     if($this->debug2file) {
       fwrite($fh, $start);
-      fwrite($fh, 'END ' . @date('c') . PHP_EOL);
+      fwrite($fh, 'END ' . @date('c') . ' - [Memory usage: '.memory_get_usage(true).', '.memory_get_peak_usage(true).']'.PHP_EOL);
       fwrite($fh, $start);
       fclose($fh);
     } elseif ($this->isCli()) {
@@ -415,9 +387,7 @@ class DALMP {
   public function debugSessions() {
     $this->debug_sessions = true;
     $this->debug2 = true;
-    if (!$this->debug) {
-      $this->debug();
-    }
+    if (!$this->debug) { $this->debug(); }
   }
 
   public function add2log() {
@@ -433,13 +403,23 @@ class DALMP {
     if ($dsn) {
       if ($this->debug) { $this->add2log('DSN', $dsn); }
       $dsn = parse_url($dsn);
-      $this->dsn['charset'] = isset($dsn['scheme']) ? rawurldecode($dsn['scheme']) : null;
-      $this->dsn['host'] = isset($dsn['host']) ? rawurldecode($dsn['host']) : '127.0.0.1';
-      $this->dsn['port'] = isset($dsn['port']) ? rawurldecode($dsn['port']) : 3306;
-      $this->dsn['user'] = isset($dsn['user']) ? rawurldecode($dsn['user']) : null;
-      $this->dsn['pass'] = isset($dsn['pass']) ? rawurldecode($dsn['pass']) : null;
-      $this->dsn['dbName'] = isset($dsn['path']) ? rawurldecode(substr($dsn['path'], 1)) : null;
-      $this->dsn['cname'] = isset($dsn['query']) ? rawurldecode($dsn['query']) : $this->dsn['dbName'];
+      $this->dsn['charset'] = isset($dsn['scheme']) ? ( ($dsn['scheme'] == 'mysql') ? null : $dsn['scheme'] )  : null;
+      if (isset($dsn['host'])) {
+        $host = explode('=', $dsn['host']);
+        if ($host[0] == 'unix_socket') {
+          $this->dsn['host'] = null;
+          $this->dsn['socket'] = str_replace('\\', '/', $host[1]);
+        } else {
+          $this->dsn['host'] = $dsn['host'];
+        }
+      } else {
+        $this->dsn['host'] = '127.0.0.1';
+      }
+      $this->dsn['port'] = isset($dsn['port']) ? $dsn['port'] : 3306;
+      $this->dsn['user'] = isset($dsn['user']) ? $dsn['user'] : null;
+      $this->dsn['pass'] = isset($dsn['pass']) ? $dsn['pass'] : null;
+      $this->dsn['dbName'] = isset($dsn['path']) ? substr($dsn['path'], 1) : null;
+      $this->dsn['cname'] = isset($dsn['query']) ? $dsn['query'] : $this->dsn['dbName'];
       if ($this->debug) { $this->add2log(__METHOD__, $this->dsn); }
       $this->_connect($this->dsn['cname'], $ssl);
     } else {
@@ -462,13 +442,13 @@ class DALMP {
       if ($this->debug) { $this->add2log('DSN - SSL', $ssl); }
       mysqli_ssl_set($this->_connection[$cn], $ssl['key'], $ssl['cert'], $ssl['ca'], $ssl['capath'], $ssl['cipher']);
     }
-    $rs = mysqli_real_connect($this->_connection[$cn], $this->dsn['host'], $this->dsn['user'], $this->dsn['pass'], $this->dsn['dbName'], $this->dsn['port']);
+    $rs = @mysqli_real_connect($this->_connection[$cn], $this->dsn['host'], $this->dsn['user'], $this->dsn['pass'], $this->dsn['dbName'], $this->dsn['port'], $this->dsn['socket']);
     if ($rs === false || mysqli_connect_errno()) {
       if ($this->debug) { $this->add2log(__METHOD__, 'ERROR', 'mysqli connection error'); }
       $this->closeConnection($cn);
       throw new Exception(mysqli_connect_error() , mysqli_connect_errno());
     }
-    mysqli_set_charset($this->_connection[$cn], $this->dsn['charset']);
+    if ($this->dsn['charset']) { mysqli_set_charset($this->_connection[$cn], $this->dsn['charset']); }
     $this->cname = $cn;
     if ($this->debug) { $this->add2log(__METHOD__, "connected to: $cn", mysqli_get_host_info($this->_connection[$cn]) , 'protocol version: ' . mysqli_get_proto_info($this->_connection[$cn]) , 'character set: ' . mysqli_character_set_name($this->_connection[$cn]) , "connect timeout: $timeout"); }
   }
@@ -610,6 +590,7 @@ class DALMP {
   }
 
   public function Prepare() {
+    if ($this->debug) { $this->add2log('PreparedStatements', __METHOD__, $args); }
     switch(func_num_args()) {
       case 1:
         $param = func_get_arg(0);
@@ -751,9 +732,9 @@ class DALMP {
     return $this->_pFetch('assoc');
   }
 
-  public function Insert_Id() {
+  public function Insert_Id($cn = null) {
     if ($this->debug) { $this->add2log( __METHOD__); }
-    return mysqli_insert_id($this->getConnection());
+    return mysqli_insert_id($this->getConnection($cn));
   }
 
   public function AutoExecute($table = null, $fields = null, $mode = 'INSERT', $where = null, $cn = null) {
@@ -813,17 +794,15 @@ class DALMP {
   }
 
   public function ErrorMsg($cn = null) {
-    $cn = isset($cn) ? $cn : $this->cname;
     return $this->getConnection($cn)->error;
   }
   public function ErrorNum ($cn = null) {
-    $cn = isset($cn) ? $cn : $this->cname;
     return $this->getConnection($cn)->errno;
   }
 
   public function qstr($value, $cn = null) {
-    $cn = isset($cn) ? $cn : $this->cname;
-    if ($this->debug) { $this->add2log(__METHOD__, "$value cn: $cn"); }
+    if ($this->debug) { $this->add2log(__METHOD__, func_get_args()); }
+
     if (get_magic_quotes_gpc()) {
       $rs = stripslashes($value);
     } else {
@@ -848,8 +827,7 @@ class DALMP {
   }
 
   public function Execute($sql, $cn = null) {
-    $cn = isset($cn) ? $cn : $this->cname;
-    if ($this->debug) { $this->add2log(__METHOD__, "sql: $sql cn: $cn"); }
+    if ($this->debug) { $this->add2log(__METHOD__, "sql: $sql cn; $cn");}
     if ($rs = $this->getConnection($cn)->query($sql)) {
       if (is_object($rs)) {
         $this->_rs = $rs;
@@ -1005,7 +983,6 @@ class DALMP {
   }
 
   public function renumber($table, $row='id', $cn=null) {
-    $cn = isset($cn) ? $cn : $this->cname;
     if (isset($table)) {
       return $this->Execute('SET @var_dalmp=0', $cn) ? ($this->Execute("UPDATE $table SET $row = (@var_dalmp := @var_dalmp +1)",$cn) ? $this->Execute("ALTER TABLE $table AUTO_INCREMENT = 1", $cn) : false) : false;
     } else {
@@ -2245,31 +2222,6 @@ class DALMP {
       if ($this->debug) { $this->add2log(__METHOD__, $uuid, 'pecl uuid not installed'); }
       return $uuid;
     }
-  }
-
-  public function __call($name, $arguments) {
-    die("'$name' method does not exist, args: " . implode('|', $arguments) . $this->isCli(1));
-  }
-
-  public function __toString() {
-    if (count(array_keys($this->_connection)) > 0) {
-      $status = null;
-      foreach (array_keys($this->_connection) as $cn) {
-        if($this->isConnected($cn)) {
-          $status .= 'DALMP :: ';
-          $status .= "connected to: $cn, ";
-          $status .= 'Character set: '.$this->getConnection($cn)->character_set_name();
-          $status .= ', '.$this->getConnection($cn)->host_info;
-          $status .= ', Server version: '.$this->getServerVersion($cn);
-          $status .= ', Client version: '.$this->getClientVersion($cn);
-          $status .= ', System status: '.$this->getConnection($cn)->stat();
-        }
-      }
-    } else {
-      $status = 'no connections';
-    }
-    if ($this->debug) {$this->add2log(__METHOD__, $status); }
-    return $status;
   }
 
 }
