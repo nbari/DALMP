@@ -3,9 +3,10 @@
  * -----------------------------------------------------------------------------------------------------------------
  * DALMP - Database Abstraction Layer for MySQL using PHP
  * -----------------------------------------------------------------------------------------------------------------
- * @link http://dalmp.googlecode.com / git://github.com/nbari/DALMP.git
+ * @code git clone git://github.com/nbari/DALMP.git
+ * @link http://dalmp.googlecode.com
  * @copyright Nicolas de Bari Embriz <nbari@dalmp.com>
- * @version 1.324
+ * @version 1.325
  * -----------------------------------------------------------------------------------------------------------------
  */
 if (!defined('DALMP_DIR')) define('DALMP_DIR', dirname(__FILE__));
@@ -2086,7 +2087,7 @@ class DALMP {
       register_shutdown_function('session_write_close');
 
       ini_set('session.gc_maxlifetime', defined('DALMP_SESSIONS_MAXLIFETIME') ? DALMP_SESSIONS_MAXLIFETIME : get_cfg_var('session.gc_maxlifetime'));
-      ini_set('session.name','DALMP_SESSID');
+      ini_set('session.name','DALMP');
       ini_set('session.use_cookies', 1);
       ini_set('session.use_only_cookies', 1);
       ini_set('session.use_trans_sid', 0);
