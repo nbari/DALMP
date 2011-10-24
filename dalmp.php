@@ -6,7 +6,7 @@
  * @code git clone git://github.com/nbari/DALMP.git
  * @link http://dalmp.googlecode.com
  * @copyright Nicolas de Bari Embriz <nbari@dalmp.com>
- * @version 1.326
+ * @version 1.328
  * -----------------------------------------------------------------------------------------------------------------
  */
 if (!defined('DALMP_DIR')) define('DALMP_DIR', dirname(__FILE__));
