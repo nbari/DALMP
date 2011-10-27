@@ -517,7 +517,6 @@ class DALMP {
         $query = array_values($data);
         $sql = "INSERT INTO $table ($fields) VALUES($placeholder)";
         array_unshift($query, $sql);
-        $query[] = $cn;
         return call_user_func_array(array($this,'PExecute'), $query);
         break;
 
@@ -527,7 +526,6 @@ class DALMP {
         $query = array_values($data);
         $sql = "UPDATE $table SET $fields WHERE $where";
         array_unshift($query, $sql);
-        $query[] = $cn;
         return call_user_func_array(array($this,'PExecute'), $query);
         break;
 
