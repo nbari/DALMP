@@ -1,7 +1,7 @@
 DALMP - Database Abstraction Layer for MySQL using PHP 
 ======================================================
 
-%0 fat and extremely easy to use, just one file, define some constants and you are ready to go.
+%0 fat and extremely easy to use, only connect to database when needed.
 
 Details
 =======
@@ -16,19 +16,12 @@ Details
   * SQLite3 Encryption (http://sqlcipher.net)
   * Ability to use different cache types at the same time.
   * Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.
-  * Easy to use/install/adapt DALMP is just a single file. 
+  * Easy to use/install/adapt. 
   * Nested Transactions (SAVEPOINT  / ROLLBACK TO SAVEPOINT).
   * support connections via unix_sockets.
   * SQL queues.
-  * helpful methods, renumber('table') or renumber('table','uid') - renumbers a table,  UUID - create an '[http://en.wikipedia.org/wiki/Uuid universally unique identifiers]'
-  * http client + queue (for sending data via http to another server expecting an answer, if expected was ok then proceed other wise queue the http request).
   * trace/measure everything enabling the debugger by just setting something like $db->debug(1).
   * works with Cloud databases like  Xeround & Amazon RDS out of the box.
 
-
-_share knowledge:_ irc.freenode.net #dalmp
-
-
 *FreeBSD*
 Install from ports: /usr/ports/databases/dalmp
-

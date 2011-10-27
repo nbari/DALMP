@@ -4,7 +4,7 @@
  */
 
 class mplt {
-  private $decimals = 3;
+  private $decimals;
   private $time_start;
   private $time_end;
   private $marks = array();
@@ -48,8 +48,8 @@ class mplt {
 		}
   }
 	
-	public function getMemoryUsage() {
-		return $this->convert(memory_get_usage(true));
+	public function getMemoryUsage($convert=false) {
+		return $convert ? $this->convert(memory_get_usage(true)) : memory_get_usage(true);
 	}
 	
 	public function convert($size) {

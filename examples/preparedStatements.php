@@ -1,21 +1,10 @@
 <?php
 require_once '../mplt.php';
 $timer = new mplt();
-
-define('DB_USERNAME', 'dalmp');
-define('DB_PASSWORD', 'password');
-define('DB_HOST', 'localhost');
-define('DB_PORT', 3306);
-define('DB_DATABASE', 'dalmptest');
-define('DB_CHARSET', 'utf8');
-define('DB_CNAME', 'db1');
-define('DSN', DB_CHARSET.'://'.DB_USERNAME.':'.DB_PASSWORD.'@'.DB_HOST.':'.DB_PORT.'/'.DB_DATABASE.'?'.DB_CNAME);
-define('DALMP_DEBUG_FILE', '/tmp/dalmp.log');
 require_once '../dalmp.php';
+# -----------------------------------------------------------------------------------------------------------------
 
-$db = DALMP::getInstance();
-$db->debug(1);
-$db->database(DSN);
+$db = new DALMP('utf8://root:'.rawurlencode('pass-?/:word').'@mysql2.localbox.org:3306/dalmptest?redis:127.0.0.1:6379');
 
 /**
  *  load zone files to mysql
@@ -25,9 +14,13 @@ $db->PExecute('SET time_zone=?','UTC');
 
 $db->FetchMode('ASSOC');
 
+/**
+ * status value is 0 or 1 on table
+ * NOTICE the use of ===
+ */
 $sql = 'SELECT status FROM test WHERE id=?';
 $rs = $db->PgetOne($sql, 3);
-if ($rs === false) {
+if ($rs === false) { 
 	echo "no result".$db->isCli(1);
 } elseif ($rs == 0) {
 	echo "$rs = 0".$db->isCli(1);
@@ -70,5 +63,7 @@ $sql .= 'AND colB=?';
 $rs = $db->PgetAll($sql, $db->Prepare());
 print_r($rs);
 
-echo $db->isCli(1).$timer->getPageLoadTime()." - ".$timer->getMemoryUsage();
+# -----------------------------------------------------------------------------------------------------------------
+echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
+
 ?>

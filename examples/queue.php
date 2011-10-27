@@ -1,22 +1,18 @@
 <?php
 require_once '../mplt.php';
 $timer = new mplt();
-
-define('DB_USERNAME', 'dalmp');
-define('DB_PASSWORD', 'password');
-define('DB_HOST', 'localhost');
-define('DB_PORT', 3306);
-define('DB_DATABASE', 'dalmptest');
-define('DB_CHARSET', 'utf8');
-define('DB_CNAME', 'db1');
-define('DALMP_SESSIONS_REF', 'UID');
-define('DALMP_QUEUE_DB','/tmp/myqueue.db');
-define('DSN', DB_CHARSET.'://'.DB_USERNAME.':'.DB_PASSWORD.'@'.DB_HOST.':'.DB_PORT.'/'.DB_DATABASE.'?'.DB_CNAME);
 require_once '../dalmp.php';
+# -----------------------------------------------------------------------------------------------------------------
 
-$db = DALMP::getInstance();
-$db->debug(1);
-$db->database(DSN);
+/**
+ * path of the queue
+ */
+define('DALMP_QUEUE_DB','/tmp/queue.db');
+
+# optional if you want to encrypt the sqlite db
+#define('DALMP_SQLITE_ENC_KEY', 'na1ujhrjhqev{5#nyxx~oaV9aqrf3kll');
+
+$db = new DALMP('utf8://root@localbox/dalmptest');
 
 /**
  * In case something goes wrong, the database is unavailable, fields missing,  etc, you can save 'sql query' and later process it again.
@@ -58,6 +54,7 @@ echo $db->isCli(1);
 // read only json queue
 $db->readQueue('json', 1);
 
-echo PHP_EOL,$timer->getPageLoadTime()," - ",$timer->getMemoryUsage(),PHP_EOL;
+# -----------------------------------------------------------------------------------------------------------------
+echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
 
 ?>

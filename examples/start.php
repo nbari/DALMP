@@ -2,6 +2,7 @@
 // Measure Page Load Time
 require_once '../mplt.php';
 $timer = new mplt();
+# -----------------------------------------------------------------------------------------------------------------
 
 /**
  *
@@ -9,7 +10,7 @@ $timer = new mplt();
  *
  * The DSN format is:
  *
- * charset://username:password@host:port/database?cname
+ * charset://username:password@host:port/database?cache:host:port:compression
  *
  * or if using socket:
  *
@@ -26,16 +27,11 @@ $timer = new mplt();
  * -----------------------------------------------------------------------------------------------------------------
  *
  * # optional
- * # define('MEMCACHE_HOSTS','127.0.0.1;192.168.0.1:11234');
- * # define('REDIS_HOST','127.0.0.1');
- * # define('REDIS_PORT', 6379);
- * # define('DALMP_CONNECT_TIMEOUT', 30);
+ * # define('DALMP_CONNECT_TIMEOUT', 10);
  * # define('DALMP_SITE_KEY','dalmp.com');
  * # define('DALMP_SESSIONS_SQLITE_DB','/home/sites/sessions.db');
  * # define('DALMP_SESSIONS_REF', 'UID');
  * # define('DALMP_SESSIONS_KEY', 'mykey');
- * # define('DALMP_SESSIONS_REDUNDANCY', true);
- * # define('DALMP_HTTP_CLIENT_CONNECT_TIMEOUT', 1);
  * # define('DALMP_QUEUE_DB', '/tmp/queue.db');
  * # define('DALMP_DEBUG_FILE', '/tmp/dalmp/debug.log');
  * # define('DALMP_CACHE_DIR', '/tmp/dalmp/cache/');
@@ -49,31 +45,27 @@ $timer = new mplt();
 require_once '../dalmp.php';
 
 /**
- * get the Instance
+ * example of a simple connection
+ *
+ * charset: default system
+ * user: dalmp
+ * password: password
+ * host: 192.168.1.40
+ * database: dalmptest
+ *
  */
-$db = DALMP::getInstance();
+$db = new DALMP('mysql://dalmp:password@192.168.1.40/dalmptest'); 
+try {
+  $rs = $db->getOne('SELECT now()');
+} catch (Exception $e) {
+  print_r($e->getMessage());
+}
 
 /**
  * 1 log to single file
  * 2 log to multiple files (creates a log per request)
  */
 $db->debug(1);
-
-/**
- * example of a simple connection
- *
- * charset: default system
- * user: dalmp
- * password: password
- * host: localhost
- * database: dalmptest
- *
- */
-try {
-  $db->database('mysql://dalmp:password@localhost/dalmptest');
-} catch (Exception $e) {
-  print_r($e);
-}
 
 echo $db,PHP_EOL; // print connection details
 
@@ -89,14 +81,14 @@ echo $db,PHP_EOL; // print connection details
  * cname = db2 (connection name/identifier - useful when connecting to multiple databases)
  *
  */
+$db = new DALMP('utf8://dalmp:password@127.0.0.1:3306/dalmptest');
 try {
-  $db->database('utf8://dalmp:password@127.0.0.1:3306/dalmptest?db2');
+  $db->getOne('SELECT now()');
 } catch (Exception $e) {
-  print_r($e);
+  print_r($e->getMessage());
 }
 
 echo $db,PHP_EOL; // will print: DALMP :: connected to: db2, Character set: utf8, 127.0.0.1 via TCP/IP, Server version: ...
-
 
 /**
  * example using SSL (OpenSSL support must be enabled for this to work)
@@ -120,15 +112,14 @@ echo $db,PHP_EOL; // will print: DALMP :: connected to: db2, Character set: utf8
  *
  */
 $ssl = array('key' => null, 'cert' => null, 'ca' => 'mysql-ssl.ca-cert.pem', 'capath' => null, 'cipher' => null);
+$db = new DALMP('latin1://dalmp:password@127.0.0.1/dalmptest', $ssl);
 try {
-  $db->database('latin1://dalmp:password@127.0.0.1/dalmptest?db3', $ssl);
+  $db->getOne('SELECT now()');
 } catch (Exception $e) {
-  print_r($e);
+  print_r($e->getMessage());
 }
 
-$db->FetchMode('ASSOC');
-
-print_r($db->GetRow("show variables like 'have_ssl'"));
+print_r($db->FetchMode('ASSOC')->GetRow("show variables like 'have_ssl'"));
 /**
  * If you have SSL will get something like:
 Array
@@ -162,8 +153,6 @@ Array
 )
  */
 
-
-
 /**
  * example using a socket for the connection
  *
@@ -175,16 +164,18 @@ Array
  * cname = db4
  *
  */
+$db = new DALMP('utf8://dalmp:password@unix_socket=\tmp\mysql.sock/dalmptest');
+$db->debug(1);
 try {
-  $db->database('utf8://dalmp:password@unix_socket=\tmp\mysql.sock/dalmptest?db4');
+  $db->getOne('SELECT now()');
 } catch (Exception $e) {
-  print_r($e);
+  print_r($e->getMessage());
 }
 
 echo $db; // will print: DALMP :: connected to: db4, Character set: utf8, Localhost via UNIX socket,...
 
 
 # -----------------------------------------------------------------------------------------------------------------
-echo PHP_EOL,$timer->getPageLoadTime()," - ",$timer->getMemoryUsage(),PHP_EOL;
+echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
 
 ?>

@@ -38,6 +38,7 @@ for ($i=0; $i <10 ; $i++) {
   @unlink('/tmp/cookie.txt');
 }
 
-echo PHP_EOL,$timer->getPageLoadTime()," - ",$timer->getMemoryUsage(),PHP_EOL;
+# -----------------------------------------------------------------------------------------------------------------
+echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
 
 ?>

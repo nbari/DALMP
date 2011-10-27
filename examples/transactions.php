@@ -1,24 +1,15 @@
 <?php
 require_once '../mplt.php';
 $timer = new mplt();
-
-define('DB_USERNAME', 'dalmp');
-define('DB_PASSWORD', 'password');
-define('DB_HOST', 'localhost');
-define('DB_PORT', 3306);
-define('DB_DATABASE', 'dalmptest');
-define('DB_CHARSET', 'utf8'); 
-define('DB_CNAME', 'db1');
-define('DSN', DB_CHARSET.'://'.DB_USERNAME.':'.DB_PASSWORD.'@'.DB_HOST.':'.DB_PORT.'/'.DB_DATABASE.'?'.DB_CNAME);
 require_once '../dalmp.php';
+# -----------------------------------------------------------------------------------------------------------------
+
+$db = new DALMP('utf8://root:'.rawurlencode('pass-?/:word').'@mysql2.localbox.org:3306/dalmptest');
+$db->debug(1);
 
 $timer->setMark('start');
 
-$db = DALMP::getInstance();
-$db->debug(1);
-$db->debugSessions();
-$db->database(DSN);
- 
+
 #$db->Execute('CREATE TABLE t_test (id INT NOT NULL PRIMARY KEY) ENGINE=InnoDB');
 
 $db->StartTrans();
@@ -37,7 +28,7 @@ $db->Execute('INSERT INTO t_test VALUES(1)');
   $db->CompleteTrans();
 $db->CompleteTrans();
 
+# -----------------------------------------------------------------------------------------------------------------
+echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
 
-echo $db->isCli(1);
-echo $timer->getMemoryUsage();
 ?>

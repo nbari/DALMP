@@ -1,7 +1,8 @@
 <?php
-// Measure Page Load Time
 require_once '../mplt.php';
 $timer = new mplt();
+require_once '../dalmp.php';
+# -----------------------------------------------------------------------------------------------------------------
 
 /**
  *
@@ -39,16 +40,10 @@ define('DALMP_SQLITE_ENC_KEY', 'my sqlite key');
  * thats all, now your sqlite3 database will be encrypted.
  */
 
-/**
- * require the DALMP class
- */
-require_once '../dalmp.php';
 
-/**
- * get the Instance
- */
-$db = DALMP::getInstance();
-$db->SessionStart(1,'sqlite');
+define('DALMP_SESSIONS_SQLITE_DB','/tmp/sessions.db');
+
+$sessions = new DALMP_Sessions();
 
 /**
  * access this script from a browser for avoiding complains 
@@ -60,11 +55,13 @@ $db->SessionStart(1,'sqlite');
     ...
 
  */
-@$_SESSION['test'] = 1 + $_SESSION['test'];
+$_SESSION['test'] = 1 + @$_SESSION['test'];
 
 echo $_SESSION['test'] .' - '.session_id();
 
-echo $db->isCli(1);
+echo DALMP::isCli(1);
 
 # -----------------------------------------------------------------------------------------------------------------
-echo PHP_EOL,$timer->getPageLoadTime()," - ",$timer->getMemoryUsage(),PHP_EOL;
+echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
+
+?>

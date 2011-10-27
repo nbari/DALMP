@@ -1,34 +1,22 @@
 <?php
 require_once '../mplt.php';
 $timer = new mplt();
-
-define('DB_USERNAME', 'dalmp');
-define('DB_PASSWORD', 'password');
-define('DB_HOST', 'localhost');
-define('DB_PORT', 3306);
-define('DB_DATABASE', 'dalmptest');
-define('DB_CHARSET', 'utf8'); 
-define('DB_CNAME', 'db1');
-define('DSN', DB_CHARSET.'://'.DB_USERNAME.':'.DB_PASSWORD.'@'.DB_HOST.':'.DB_PORT.'/'.DB_DATABASE.'?'.DB_CNAME);
 require_once '../dalmp.php';
+# -----------------------------------------------------------------------------------------------------------------
 
 $timer->setMark('start');
 
-$db = DALMP::getInstance();
-$db->debug(1);
-$db->debugSessions();
-$db->database(DSN);
- 
+$db = new DALMP('utf8://root:'.rawurlencode('pass-?/:word').'@mysql2.localbox.org:3306/dalmptest');
 
 $db->FetchMode('NUM');
 
-$sql = 'SELECT * FROM test';
+$sql = 'SELECT * FROM City';
 $rs = $db->Execute($sql);
 
 if($rs) {
-  while($rows = $db->FetchRow()){
-	list($r1,$r2,$r3) = $rows;
-	echo "r1: $r1, r2: $r2, r3: $r3\n";
+  while (($rows = $db->query()) != false){
+	  list($r1,$r2,$r3) = $rows;
+	  echo "w1: $r1, w2: $r2, w3: $r3",$db->isCli(1);
   }	
 }
 
@@ -41,13 +29,17 @@ $timer->setMark('while');
 $rs2 = $db->GetAll($sql);
 foreach ($rs2 as $value) {
   list($r1,$r2,$r3) = $value;
-  echo "r1: $r1, r2: $r2, r3: $r3\n";
+  echo "f1: $r1, f2: $r2, f3: $r3",$db->isCli(1);
 }
+
+$timer->setMark('foreach');
 
 echo $db->isCli(1);
 foreach($timer->getPageLoadTime(1) as $key=>$mark){
 	echo "$key - $mark\n";
 }
-echo $db->isCli(1);
-echo $timer->getMemoryUsage();
+
+# -----------------------------------------------------------------------------------------------------------------
+echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
+
 ?>
