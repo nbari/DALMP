@@ -475,6 +475,70 @@ class DALMP {
   }
 
   /**
+   * Auto Execute
+   *
+   * @param string $table
+   * @param array $fields
+   * @param string $mode
+   * @param string $where
+   * @return true or false on error
+   */
+  public function AutoExecute($table = null, $fields = null, $mode = 'INSERT', $where = null) {
+    if (!$table || !is_array($fields)) {
+      if ($this->debug) { $this->debug->log(__METHOD__, 'ERROR', 'either table or fields missing'); }
+      return false;
+    }
+    if ($this->debug) { $this->debug->log(__METHOD__, 'args:', $table, $fields, $mode, $where); }
+    $mode = strtoupper($mode);
+    if ($mode == 'UPDATE' && !$where) {
+      if ($this->debug) { $this->debug->log( __METHOD__, 'ERROR', 'WHERE clause missing'); }
+      return false;
+    }
+    if ($columnNames = $this->getColumnNames($table)) {
+      $data = array();
+      $placeholder = '';
+      foreach ($columnNames as $col) {
+        if (isset($fields[$col])) {
+          $data["`$col`"] = $fields[$col];
+          $placeholder.= '?,';
+        }
+      }
+      if (count($data) < 1) {
+        if ($this->debug) { $this->debug->log(__METHOD__, 'ERROR', "no matching fields on table: $table with fields:", $fields); }
+        return false;
+      }
+    } else {
+      return false;
+    }
+    switch ($mode) {
+      case 'INSERT':
+        $fields = implode(', ', array_keys($data));
+        $placeholder = rtrim($placeholder, ',');
+        $query = array_values($data);
+        $sql = "INSERT INTO $table ($fields) VALUES($placeholder)";
+        array_unshift($query, $sql);
+        $query[] = $cn;
+        return call_user_func_array(array($this,'PExecute'), $query);
+        break;
+
+      case 'UPDATE':
+        $fields = implode('=?, ', array_keys($data));
+        $fields.= '=?';
+        $query = array_values($data);
+        $sql = "UPDATE $table SET $fields WHERE $where";
+        array_unshift($query, $sql);
+        $query[] = $cn;
+        return call_user_func_array(array($this,'PExecute'), $query);
+        break;
+
+      default:
+        if ($this->debug) { $this->debug->log(__METHOD__, 'ERROR', 'mode must be INSERT or UPDATE'); }
+        return false;
+        break;
+    }
+  }
+
+  /**
    * Execute SQL statement
    *
    * @param strign $sql
