@@ -234,6 +234,17 @@ class DALMP_Sessions {
 		return $refs;
 	}
 
+	public function getSessionRef($ref) {
+    $refs = $this->getSessionsRefs();
+    $rs = array();
+    foreach ($refs as $key => $expiry) {
+      if (key($expiry) == $ref) {
+        $rs[$key] = key($expiry);
+      }
+    }
+    return $rs;
+  }
+
 	public function delSessionRef($ref) {
 		switch (true) {
 			case is_a($this->storage, 'DALMP_Cache'):

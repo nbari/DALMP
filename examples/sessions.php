@@ -22,21 +22,20 @@ CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
  *
  */
- 
+
 /**
  * to store sessions on mysql you need to pass the $db DALMP object if not defaults to sqlite
- */ 
+ */
 $sessions = new DALMP_Sessions($db);
+
+$GLOBALS['UID'] = 1;
 
 if ((mt_rand() % 10) == 0) {
   $sessions->regenerate_id(4);
 }
 
-$GLOBALS['UID'] = 1;
-
 $_SESSION['test'] = 1 + @$_SESSION['test'];
 
-#$rs = $db->CachePGetRow('SELECT * FROM dalmp_sessions WHERE ref=?', $GLOBALS['UID']);
 $rs = $db->FetchMode('ASSOC')->PGetRow('SELECT * FROM dalmp_sessions WHERE ref=?', $GLOBALS['UID']);
 print_r($rs);
 
