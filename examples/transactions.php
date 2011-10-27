@@ -11,6 +11,7 @@ $timer->setMark('start');
 
 
 #$db->Execute('CREATE TABLE t_test (id INT NOT NULL PRIMARY KEY) ENGINE=InnoDB');
+#$db->Execute('TRUNCATE TABLE t_test');
 
 $db->StartTrans();
 $db->Execute('INSERT INTO t_test VALUES(1)');

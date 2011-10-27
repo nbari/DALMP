@@ -563,7 +563,7 @@ class DALMP {
         $this->trans['error']++;
       }
       if ($this->debug) { $this->debug->log(__METHOD__, 'ERROR', "sql: $sql Errorcode: " . $this->DB->errno); }
-      throw new ErrorException(__METHOD__ . 'ERROR -> ' . $this->DB->error . " - sql: $sql");
+      throw new ErrorException(__METHOD__ . ' ERROR -> ' . $this->DB->error . " - sql: $sql");
       return false;
     }
   }
@@ -733,14 +733,14 @@ class DALMP {
    * Start the transaction
    */
   public function StartTrans() {
-    if (!empty($this->trans)) {
-      $this->trans['level']++;
-      if ($this->debug) { $this->debug->log('transactions', __METHOD__, 'transaction level: ' . $this->trans['level']); }
-      return $this->Execute('SAVEPOINT level' . $this->trans['level']);
-    } else {
+    if (empty($this->trans)) {
       if ($this->debug) { $this->debug->log('transactions', __METHOD__); }
       $this->trans = array('level' => 0, 'error' => 0);
       return $this->Execute('BEGIN');
+    } else {
+      $this->trans['level']++;
+      if ($this->debug) { $this->debug->log('transactions', __METHOD__, 'transaction level: ' . $this->trans['level']); }
+      return $this->Execute('SAVEPOINT level' . $this->trans['level']);
     }
   }
 
@@ -751,7 +751,9 @@ class DALMP {
    */
   public function CompleteTrans() {
     if ($this->debug) { $this->debug->log('transactions', __METHOD__); }
-    if (!empty($this->trans)) {
+    if (empty($this->trans)) {
+      return false;
+    } else {
       if ($this->trans['error'] > 0) {
         if ($this->debug) { $this->debug->log('transactions', __METHOD__, 'ERROR', 'error in level: ' . $this->trans['level']); }
         if ($this->trans['level'] > 0) {
@@ -763,15 +765,13 @@ class DALMP {
         return false;
       }
       if ($this->trans['level'] == 0) {
-        $this->trans[] = array();
+        $this->trans = array();
         return $this->Execute('COMMIT');
       } else {
         $rs = $this->Execute('RELEASE SAVEPOINT level' . $this->trans['level']);
         $this->trans['level']--;
         return $rs;
       }
-    } else {
-      return false;
     }
   }
 
