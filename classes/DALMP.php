@@ -503,7 +503,7 @@ class DALMP {
           $placeholder.= '?,';
         }
       }
-      if (count($data) < 1) {
+      if (empty($data)) {
         if ($this->debug) { $this->debug->log(__METHOD__, 'ERROR', "no matching fields on table: $table with fields:", $fields); }
         return false;
       }
@@ -529,10 +529,9 @@ class DALMP {
         return call_user_func_array(array($this,'PExecute'), $query);
         break;
 
-      default:
+      default :
         if ($this->debug) { $this->debug->log(__METHOD__, 'ERROR', 'mode must be INSERT or UPDATE'); }
         return false;
-        break;
     }
   }
 
