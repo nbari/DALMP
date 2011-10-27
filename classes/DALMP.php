@@ -827,6 +827,7 @@ class DALMP {
       if (is_int($value) || is_float($value)) {
         $rs = $value;
       } else {
+        (!$this->isConnected()) && $this->connect();
         $rs = $this->DB->real_escape_string($value);
       }
     }
