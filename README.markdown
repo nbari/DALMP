@@ -22,6 +22,7 @@ Details
   * SQL queues.
   * trace/measure everything enabling the debugger by just setting something like $db->debug(1).
   * works with Cloud databases like  Xeround & Amazon RDS out of the box.
+  * lazy database connection
 
 *FreeBSD*
 Install from ports: /usr/ports/databases/dalmp
