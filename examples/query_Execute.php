@@ -17,7 +17,7 @@ if($rs) {
   while (($rows = $db->query()) != false){
 	  list($r1,$r2,$r3) = $rows;
 	  echo "w1: $r1, w2: $r2, w3: $r3",$db->isCli(1);
-  }	
+  }
 }
 
 $timer->setMark('while');
@@ -33,6 +33,18 @@ foreach ($rs2 as $value) {
 }
 
 $timer->setMark('foreach');
+
+/**
+ * prepared statements
+ * and array needs to be passed as an argument
+ */
+$rs = $db->PExecute('SELECT * FROM Country WHERE Continent = ?', 'Europe');
+$out = array();
+while ($rows = $db->Pquery($out)) {
+	print_r($out);
+}
+
+$timer->setMark('stmt');
 
 echo $db->isCli(1);
 foreach($timer->getPageLoadTime(1) as $key=>$mark){

@@ -11,7 +11,7 @@ Details
   * *apc* support (http://pecl.php.net/package/APC)
   * *Group caching*  cache by groups and flush by groups or individual keys
   * Disk cache support.
-  * Prepared statements ready, support dynamic building queries.
+  * Prepared statements ready, support dynamic building queries, auto detect types (i,d,s,b).
   * Secure connections with SSL.
   * SQLite3 Encryption (http://sqlcipher.net)
   * Ability to use different cache types at the same time.
