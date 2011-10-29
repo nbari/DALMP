@@ -14,6 +14,10 @@ $db->PExecute('SET time_zone=?','UTC');
 
 $db->FetchMode('ASSOC');
 
+$sql = 'SELECT Name, Continent FROM Country WHERE Population > ? AND Code LIKE ?';
+$rs = $db->PGetAll($sql, 1000000, '%P%');
+
+print_r($rs);
 /**
  * status value is 0 or 1 on table
  * NOTICE the use of ===
