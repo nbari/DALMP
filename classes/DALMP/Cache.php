@@ -127,6 +127,8 @@ class DALMP_Cache {
           $this->compress = MEMCACHE_COMPRESSED;
           break;
       }
+    } else {
+      $this->compress = 0;
     }
     return $this;
   }
@@ -234,6 +236,7 @@ class DALMP_Cache {
           break;
 
         case 'memcache':
+          ( $this->compress === 0) && $this->cache->setCompressThreshold(0);
           $rs = $this->cache->set($key, $value, $this->compress, $expire);
           break;
 
