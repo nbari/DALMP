@@ -1097,22 +1097,20 @@ class DALMP {
   }
 
   /**
-   * Universally unique identifier
+   * Universally Unique Identifier
    *
-   * @return UUID
+   * @param int $b
+   * @return UUID, if $b returns binary(16)
    */
-  public static function UUID() {
+  public static function UUID($b=null) {
     if (function_exists('uuid_create')) {
       $uuid = uuid_create();
-      if ($this->debug) {
-        $this->debug->log(__METHOD__, $uuid);
-      }
-      return $uuid;
     } else {
       $charid = sha1(uniqid(mt_rand(), true));
       $hyphen = chr(45); // "-"
-      $uuid = substr($charid, 0, 8) . $hyphen . substr($charid, 8, 4) . $hyphen . substr($charid, 12, 4) . $hyphen . substr($charid, 16, 4) . $hyphen . substr($charid, 20, 12);      return $uuid;
+      $uuid = substr($charid, 0, 8) . $hyphen . substr($charid, 8, 4) . $hyphen . substr($charid, 12, 4) . $hyphen . substr($charid, 16, 4) . $hyphen . substr($charid, 20, 12);
     }
+    return $b ? pack('H*', str_replace('-', '', $uuid)) : $uuid;
   }
 
   /**
