@@ -1105,10 +1105,13 @@ class DALMP {
   public static function UUID($b=null) {
     if (function_exists('uuid_create')) {
       $uuid = uuid_create();
-    } else {
-      $charid = sha1(uniqid(mt_rand(), true));
-      $hyphen = chr(45); // "-"
-      $uuid = substr($charid, 0, 8) . $hyphen . substr($charid, 8, 4) . $hyphen . substr($charid, 12, 4) . $hyphen . substr($charid, 16, 4) . $hyphen . substr($charid, 20, 12);
+    } else { // creates a UUID v4
+    	$uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+              mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+        			mt_rand(0, 0x0fff) | 0x4000,
+        			mt_rand(0, 0x3fff) | 0x8000,
+        			mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+              );
     }
     return $b ? pack('H*', str_replace('-', '', $uuid)) : $uuid;
   }
