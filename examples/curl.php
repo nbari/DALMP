@@ -2,7 +2,7 @@
 /**
  * This code can help to 'benchmark' your sessions engine besides checking a site status (up/down)
  */
-$url = 'http://dalmp.localbox.org/sqliteSessions.php';
+$url = 'http://dalmp.localbox.org/sessions.php';
 
 require_once '../mplt.php';
 $timer = new mplt();
@@ -31,7 +31,7 @@ function checkSite($url,$page=null) {
 /**
  * benchmark for sessions
  */
-for ($i=0; $i <10 ; $i++) {
+for ($i=0; $i < 100; $i++) {
   for ($j=0; $j < 30; $j++) {
     echo checkSite($url,1).PHP_EOL;
   }
