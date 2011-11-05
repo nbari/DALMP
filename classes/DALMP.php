@@ -1200,7 +1200,6 @@ class DALMP {
         }
         break;
     }
-
     throw new Exception("DALMP DB method ({$name}) does not exist", 0);
   }
 
