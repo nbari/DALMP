@@ -340,7 +340,7 @@ class DALMP_Cache {
 	 * @param string $key
 	 * @chainable
 	 */
-  public function delete($key = null) {
+  public function Delete($key = null) {
     $rs = false;
     if ($this->connect()) {
       switch ($this->type) {
@@ -375,7 +375,7 @@ class DALMP_Cache {
   /**
    * Flush cache
    */
-  public function flush() {
+  public function Flush() {
     $rs = false;
     if ($this->connect()) {
       switch ($this->type) {
@@ -432,7 +432,7 @@ class DALMP_Cache {
    * Get cache stats
    * @return stats
    */
-  public function stats() {
+  public function Stats() {
     if ($this->connect()) {
       switch ($this->type) {
         case 'apc':
