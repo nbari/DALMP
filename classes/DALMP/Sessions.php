@@ -261,7 +261,7 @@ class DALMP_Sessions {
 		switch (true) {
 			case $this->storage instanceof DALMP_Cache:
 				$ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
-				$refs = $this->storage->Get($ref_key);
+				$refs = $this->storage->Get($ref_key) ?: array();
 				break;
 
 			case $this->storage instanceof DALMP:
