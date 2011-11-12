@@ -345,9 +345,7 @@ class DALMP {
       }
       unset($i);
       array_unshift($params, $types);
-      if ($this->debug) {
-        $this->debug->log('PreparedStatements', __METHOD__, "sql: $sql params:", $params);
-      }
+      if ($this->debug) { $this->debug->log('PreparedStatements', __METHOD__, "sql: $sql params:", $params); }
       call_user_func_array(array($this->_stmt, 'bind_param'), $params);
     }
     /**
