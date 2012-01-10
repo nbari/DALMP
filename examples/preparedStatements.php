@@ -34,11 +34,11 @@ if ($rs === false) {
 
 /**
  * passing an array as an argument
- * in here you are limited to only use one type per query
- * this wont work array('i' => 3, 'i' => 4); it will use only one 'i' value
+ * helpful in cases where searching float values stored on varchar fields
+ * $db->PGetAll($sql, array('s' => 99.3, 1));
  */
 $sql = 'SELECT * FROM test WHERE id=? AND colB=?';
-$rs = $db->PGetAll($sql, array('i' => 3, 's' => 'string'));
+$rs = $db->PGetAll($sql, array(3, 's' => 'string'));
 #print_r($rs);
 
 /**

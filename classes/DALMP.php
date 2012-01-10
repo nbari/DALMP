@@ -296,7 +296,7 @@ class DALMP {
    *
    * example: PGetAll('SELECT * FROM users WHERE name=? AND id=?', 'name', 1, 'db1')
    * user also can define  the corresponding type of the bind variables (i, d, s, b): http://pt.php.net/manual/en/mysqli-stmt.bind-param.php
-   * example: PGetAll('SELECT * FROM table WHERE name=? AND id=?', array('s'=>'name', 'i'=>1), 'db1'); or use the Prepare() method
+   * example: PGetAll('SELECT * FROM table WHERE name=? AND id=?', array('s'=>'99.3', 7)); or use the Prepare() method
    *
    * @param SQL $sql
    * @param string $params
@@ -315,35 +315,24 @@ class DALMP {
     }
     $params = array();
     $types = null;
-    $i = 0;
+
     $args = is_array(current($args)) ? current($args) : $args;
+
+    if ($this->debug) { $this->debug->log('PreparedStatements', __METHOD__, 'args:',$args); }
+
     if (!empty($args)) {
-      if (is_array(current($args))) {
-        foreach ($args as $arg) {
-          foreach ($arg as $key => $param) {
-            $types .= $key;
-            $params[] = &$args[$i][$key];
-            $i++;
+      foreach ($args as $key => $param) {
+        $params[] = &$args[$key];
+        if (!in_array($key, array('i', 'd', 's', 'b'), true)) {
+          if (is_numeric($param)) {
+            $param = !strcmp(intval($param), $param) ? (int)$param : (!strcmp(floatval($param), $param) ? (float)$param : $param);
           }
+          $key = is_int($param) ? 'i' : (is_float($param) ? 'd' : (is_string($param) ? 's' : 'b'));
         }
-      } else {
-        foreach ($args as $key => $param) {
-          if (is_int($key)) {
-            $params[] = &$args[$i];
-          } else {
-            $params[] = &$args[$key];
-          }
-          if (!in_array($key, array('i', 'd', 's', 'b'), true)) {
-            if (is_numeric($param)) {
-              $param = !strcmp(intval($param), $param) ? (int)$param : (!strcmp(floatval($param), $param) ? (float)$param : $param);
-            }
-            $key = is_int($param) ? 'i' : (is_float($param) ? 'd' : (is_string($param) ? 's' : 'b'));
-          }
-          $types .= $key;
-          $i++;
-        }
+        if ($this->debug) { $this->debug->log('PreparedStatements', __METHOD__, "key: $key param: $param"); }
+        $types .= $key;
       }
-      unset($i);
+
       array_unshift($params, $types);
       if ($this->debug) { $this->debug->log('PreparedStatements', __METHOD__, "sql: $sql params:", $params); }
       call_user_func_array(array($this->_stmt, 'bind_param'), $params);
