@@ -67,6 +67,13 @@ $sql .= 'AND colB=?';
 $rs = $db->PgetAll($sql, $db->Prepare());
 print_r($rs);
 
+/**
+ * insert and get last_insert_id
+ */
+
+$db->PExecute('INSERT INTO test (colA, colB) VALUES(?,?)', rand(), rand());
+echo $db->Insert_Id();
+
 # -----------------------------------------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
 

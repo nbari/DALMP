@@ -779,11 +779,11 @@ class DALMP {
   }
 
   /**
-   * @return int  the auto generated id used in the last query
+   * @return int the auto generated id used in the last query
    */
   public function Insert_Id() {
     if ($this->debug) { $this->debug->log(__METHOD__); }
-    return mysqli_insert_id($this->DB);
+    return $this->DB->insert_id;
   }
 
   /**
