@@ -842,19 +842,21 @@ class DALMP {
    * @param string $type
    */
   public function Cache($type = null) {
-    static $cache = null;
-    if (is_null($cache)) {
+    static $cache = array();
+    if (is_null($type) && empty($cache)) {
       list($type, $host, $port, $compress) = @explode(':', $this->dsn['cache']) + array(null, null, null, null);
-      $cache = new DALMP_Cache($type);
-      $cache->host($host)->port($port)->compress($compress);
+      $cache[$type] = new DALMP_Cache($type);
+      $cache[$type]->host($host)->port($port)->compress($compress);
+    } elseif (!isset($cache[$type])) {
+      $cache[$type] = new DALMP_Cache($type);
     }
 
     if ($type) {
       $this->cachetype = $type;
       self::$caches[$type] = $type;
-      $cache->type($type);
+      $cache[$type]->type($type);
     }
-    return $cache;
+    return $cache[$type];
   }
 
   /**
