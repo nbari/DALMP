@@ -44,18 +44,18 @@ class DALMP {
   protected $_stmt = null;
 
   /**
+   * cache instances
+   * @access private
+   * @var array
+   */
+  private static $cache = array();
+
+  /**
    * Cache type
    * @access private
    * @var string
    */
   private $cachetype;
-
-  /**
-   * array holding the cache types used
-   * @access private
-   * @var array
-   */
-  private static $caches = array();
 
   /**
    * If enabled, logs all queries and executions.
@@ -842,21 +842,19 @@ class DALMP {
    * @param string $type
    */
   public function Cache($type = null) {
-    static $cache = array();
-    if (is_null($type) && empty($cache)) {
+    if (is_null($type) && empty(self::$cache)) {
       list($type, $host, $port, $compress) = @explode(':', $this->dsn['cache']) + array(null, null, null, null);
-      $cache[$type] = new DALMP_Cache($type);
-      $cache[$type]->host($host)->port($port)->compress($compress);
-    } elseif (!isset($cache[$type])) {
-      $cache[$type] = new DALMP_Cache($type);
+      self::$cache[$type] = new DALMP_Cache($type);
+      self::$cache[$type]->host($host)->port($port)->compress($compress);
+    } elseif (!isset(self::$cache[$type])) {
+      self::$cache[$type] = new DALMP_Cache($type);
     }
 
     if ($type) {
       $this->cachetype = $type;
-      self::$caches[$type] = $type;
-      $cache[$type]->type($type);
+      self::$cache[$type]->type($type);
     }
-    return $cache[$type];
+    return self::$cache[$type];
   }
 
   /**
@@ -1029,9 +1027,14 @@ class DALMP {
         return $this->Cache($sql)->flush();
       }
 
-      if ($this->debug) { $this->debug->log(__METHOD__, 'flushing all caches ' . implode(':', self::$caches)); }
-      foreach (self::$caches as $cache) {
-        $this->Cache($cache)->flush();
+      list($type, $host, $port, $compress) = @explode(':', $this->dsn['cache']) + array(null, null, null, null);
+      $caches   = array_keys(self::$cache);
+      $caches[] = $type;
+      $caches   = array_unique($caches);
+
+      if ($this->debug) { $this->debug->log(__METHOD__, 'flushing all caches ' . implode(':', $caches)); }
+      foreach ($caches as $type) {
+        $this->Cache($type)->flush();
       }
       return;
     }
