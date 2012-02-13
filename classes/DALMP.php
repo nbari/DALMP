@@ -1021,19 +1021,22 @@ class DALMP {
    * @param SQL $sql, cache group or null
    */
   public function CacheFlush($sql = null, $key = null) {
+    // initialize the default cache engine if there are no caches
+    if (empty(self::$cache)) {
+      list($type, $host, $port, $compress) = @explode(':', $this->dsn['cache']) + array(null, null, null, null);
+      self::$cache[$type] = new DALMP_Cache($type);
+      self::$cache[$type]->host($host)->port($port)->compress($compress);
+      $this->cachetype = $type;
+    }
+
     if (in_array($sql, array('dir', 'apc', 'memcache', 'redis')) || is_null($sql)) {
       if ($sql) {
         if ($this->debug) { $this->debug->log(__METHOD__, "flushing $sql"); }
         return $this->Cache($sql)->flush();
       }
 
-      list($type, $host, $port, $compress) = @explode(':', $this->dsn['cache']) + array(null, null, null, null);
-      $caches   = array_keys(self::$cache);
-      $caches[] = $type;
-      $caches   = array_unique($caches);
-
-      if ($this->debug) { $this->debug->log(__METHOD__, 'flushing all caches ' . implode(':', $caches)); }
-      foreach ($caches as $type) {
+      if ($this->debug) { $this->debug->log(__METHOD__, 'flushing all caches ' . implode(':', array_keys(self::$cache))); }
+      foreach (array_keys(self::$cache) as $type) {
         $this->Cache($type)->flush();
       }
       return;
