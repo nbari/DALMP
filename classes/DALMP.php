@@ -807,16 +807,11 @@ class DALMP {
    */
   public function qstr($value) {
     if ($this->debug) { $this->debug->log(__METHOD__, func_get_args()); }
-
-    if (get_magic_quotes_gpc()) {
-      $rs = stripslashes($value);
+    if (is_int($value) || is_float($value)) {
+      $rs = $value;
     } else {
-      if (is_int($value) || is_float($value)) {
-        $rs = $value;
-      } else {
-        (!$this->isConnected()) && $this->connect();
-        $rs = $this->DB->real_escape_string($value);
-      }
+      (!$this->isConnected()) && $this->connect();
+      $rs = $this->DB->real_escape_string($value);
     }
     if ($this->debug) { $this->debug->log(__METHOD__, "returned: $rs"); }
     return $rs;
