@@ -9,7 +9,7 @@
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 2.2012040201
+ * @version 2.2012040202
  */
 
 class DALMP {
@@ -363,7 +363,7 @@ class DALMP {
       $this->numOfRows = $this->_stmt->num_rows;
       $this->numOfFields = $this->_stmt->field_count;
       $this->numOfRowsAffected = $this->_stmt->affected_rows;
-      return ($this->_stmt->affected_rows > 0 ) ? true : false;
+      return true;
     } else {
       if (array_key_exists('error', $this->trans)) {
         $this->trans['error']++;
