@@ -44,6 +44,15 @@ while ($rows = $db->Pquery($out)) {
 	print_r($out);
 }
 
+
+$rs = $db->PExecute('UPDATE Country SET code=? WHERE Code="PRT"', 'PRT');
+/**
+ * Returns the number of rows affected by INSERT, UPDATE, or DELETE query.
+ * an UPDATE prepared statement which contains the same data as that already
+ * in the database returns 0 for affected_rows
+ */
+echo $db->getNumOfRowsAffected(),PHP_EOL;
+
 $timer->setMark('stmt');
 
 echo $db->isCli(1);

@@ -9,7 +9,7 @@
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 2
+ * @version 2.2012040201
  */
 
 class DALMP {
@@ -77,6 +77,13 @@ class DALMP {
    * @var int
    */
   private $numOfRows;
+
+  /**
+   * Holds the num of rows affected by INSERT, UPDATE, or DELETE query.
+   * @access private
+   * @var int
+   */
+  private $numOfRowsAffected;
 
   /**
    * Holds the num of fields returned.
@@ -209,17 +216,24 @@ class DALMP {
   }
 
   /**
-   * @return int num of fields
-   */
-  public function getNumOfFields() {
-    return $this->numOfFields;
-  }
-
-  /**
    * @return int num of rows
    */
   public function getNumOfRows() {
     return $this->numOfRows;
+  }
+
+  /**
+   * @return int num of rows affected
+   */
+  public function getNumOfRowsAffected() {
+    return $this->numOfRowsAffected;
+  }
+
+  /**
+   * @return int num of fields
+   */
+  public function getNumOfFields() {
+    return $this->numOfFields;
   }
 
   /**
@@ -348,7 +362,8 @@ class DALMP {
       $this->_stmt->store_result();
       $this->numOfRows = $this->_stmt->num_rows;
       $this->numOfFields = $this->_stmt->field_count;
-      return true;
+      $this->numOfRowsAffected = $this->_stmt->affected_rows;
+      return ($this->_stmt->affected_rows > 0 ) ? true : false;
     } else {
       if (array_key_exists('error', $this->trans)) {
         $this->trans['error']++;
