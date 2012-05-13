@@ -363,7 +363,10 @@ class DALMP {
       $this->numOfRows = $this->_stmt->num_rows;
       $this->numOfFields = $this->_stmt->field_count;
       $this->numOfRowsAffected = $this->_stmt->affected_rows;
-      return true;
+      /**
+       * return false either when results are empty
+       */
+      return ($this->_stmt->affected_rows > 0 ) ? true : false;
     } else {
       if (array_key_exists('error', $this->trans)) {
         $this->trans['error']++;
@@ -559,6 +562,7 @@ class DALMP {
           return false;
         }
       }
+      $this->numOfRowsAffected = @$this->DB->affected_rows;
       return (@$this->DB->affected_rows > 0 || $rs) ? true : false;
     } else {
       if (array_key_exists('error', $this->trans)) {
