@@ -380,6 +380,9 @@ class DALMP {
        * query has yet been executed.
        * if ($rs !== false) { query ok and records updated }
        */
+      if ($this->_stmt->affected_rows > 0) {
+        return true;
+      }
       return $this->_stmt->affected_rows;
     } else {
       if (array_key_exists('error', $this->trans)) {
