@@ -363,10 +363,24 @@ class DALMP {
       $this->numOfRows = $this->_stmt->num_rows;
       $this->numOfFields = $this->_stmt->field_count;
       $this->numOfRowsAffected = $this->_stmt->affected_rows;
+      // for SELECT
+      if ($this->_stmt->num_rows > 0) {
+        return true;
+      }
       /**
-       * return false either when results are empty
+       * Get the number of rows affected by INSERT, UPDATE, or DELETE query.
+       * -1 indicates that the query has returned an error.
        */
-      return ($this->_stmt->affected_rows > 0 ) ? true : false;
+      if ($this->_stmt->affected_rows == -1) {
+        return false;
+      }
+      /**
+       * Zero indicates that no records where updated for an UPDATE/DELETE
+       * statement, no rows matched the WHERE clause in the query or that no
+       * query has yet been executed.
+       * if ($rs !== false) { query ok and records updated }
+       */
+      return $this->_stmt->affected_rows;
     } else {
       if (array_key_exists('error', $this->trans)) {
         $this->trans['error']++;
@@ -399,6 +413,12 @@ class DALMP {
    */
   protected function _pFetch($get = null) {
     if ($this->debug) { $this->debug->log('PreparedStatements', __METHOD__, $get); }
+
+    if (!$this->_stmt->num_rows) {
+      $this->PClose();
+      return false;
+    }
+
     $meta = $this->_stmt->result_metadata();
     $columns = array();
     $results = array();
@@ -563,7 +583,7 @@ class DALMP {
         }
       }
       $this->numOfRowsAffected = @$this->DB->affected_rows;
-      return (@$this->DB->affected_rows > 0 || $rs) ? true : false;
+      return (@$this->DB->affected_rows >= 0 || $rs) ? true : false;
     } else {
       if (array_key_exists('error', $this->trans)) {
         $this->trans['error']++;
@@ -1188,8 +1208,7 @@ class DALMP {
       case 'pget':
         if ($func = $get('pget')) {
           if ($this->debug) { $this->debug->log('PreparedStatements', __METHOD__); }
-          call_user_func_array(array($this, 'PExecute'), $args);
-          return $this->_pFetch($func);
+          return call_user_func_array(array($this, 'PExecute'), $args) ? $this->_pFetch($func) : false;
         }
         break;
 
