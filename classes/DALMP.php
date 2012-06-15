@@ -1019,14 +1019,18 @@ class DALMP {
   }
 
   /**
-   * method for seting the cache
+   * setCache - store data in cache
    *
-   * @access protected
+   * @param string $hkey
+   * @param data $cache
+   * @param int $expire
+   * @param string $group
+   *
+   * @return boolean
    */
-  protected function setCache($hkey, $cache, $expire, $group = null) {
-    $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
-
+  public function setCache($hkey, $cache, $expire = 3600, $group = null) {
     if ($group) {
+      $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
       $gkey = sha1($skey . $group);
 
       if ($gCache = $this->Cache($this->cachetype)->get($gkey)) {
@@ -1050,6 +1054,17 @@ class DALMP {
       }
     }
     return true;
+  }
+
+  /**
+   * getCache - retrive data from cache
+   *
+   * @param string $hkey
+   *
+   * @return cached data or false
+   */
+  public function getCache($hkey) {
+    return $this->Cache($this->cachetype)->get($hkey);
   }
 
   /**
