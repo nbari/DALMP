@@ -1021,11 +1021,10 @@ class DALMP {
   /**
    * setCache - store data in cache
    *
-   * @param string $hkey
-   * @param data $cache
-   * @param int $expire
-   * @param string $group
-   *
+   * @param string $hkey The key that will be associated with the item.
+   * @param data $cache The variable to store
+   * @param int $expire Expiration time of the item
+   * @param string $group group:name (to group cache keys) usefull when flushing the cache
    * @return boolean
    */
   public function setCache($hkey, $cache, $expire = 3600, $group = null) {
@@ -1060,7 +1059,6 @@ class DALMP {
    * getCache - retrive data from cache
    *
    * @param string $hkey
-   *
    * @return cached data or false
    */
   public function getCache($hkey) {
