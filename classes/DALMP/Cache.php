@@ -241,7 +241,14 @@ class DALMP_Cache {
           break;
 
         case 'redis':
-          $rs = ($expire == 0 || $expire == -1) ? $this->cache->set($key, serialize($value)) : $this->cache->setex($key, $expire, serialize($value));
+          /**
+           * @link https://github.com/igbinary/igbinary/
+           */
+          if (function_exists('igbinary_serialize')) {
+            $rs = ($expire == 0 || $expire == -1) ? $this->cache->set($key, igbinary_serialize($value)) : $this->cache->setex($key, $expire, igbinary_serialize($value));
+          } else {
+            $rs = ($expire == 0 || $expire == -1) ? $this->cache->set($key, serialize($value)) : $this->cache->setex($key, $expire, serialize($value));
+          }
           break;
       }
     }
@@ -302,7 +309,11 @@ class DALMP_Cache {
           break;
 
         case 'redis':
-          $rs = unserialize($this->cache->get($key));
+          if (function_exists('igbinary_serialize')) {
+            $rs = igbinary_unserialize($this->cache->get($key));
+          } else {
+            $rs = unserialize($this->cache->get($key));
+          }
           break;
       }
     }
