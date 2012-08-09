@@ -102,7 +102,7 @@ echo $db,PHP_EOL; // will print: DALMP :: connected to: db2, Character set: utf8
  *
  * An array containing the SSL parameters must be passed as the second argument to the database method:
  *
- * $db->database(DSN, $ssl_array);
+ * $db = new DALMP(DSN, $ssl_array);
  *
  * key    = The path name to the key file.
  * cert   = The path name to the certificate file.
