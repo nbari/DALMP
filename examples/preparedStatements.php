@@ -61,7 +61,7 @@ $sql .= 'AND colB=?';
 
 /**
  * this will produce a query like:
- * "sql: SELECT * FROM test WHERE id=? AND id !=? AND colB=? params:",["iis",1,3,"colb"]
+ * "sql: SELECT * FROM test WHERE id=? AND id !=? AND colB=?" with params = ["iis",1,3,"colb"]
  */
 
 $rs = $db->PgetAll($sql, $db->Prepare());
