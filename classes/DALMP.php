@@ -1174,9 +1174,12 @@ class DALMP {
     $sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
     $sdb->exec('CREATE TABLE IF NOT EXISTS queues (id INTEGER PRIMARY KEY, queue VARCHAR (64) NOT NULL, data TEXT, cdate DATE)');
     $sql = "INSERT INTO queues VALUES (NULL, '$queue', '" . base64_encode($data) . "', '" . @date('Y-m-d H:i:s') . "')";
-    if (!$sdb->exec($sql)) {
-      trigger_error("queue: could not save $data - $queue on $queue_db", E_USER_NOTICE);
+    if ($sdb->busyTimeout(2000)) {
+      if (!$sdb->exec($sql)) {
+        trigger_error("queue: could not save $data - $queue on $queue_db", E_USER_NOTICE);
+      }
     }
+    $sdb->busyTimeout(0);
   }
 
   /**
