@@ -1180,6 +1180,7 @@ class DALMP {
       }
     }
     $sdb->busyTimeout(0);
+    $sdb->close();
   }
 
   /**
