@@ -105,6 +105,7 @@ class DALMP_Sessions {
 
       default :
         $this->sdb = new SQLite3($this->dalmp_sessions_sqlite_db);
+				$this->sdb->busyTimeout(2000);
         if (defined('DALMP_SQLITE_ENC_KEY')) $this->sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
         $this->sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
         $rs = $this->sdb->exec('CREATE TABLE IF NOT EXISTS ' . $this->dalmp_sessions_table . ' (sid varchar(40) NOT NULL, expiry INTEGER NOT NULL, data text, ref text, PRIMARY KEY(sid)); CREATE INDEX IF NOT EXISTS "dalmp_index" ON ' . $this->dalmp_sessions_table . ' ("sid" DESC, "expiry" DESC, "ref" DESC)');
@@ -118,6 +119,7 @@ class DALMP_Sessions {
 	 */
   public function Sclose() {
     if (is_object($this->sdb)) {
+			$this->sdb->busyTimeout(0);
       $this->sdb->close();
     }
     return true;
