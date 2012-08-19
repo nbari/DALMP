@@ -811,7 +811,7 @@ class DALMP {
    */
   public function RollBackTrans() {
     if ($this->debug) { $this->debug->log('transactions', __METHOD__); }
-    if ($this->trans['level'] > 0) {
+    if (isset($this->trans['level']) && $this->trans['level'] > 0) {
       $rs = $this->Execute('ROLLBACK TO SAVEPOINT level' . $this->trans['level']);
       $this->trans['level']--;
       return $rs;
