@@ -883,13 +883,15 @@ class DALMP {
       list($type, $host, $port, $compress) = @explode(':', $this->dsn['cache']) + array(null, null, null, null);
       self::$cache[$type] = new DALMP_Cache($type);
       self::$cache[$type]->host($host)->port($port)->compress($compress);
-    } elseif (!isset(self::$cache[$type])) {
+    } elseif ($type !== null && !isset(self::$cache[$type])) {
       self::$cache[$type] = new DALMP_Cache($type);
     }
 
     if ($type) {
       $this->cachetype = $type;
       self::$cache[$type]->type($type);
+    } else {
+      $type = $this->cachetype;
     }
     return self::$cache[$type];
   }
