@@ -654,6 +654,24 @@ class DALMP {
   }
 
   /**
+   * maps the result to an object
+   *
+   * @param sting sql the query string
+   * @param string class_name of the class to instantiate
+   * @param array optional array of parameters to pass to the constructor for class_name objects.
+   * @see mysqli_result::fetch_object  
+   * @return object
+   */
+  public function map($sql, $class_name=null, $params=array()) {
+    if ($this->debug) { $this->debug->log(__METHOD__, "sql: $sql"); }
+    if ($this->Execute($sql)) {
+      return ($class_name) ? $this->_rs->fetch_object($class_name, $params) : $this->_rs->fetch_object();
+    } else {
+      return false;
+    }
+  }
+  
+  /**
    * Fetch a result row as an associative, a numeric array, or both
    *
    * @param SQL $sql
