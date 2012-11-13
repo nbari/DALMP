@@ -333,7 +333,8 @@ class DALMP_Sessions {
 	}
 
   /**
-	 * regenerate id - regenerate sessions and create a fingerprint
+	 * regenerate id - regenerate sessions and create a fingerprint, helps to
+	 * prevent HTTP session hijacking attacks.
 	 *
 	 * @param int $check_ipv4_blocks
 	 */
