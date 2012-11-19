@@ -95,7 +95,7 @@ class DALMP_Sessions {
  /**
   * The open handler
   */
-  private function Sopen() {
+  public function Sopen() {
     switch (true) {
       case $this->storage instanceof DALMP:
         break;
@@ -117,7 +117,7 @@ class DALMP_Sessions {
   /**
    * The close handlr
    */
-  private function Sclose() {
+  public function Sclose() {
     if (is_object($this->sdb)) {
       $this->sdb->busyTimeout(0);
       $this->sdb->close();
@@ -128,7 +128,7 @@ class DALMP_Sessions {
   /**
    * The read handler
    */
-  private function Sread($sid) {
+  public function Sread($sid) {
     $expiry = time();
     switch (true) {
       case $this->storage instanceof DALMP_Cache:
@@ -150,7 +150,7 @@ class DALMP_Sessions {
   /**
    * The write handler
    */
-  private function Swrite($sid, $data) {
+  public function Swrite($sid, $data) {
     $ref = (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) ? $GLOBALS[$this->dalmp_sessions_ref] : null;
     $timeout = ini_get('session.gc_maxlifetime');
     $expiry = time() + $timeout;
@@ -198,7 +198,7 @@ class DALMP_Sessions {
   /**
    * The destroy handler
    */
-  private function Sdestroy($sid) {
+  public function Sdestroy($sid) {
     switch (true) {
       case $this->storage instanceof DALMP_Cache:
         $key = sha1($this->dalmp_sessions_key.$sid);
@@ -230,7 +230,7 @@ class DALMP_Sessions {
   /**
    * The garbage collector
    */
-  private function Sgc() {
+  public function Sgc() {
     switch (true) {
       case $this->storage instanceof DALMP:
         $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE expiry < UNIX_TIMESTAMP()';
