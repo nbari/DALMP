@@ -22,18 +22,18 @@ class DALMP_Sessions {
   private $storage;
 
   /**
-	 * REF - field used for storing references
-	 * @access private
-	 * @var mixed
-	 */
-	private $dalmp_sessions_ref;
+   * REF - field used for storing references
+   * @access private
+   * @var mixed
+   */
+  private $dalmp_sessions_ref;
 
-	/**
-	 * key used for sessions when stored on cache
-	 * @access private
-	 * @var mixed
-	 */
-	private $dalmp_sessions_key;
+  /**
+   * key used for sessions when stored on cache
+   * @access private
+   * @var mixed
+   */
+  private $dalmp_sessions_key;
 
   /**
    * table to use for sessions
@@ -62,23 +62,23 @@ class DALMP_Sessions {
   public function __construct($storage = null) {
     $this->storage = is_object($storage) ? $storage : 'sqlite';
 
-		if ($this->storage === 'sqlite') {
-			$this->dalmp_sessions_sqlite_db = defined('DALMP_SESSIONS_SQLITE_DB') ? DALMP_SESSIONS_SQLITE_DB : $this->dalmp_sessions_sqlite_db;
-		}
+    if ($this->storage === 'sqlite') {
+      $this->dalmp_sessions_sqlite_db = defined('DALMP_SESSIONS_SQLITE_DB') ? DALMP_SESSIONS_SQLITE_DB : $this->dalmp_sessions_sqlite_db;
+    }
 
-		$this->dalmp_sessions_table = defined('DALMP_SESSIONS_TABLE') ? DALMP_SESSIONS_TABLE : $this->dalmp_sessions_table;
+    $this->dalmp_sessions_table = defined('DALMP_SESSIONS_TABLE') ? DALMP_SESSIONS_TABLE : $this->dalmp_sessions_table;
 
-		$this->dalmp_sessions_ref = defined('DALMP_SESSIONS_REF') ? DALMP_SESSIONS_REF : null;
+    $this->dalmp_sessions_ref = defined('DALMP_SESSIONS_REF') ? DALMP_SESSIONS_REF : null;
 
-		$this->dalmp_sessions_key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : 'dalmp_sessions_key';
+    $this->dalmp_sessions_key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : 'dalmp_sessions_key';
 
     session_module_name('user');
     session_set_save_handler(array(&$this, 'Sopen'),
-														 array(&$this, 'Sclose'),
-														 array(&$this, 'Sread'),
-														 array(&$this, 'Swrite'),
-														 array(&$this, 'Sdestroy'),
-														 array(&$this, 'Sgc'));
+                             array(&$this, 'Sclose'),
+                             array(&$this, 'Sread'),
+                             array(&$this, 'Swrite'),
+                             array(&$this, 'Sdestroy'),
+                             array(&$this, 'Sgc'));
     register_shutdown_function('session_write_close');
 
     ini_set('session.gc_maxlifetime', defined('DALMP_SESSIONS_MAXLIFETIME') ? DALMP_SESSIONS_MAXLIFETIME : get_cfg_var('session.gc_maxlifetime'));
@@ -89,13 +89,13 @@ class DALMP_Sessions {
     @ini_set('session.hash_function', 1); // sha1
     @ini_set('session.hash_bits_per_character', 5);
 
-		session_start();
+    session_start();
   }
 
  /**
   * The open handler
   */
-  public function Sopen() {
+  private function Sopen() {
     switch (true) {
       case $this->storage instanceof DALMP:
         break;
@@ -105,33 +105,33 @@ class DALMP_Sessions {
 
       default :
         $this->sdb = new SQLite3($this->dalmp_sessions_sqlite_db);
-				$this->sdb->busyTimeout(2000);
+        $this->sdb->busyTimeout(2000);
         if (defined('DALMP_SQLITE_ENC_KEY')) $this->sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
         $this->sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
         $rs = $this->sdb->exec('CREATE TABLE IF NOT EXISTS ' . $this->dalmp_sessions_table . ' (sid varchar(40) NOT NULL, expiry INTEGER NOT NULL, data text, ref text, PRIMARY KEY(sid)); CREATE INDEX IF NOT EXISTS "dalmp_index" ON ' . $this->dalmp_sessions_table . ' ("sid" DESC, "expiry" DESC, "ref" DESC)');
         break;
     }
-		return true;
+    return true;
   }
 
   /**
-	 * The close handlr
-	 */
-  public function Sclose() {
+   * The close handlr
+   */
+  private function Sclose() {
     if (is_object($this->sdb)) {
-			$this->sdb->busyTimeout(0);
+      $this->sdb->busyTimeout(0);
       $this->sdb->close();
     }
     return true;
   }
 
   /**
-	 * The read handler
-	 */
-  public function Sread($sid) {
+   * The read handler
+   */
+  private function Sread($sid) {
     $expiry = time();
     switch (true) {
-			case $this->storage instanceof DALMP_Cache:
+      case $this->storage instanceof DALMP_Cache:
         $key = sha1($this->dalmp_sessions_key.$sid);
         return $this->storage->get($key);
         break;
@@ -148,37 +148,37 @@ class DALMP_Sessions {
   }
 
   /**
-	 * The write handler
-	 */
-  public function Swrite($sid, $data) {
-		$ref = (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) ? $GLOBALS[$this->dalmp_sessions_ref] : null;
+   * The write handler
+   */
+  private function Swrite($sid, $data) {
+    $ref = (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) ? $GLOBALS[$this->dalmp_sessions_ref] : null;
     $timeout = ini_get('session.gc_maxlifetime');
     $expiry = time() + $timeout;
 
     switch (true) {
       case $this->storage instanceof DALMP_Cache:
-				$key = sha1($this->dalmp_sessions_key.$sid);
+        $key = sha1($this->dalmp_sessions_key.$sid);
         $rs = $this->storage->Set($key, $data, $timeout);
         /**
          * store REF on cache
          */
         if ($ref) {
-					$ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
-					$refs = $this->storage->Get($ref_key);
-					switch (true) {
-						case $refs;
-							foreach ($refs as $rkey => $rexpiry) {
-								if (current($rexpiry) < time()) {
-									unset($refs[$rkey]);
-								}
-							}
-							break;
+          $ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
+          $refs = $this->storage->Get($ref_key);
+          switch (true) {
+            case $refs;
+              foreach ($refs as $rkey => $rexpiry) {
+                if (current($rexpiry) < time()) {
+                  unset($refs[$rkey]);
+                }
+              }
+              break;
 
-						default :
-							$refs = array();
-					}
-					$refs[$key] = array($ref => $expiry);
-					$this->storage->Set($ref_key, $refs, 0);
+            default :
+              $refs = array();
+          }
+          $refs[$key] = array($ref => $expiry);
+          $this->storage->Set($ref_key, $refs, 0);
         }
         break;
 
@@ -196,23 +196,23 @@ class DALMP_Sessions {
   }
 
   /**
-	 * The destroy handler
-	 */
-  public function Sdestroy($sid) {
+   * The destroy handler
+   */
+  private function Sdestroy($sid) {
     switch (true) {
       case $this->storage instanceof DALMP_Cache:
-				$key = sha1($this->dalmp_sessions_key.$sid);
+        $key = sha1($this->dalmp_sessions_key.$sid);
         $this->storage->delete($key);
         /**
          * destroy REF on cache
          */
-				$ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
-				$refs = $this->storage->Get($ref_key);
-				if (is_array($refs)) {
-					unset($refs[$key]);
-				}
-				$this->storage->Set($ref_key, $refs, 0);
-				return true;
+        $ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
+        $refs = $this->storage->Get($ref_key);
+        if (is_array($refs)) {
+          unset($refs[$key]);
+        }
+        $this->storage->Set($ref_key, $refs, 0);
+        return true;
         break;
 
       case $this->storage instanceof DALMP:
@@ -228,9 +228,9 @@ class DALMP_Sessions {
   }
 
   /**
-	 * The garbage collector
-	 */
-  public function Sgc() {
+   * The garbage collector
+   */
+  private function Sgc() {
     switch (true) {
       case $this->storage instanceof DALMP:
         $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE expiry < UNIX_TIMESTAMP()';
@@ -247,50 +247,50 @@ class DALMP_Sessions {
         return true;
         break;
 
-			default :
-				return true;
+      default :
+        return true;
     }
   }
 
   /**
-	 * getSessionsRefs - get all sessions containint references
-	 *
-	 * @param int $expiry
-	 * @return array sessions
-	 */
- 	public function getSessionsRefs($expiry=null) {
-		$refs = array();
-		switch (true) {
-			case $this->storage instanceof DALMP_Cache:
-				$ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
-				$refs = $this->storage->Get($ref_key) ?: array();
-				break;
+   * getSessionsRefs - get all sessions containint references
+   *
+   * @param int $expiry
+   * @return array sessions
+   */
+  public function getSessionsRefs($expiry=null) {
+    $refs = array();
+    switch (true) {
+      case $this->storage instanceof DALMP_Cache:
+        $ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
+        $refs = $this->storage->Get($ref_key) ?: array();
+        break;
 
-			case $this->storage instanceof DALMP:
-	      $db_refs = isset($expiry) ? $this->storage->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > UNIX_TIMESTAMP()") : $this->storage->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
-		    if ($db_refs) {
-					foreach ($db_refs as $value) {
-					  $refs[$value['sid']] = array($value['ref'] => $value['expiry']);
-					}
-				}
-				break;
+      case $this->storage instanceof DALMP:
+        $db_refs = isset($expiry) ? $this->storage->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > UNIX_TIMESTAMP()") : $this->storage->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
+        if ($db_refs) {
+          foreach ($db_refs as $value) {
+            $refs[$value['sid']] = array($value['ref'] => $value['expiry']);
+          }
+        }
+        break;
 
-			default :
-			  $db_refs = isset($expiry) ? $this->sdb->query("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > strftime('%s','now')") : $this->sdb->query("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
-				while($value = $db_refs->fetchArray(SQLITE3_ASSOC)) {
-					$refs[$value['sid']] = array($value['ref'] => $value['expiry']);
-				}
-		}
-		return $refs;
-	}
+      default :
+        $db_refs = isset($expiry) ? $this->sdb->query("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > strftime('%s','now')") : $this->sdb->query("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
+        while($value = $db_refs->fetchArray(SQLITE3_ASSOC)) {
+          $refs[$value['sid']] = array($value['ref'] => $value['expiry']);
+        }
+    }
+    return $refs;
+  }
 
   /**
-	 * getSessionsRef - get session containing a specific reference
-	 *
-	 * @param string $ref
-	 * @return array sessions
-	 */
-	public function getSessionRef($ref) {
+   * getSessionsRef - get session containing a specific reference
+   *
+   * @param string $ref
+   * @return array sessions
+   */
+  public function getSessionRef($ref) {
     $refs = $this->getSessionsRefs();
     $rs = array();
     foreach ($refs as $key => $expiry) {
@@ -302,43 +302,43 @@ class DALMP_Sessions {
   }
 
   /**
-	 * del sessions ref - deletes sessions containing a reference
-	 *
-	 * @param string $ref
-	 */
-	public function delSessionRef($ref) {
-		switch (true) {
-			case $this->storage instanceof DALMP_Cache:
-				$ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
-				$refs = $this->storage->Get($ref_key);
-				if (is_array($refs)) {
-					foreach ($refs as $key => $expiry) {
-					  if (key($expiry) == $ref) {
-							unset($refs[$key]);
-							$this->storage->Delete($key);
-						}
-					}
-					$this->storage->Set($ref_key, $refs, 0);
-				}
-				return true;
-				break;
+   * del sessions ref - deletes sessions containing a reference
+   *
+   * @param string $ref
+   */
+  public function delSessionRef($ref) {
+    switch (true) {
+      case $this->storage instanceof DALMP_Cache:
+        $ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
+        $refs = $this->storage->Get($ref_key);
+        if (is_array($refs)) {
+          foreach ($refs as $key => $expiry) {
+            if (key($expiry) == $ref) {
+              unset($refs[$key]);
+              $this->storage->Delete($key);
+            }
+          }
+          $this->storage->Set($ref_key, $refs, 0);
+        }
+        return true;
+        break;
 
-			case $this->storage instanceof DALMP:
-				return $this->storage->PExecute('DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE ref=?', $ref);
-			break;
+      case $this->storage instanceof DALMP:
+        return $this->storage->PExecute('DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE ref=?', $ref);
+      break;
 
-			default :
-			return $this->sdb->exec("DELETE FROM $this->dalmp_sessions_table WHERE ref='$ref'");
-		}
-	}
+      default :
+      return $this->sdb->exec("DELETE FROM $this->dalmp_sessions_table WHERE ref='$ref'");
+    }
+  }
 
   /**
-	 * regenerate id - regenerate sessions and create a fingerprint, helps to
-	 * prevent HTTP session hijacking attacks.
-	 *
-	 * @param int $check_ipv4_blocks
-	 */
-	public function regenerate_id($check_ipv4_blocks = null) {
+   * regenerate id - regenerate sessions and create a fingerprint, helps to
+   * prevent HTTP session hijacking attacks.
+   *
+   * @param int $check_ipv4_blocks
+   */
+  public function regenerate_id($check_ipv4_blocks = null) {
     $fingerprint = 'DALMP-|' . @$_SERVER['HTTP_ACCEPT_LANGUAGE'] . @$_SERVER['HTTP_USER_AGENT'] . '|';
     if ($check_ipv4_blocks) {
       $num_blocks = abs($check_ipv4_blocks);
@@ -366,7 +366,7 @@ class DALMP_Sessions {
     }
   }
 
-	/**
+  /**
    * getIPv4 - find the IP address of the client
    *
    * @return IPv4
