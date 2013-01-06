@@ -224,7 +224,7 @@ class DALMP_Cache {
    *
    * @param string $key
    * @param string $value
-   * @param int $expire (default is 0 meaning unlimited)
+   * @param int $expire time in seconds(default is 0 meaning unlimited)
    * @chainable
    */
   public function Set($key, $value, $expire = 0) {
