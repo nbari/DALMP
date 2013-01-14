@@ -25,7 +25,6 @@ if ((mt_rand() % 10) == 0) {
   $sessions->regenerate_id(4);  // always after your $GLOBALS
 }
 
-
 /**
  * get the REF stored on DB or Cache
  */
@@ -46,5 +45,3 @@ echo $db->isCli(1);
 
 # -----------------------------------------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
-
-?>

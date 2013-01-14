@@ -19,7 +19,6 @@ require_once '../dalmp.php';
  *
  */
 
-
 # DSN with memcache on host 127.0.0.1, port 11211 and compression enabled
 $db = new DALMP('utf8://root:'.rawurlencode('pass-?/:word').'@mysql2.localbox.org:3306/dalmptest?memcache:127.0.0.1:11211:1');
 $db->debug();
@@ -56,5 +55,3 @@ $db->CacheFlush('memcache');
 
 # -----------------------------------------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
-
-?>

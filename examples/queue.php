@@ -20,7 +20,7 @@ $db = new DALMP('utf8://root@localbox/dalmptest');
 $sql = "INSERT INTO testX SET colA=(NOW())";
 try {
   $rs = $db->Execute($sql);
-} catch(Exception $e) {
+} catch (Exception $e) {
   $db->queue($sql, 'my-queue');
 }
 
@@ -56,5 +56,3 @@ $db->readQueue('json', 1);
 
 # -----------------------------------------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
-
-?>

@@ -106,5 +106,3 @@ class DALMP_Logger {
   }
 
 }
-
-?>

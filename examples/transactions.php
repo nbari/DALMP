@@ -9,7 +9,6 @@ $db->debug(1);
 
 $timer->setMark('start');
 
-
 #$db->Execute('CREATE TABLE t_test (id INT NOT NULL PRIMARY KEY) ENGINE=InnoDB');
 #$db->Execute('TRUNCATE TABLE t_test');
 
@@ -31,5 +30,3 @@ $db->CompleteTrans();
 
 # -----------------------------------------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
-
-?>

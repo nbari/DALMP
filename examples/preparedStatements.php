@@ -24,7 +24,7 @@ print_r($rs);
  */
 $sql = 'SELECT status FROM test WHERE id=?';
 $rs = $db->PgetOne($sql, 3);
-if ($rs === false) { 
+if ($rs === false) {
 	echo "no result".$db->isCli(1);
 } elseif ($rs == 0) {
 	echo "$rs = 0".$db->isCli(1);
@@ -76,5 +76,3 @@ echo $db->Insert_Id();
 
 # -----------------------------------------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
-
-?>

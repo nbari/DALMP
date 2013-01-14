@@ -54,7 +54,7 @@ require_once '../dalmp.php';
  * database: dalmptest
  *
  */
-$db = new DALMP('mysql://dalmp:password@192.168.1.40/dalmptest'); 
+$db = new DALMP('mysql://dalmp:password@192.168.1.40/dalmptest');
 try {
   $rs = $db->getOne('SELECT now()');
 } catch (Exception $e) {
@@ -174,8 +174,5 @@ try {
 
 echo $db; // will print: DALMP :: connected to: db4, Character set: utf8, Localhost via UNIX socket,...
 
-
 # -----------------------------------------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
-
-?>

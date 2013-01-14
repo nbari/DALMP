@@ -277,7 +277,7 @@ class DALMP_Sessions {
 
       default :
         $db_refs = isset($expiry) ? $this->sdb->query("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > strftime('%s','now')") : $this->sdb->query("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
-        while($value = $db_refs->fetchArray(SQLITE3_ASSOC)) {
+        while ($value = $db_refs->fetchArray(SQLITE3_ASSOC)) {
           $refs[$value['sid']] = array($value['ref'] => $value['expiry']);
         }
     }
@@ -358,7 +358,7 @@ class DALMP_Sessions {
       $_SESSION = array();
       session_destroy();
     }
-    if(session_regenerate_id(true)) {
+    if (session_regenerate_id(true)) {
       $_SESSION['fingerprint'] = $fingerprint;
       return true;
     } else {
@@ -373,8 +373,8 @@ class DALMP_Sessions {
    */
   public function getIPv4() {
     foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key) {
-      if (array_key_exists($key, $_SERVER) === true){
-        foreach (explode(',', $_SERVER[$key]) as $ip){
+      if (array_key_exists($key, $_SERVER) === true) {
+        foreach (explode(',', $_SERVER[$key]) as $ip) {
           $ip = trim($ip);
           if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false) {
             return $ip;
@@ -386,5 +386,3 @@ class DALMP_Sessions {
   }
 
 }
-
-?>

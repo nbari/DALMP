@@ -32,5 +32,3 @@ class DALMP_Loader {
   }
 
 }
-
-?>

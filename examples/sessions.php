@@ -41,8 +41,5 @@ print_r($rs);
 
 echo $db->isCli(1),session_id().$db->isCli(1),$_SESSION['test'];
 
-
 # -----------------------------------------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
-
-?>

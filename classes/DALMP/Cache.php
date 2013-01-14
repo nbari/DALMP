@@ -89,7 +89,7 @@ class DALMP_Cache {
    * @chainable
    */
   public function port($port = null) {
-    $this->port = $port ? (int)$port : null;
+    $this->port = $port ? (int) $port : null;
     return $this;
   }
 
@@ -100,7 +100,7 @@ class DALMP_Cache {
    * @chainable
    */
   public function timeout($timeout = 1) {
-    $this->timeout = (int)$timeout;
+    $this->timeout = (int) $timeout;
     return $this;
   }
 
@@ -145,11 +145,11 @@ class DALMP_Cache {
         break;
 
       case 'memcache':
-        return (bool)($this->cache instanceof MemCache) ? true : $this->memCache();
+        return (bool) ($this->cache instanceof MemCache) ? true : $this->memCache();
         break;
 
       case 'redis':
-        return (bool)($this->cache instanceof Redis) ? true : $this->redisCache();
+        return (bool) ($this->cache instanceof Redis) ? true : $this->redisCache();
         break;
 
       default :
@@ -411,32 +411,23 @@ class DALMP_Cache {
 
       default :
         $dalmp_cache_dir = defined('DALMP_CACHE_DIR') ? DALMP_CACHE_DIR : '/tmp/dalmp';
-        return $this->_dirFlush($dalmp_cache_dir);
+        return $this->delTree($dalmp_cache_dir);
         break;
     }
   }
 
   /**
    * recursive method for deleting directories
+   *
+   * @param string $dir
+   * @return TRUE on success or FALSE on failure.
    */
-  protected function _dirFlush($dir, $kill_top_level = false) {
-    if (!$dh = @opendir($dir)) {
-      return;
+  protected function delTree($dir) {
+    $files = array_diff(scandir($dir), array('.','..'));
+    foreach ($files as $file) {
+      (is_dir("$dir/$file")) ? $this->delTree("$dir/$file") : unlink("$dir/$file");
     }
-    while (($obj = readdir($dh)) !== false) {
-      if ($obj === '.' || $obj === '..') {
-        continue;
-      }
-      $x = $dir . '/' . $obj;
-      if (strpos($obj, '.cache')) {
-        @unlink($x);
-      }
-      if (is_dir($x)) $this->_dirFlush($x, true);
-    }
-    if ($kill_top_level === true) {
-      @rmdir($dir);
-    }
-    return true;
+    return rmdir($dir);
   }
 
   /**
@@ -480,5 +471,3 @@ class DALMP_Cache {
   }
 
 }
-
-?>

@@ -13,8 +13,8 @@ $db->FetchMode('NUM');
 $sql = 'SELECT * FROM City';
 $rs = $db->Execute($sql);
 
-if($rs) {
-  while (($rows = $db->query()) != false){
+if ($rs) {
+  while (($rows = $db->query()) != false) {
 	  list($r1,$r2,$r3) = $rows;
 	  echo "w1: $r1, w2: $r2, w3: $r3",$db->isCli(1);
   }
@@ -44,7 +44,6 @@ while ($rows = $db->Pquery($out)) {
 	print_r($out);
 }
 
-
 $rs = $db->PExecute('UPDATE Country SET code=? WHERE Code="PRT"', 'PRT');
 /**
  * Returns the number of rows affected by INSERT, UPDATE, or DELETE query.
@@ -56,11 +55,9 @@ echo $db->getNumOfRowsAffected(),PHP_EOL;
 $timer->setMark('stmt');
 
 echo $db->isCli(1);
-foreach($timer->getPageLoadTime(1) as $key=>$mark){
+foreach ($timer->getPageLoadTime(1) as $key=>$mark) {
 	echo "$key - $mark\n";
 }
 
 # -----------------------------------------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
-
-?>

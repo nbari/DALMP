@@ -187,7 +187,7 @@ class DALMP {
    * @return boolean
    */
   public function isConnected() {
-    return (bool)($this->DB instanceof mysqli);
+    return (bool) ($this->DB instanceof mysqli);
   }
 
   /**
@@ -298,7 +298,7 @@ class DALMP {
     }
     if (isset($clean)) {
       if (is_numeric($param)) {
-        $param = !strcmp(intval($param), $param) ? (int)$param : (!strcmp(floatval($param), $param) ? (float)$param : $param);
+        $param = !strcmp(intval($param), $param) ? (int) $param : (!strcmp(floatval($param), $param) ? (float) $param : $param);
       }
       $key = is_int($param) ? 'i' : (is_float($param) ? 'd' : (is_string($param) ? 's' : 'b'));
       return $this->stmtParams[] = array($key => $param);
@@ -339,7 +339,7 @@ class DALMP {
         $params[] = &$args[$key];
         if (!in_array($key, array('i', 'd', 's', 'b'), true)) {
           if (is_numeric($param)) {
-            $param = !strcmp(intval($param), $param) ? (int)$param : (!strcmp(floatval($param), $param) ? (float)$param : $param);
+            $param = !strcmp(intval($param), $param) ? (int) $param : (!strcmp(floatval($param), $param) ? (float) $param : $param);
           }
           $key = is_int($param) ? 'i' : (is_float($param) ? 'd' : (is_string($param) ? 's' : 'b'));
         }
@@ -659,7 +659,7 @@ class DALMP {
    * @param sting sql the query string
    * @param string class_name of the class to instantiate
    * @param array optional array of parameters to pass to the constructor for class_name objects.
-   * @see mysqli_result::fetch_object  
+   * @see mysqli_result::fetch_object
    * @return object
    */
   public function map($sql, $class_name=null, $params=array()) {
@@ -670,7 +670,7 @@ class DALMP {
       return false;
     }
   }
-  
+
   /**
    * Fetch a result row as an associative, a numeric array, or both
    *
@@ -924,7 +924,7 @@ class DALMP {
     $args = func_get_args();
     $fetch = array_shift($args);
     $this->cachetype = in_array(reset($args), array('dir', 'apc', 'memcache', 'redis')) ? array_shift($args) : $this->cachetype;
-    $expire = (int)(reset($args)) ? array_shift($args) : 3600;
+    $expire = (int) (reset($args)) ? array_shift($args) : 3600;
     $sql = array_shift($args);
     $key = isset($args[0]) ? $args[0] : $fetch;
 
@@ -979,7 +979,7 @@ class DALMP {
     $args = func_get_args();
     $fetch = array_shift($args);
     $cachetype = in_array(reset($args), array('dir', 'apc', 'memcache', 'redis')) ? array_shift($args) : $this->cachetype;
-    $expire = (int)(reset($args)) ? array_shift($args) : 3600;
+    $expire = (int) (reset($args)) ? array_shift($args) : 3600;
     $sql = array_shift($args);
 
     // expected params
@@ -1133,9 +1133,9 @@ class DALMP {
    */
   public function getServerVersion() {
     $version = $this->DB->server_version;
-    $major = (int)($version / 10000);
-    $minor = (int)($version % 10000 / 100);
-    $revision = (int)($version % 100);
+    $major = (int) ($version / 10000);
+    $minor = (int) ($version % 10000 / 100);
+    $revision = (int) ($version % 100);
     return $major . '.' . $minor . '.' . $revision;
   }
 
@@ -1144,9 +1144,9 @@ class DALMP {
    */
   public function getClientVersion() {
     $version = $this->DB->client_version;
-    $major = (int)($version / 10000);
-    $minor = (int)($version % 10000 / 100);
-    $revision = (int)($version % 100);
+    $major = (int) ($version / 10000);
+    $minor = (int) ($version % 10000 / 100);
+    $revision = (int) ($version % 100);
     return $major . '.' . $minor . '.' . $revision;
   }
 
@@ -1238,7 +1238,7 @@ class DALMP {
       return $m;
     };
 
-    $get = function ($m) use($n) {
+    $get = function ($m) use ($n) {
       $method = explode($m, $n) + array(null, null);
       return in_array($method[1], array('all', 'row', 'col', 'one', 'assoc')) ? $method[1] : false;
     };
@@ -1298,5 +1298,3 @@ class DALMP {
   }
 
 }
-
-?>
