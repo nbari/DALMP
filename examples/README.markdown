@@ -1,4 +1,4 @@
 DALMP - examples
 ======================================================
 
-Try examples in CLI mode (command line / terminal)
+It is recommended to run the examples in CLI mode, the only exception is when testing sessions.
