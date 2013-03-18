@@ -73,12 +73,12 @@ class DALMP_Sessions {
     $this->dalmp_sessions_key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : 'dalmp_sessions_key';
 
     session_module_name('user');
-    session_set_save_handler(array(&$this, 'Sopen'),
-                             array(&$this, 'Sclose'),
-                             array(&$this, 'Sread'),
-                             array(&$this, 'Swrite'),
-                             array(&$this, 'Sdestroy'),
-                             array(&$this, 'Sgc'));
+    session_set_save_handler(array($this, 'Sopen'),
+                             array($this, 'Sclose'),
+                             array($this, 'Sread'),
+                             array($this, 'Swrite'),
+                             array($this, 'Sdestroy'),
+                             array($this, 'Sgc'));
     register_shutdown_function('session_write_close');
 
     ini_set('session.gc_maxlifetime', defined('DALMP_SESSIONS_MAXLIFETIME') ? DALMP_SESSIONS_MAXLIFETIME : get_cfg_var('session.gc_maxlifetime'));
