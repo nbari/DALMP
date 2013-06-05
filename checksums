@@ -1,0 +1,30 @@
+#
+# find . -type f -name "*.php" -exec shasum {} \; > checksums
+#
+
+3543aaa9624feebebbb4ab49e2053d4afa9ca47a  ./mplt.php
+d4aa959b56cffa0ad201b94527539f012fd11fb7  ./examples/cache_dir.php
+76889b6dc5d346adea3f276e3975a74b215a5e0d  ./examples/transactions.php
+77bfbf2b68c3d8e8ad68f48c47b964f0d793fc3e  ./examples/cache_memcache.php
+182ac4462da4d8cca029f678bf1575f810c0b3d2  ./examples/sqlite-encryption.php
+e063b0e5223c1ff7f2f429469f6ec4034c31c022  ./examples/cache-group.php
+d8332a184d242529d6bfbe2a553043197b258070  ./examples/sessions-redis.php
+06c2bd36fba0d499c6730042b286d890a8dc7bf2  ./examples/cleanDB.php
+806641a1c5928d5950deabc9c81059b0b4d7e697  ./examples/2databases.php
+31fbfe84de2b00fe143d46eed2081a89211b472d  ./examples/query_Execute.php
+e6db7dd4f79bbfb305b24c7c62d9c3aa79ff6b57  ./examples/cache.php
+5646306768ca3e15a61b618596f96ab15f751e98  ./examples/preparedStatements.php
+368b3ff9b69097cbef70c1e7c89695ccee3b74b3  ./examples/start.php
+b371ed2763ca2df5ce7f6b57d41ebbb777f0198a  ./examples/curl.php
+156e17d9d91b1e19d17c1a213b6f260ee8692289  ./examples/sqliteSessions.php
+d49c4866d67fb23c86c869e205a94dec16d36926  ./examples/cache_redis.php
+047735e8dde4b4b1a958e470298eb6b036444659  ./examples/queue.php
+00210969d4deb3fc8a95e3d4aa01970554308b91  ./examples/REF.php
+edada330d493bb27c37fcfbccfe6501ba2aed5db  ./examples/csv.php
+d75d5c60525a4a4c97749e376aaa1ebfec9607c4  ./examples/sessions.php
+053be38d96bdf17ce2245a754fba9ec854262647  ./dalmp.php
+b58eb35d8a709e30ed7ff152138f16ebd6cb4a76  ./classes/DALMP.php
+9053a3c32a61ce3ed5d0c9500bd5717922ee50ca  ./classes/DALMP/Cache.php
+cdaa1c694bb4d2d0cd82768e6eac3bd6dc7100c6  ./classes/DALMP/Sessions.php
+cc8ff2bbff6d914d41425169469e0cebbfdabcc6  ./classes/DALMP/Logger.php
+a31976f044da1dcac788cff3a8388d84f265032c  ./classes/DALMP/Loader.php
