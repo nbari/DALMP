@@ -1,0 +1,28 @@
+{
+    "name": "dalmp/dalmp",
+    "type": "library",
+    "description": "Database Abstraction Layer for MySQL using PHP",
+    "keywords": [
+        "database",
+        "cache",
+        "sessions"
+    ],
+    "homepage": "http://www.dalmp.com",
+    "licence": "BSD",
+    "authors": [
+        {
+            "name": "Nicolas Embriz",
+            "email": "nbari@dalmp.com"
+        }
+    ],
+    "require": {
+        "ext-memcache": "*",
+        "ext-redis": "*",
+        "ext-sqlite3": "*",
+        "ext-mysqli": "*",
+        "ext-session": "*"
+    },
+    "autoload": {
+        "files": ["/dalmp.php"]
+    }
+}
