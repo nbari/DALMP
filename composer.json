@@ -8,24 +8,26 @@
         "sessions"
     ],
     "homepage": "http://www.dalmp.com",
-    "license": "BSD",
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Nicolas Embriz",
             "email": "nbari@dalmp.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/nbari/DALMP"
+        }
+    ],
     "require": {
-        "dalmp/dalmp": "*",
-        "ext-memcache": "*",
-        "ext-redis": "*",
-        "ext-sqlite3": "*",
-        "ext-mysqli": "*",
-        "ext-session": "*"
+        "nbari/DALMP": "*"
     },
     "autoload": {
         "files": [
             "/dalmp.php"
         ]
-    }
+    },
+    "minimum-stability": "dev"
 }
