@@ -22,7 +22,9 @@
         }
     ],
     "require": {
-        "nbari/DALMP": "*"
+        "nbari/DALMP": "*",
+        "ext-mysqli": "*",
+        "ext-session": "*"
     },
     "autoload": {
         "files": [
