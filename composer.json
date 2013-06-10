@@ -23,13 +23,17 @@
     ],
     "require": {
         "nbari/DALMP": "*",
-        "ext-mysqli": "*",
-        "ext-session": "*"
+        "ext-mysqli": "*"
+    },
+    "suggest": {
+        "ext-session": "handle sessions",
+        "ext-redis": "Use redis as cache engine",
+        "ext-memcache": "Use memcache as cache engine",
+        "ext-sqlite3": "Use sqlite for queues"
     },
     "autoload": {
         "files": [
             "/dalmp.php"
         ]
-    },
-    "minimum-stability": "dev"
+    }
 }
