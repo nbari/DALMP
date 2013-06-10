@@ -35,5 +35,6 @@
         "files": [
             "/dalmp.php"
         ]
-    }
+    },
+    "minimum-stability": "dev"
 }
