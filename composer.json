@@ -16,6 +16,7 @@
         }
     ],
     "require": {
+        "dalmp/dalmp": "*",
         "ext-memcache": "*",
         "ext-redis": "*",
         "ext-sqlite3": "*",
@@ -23,6 +24,8 @@
         "ext-session": "*"
     },
     "autoload": {
-        "files": ["/dalmp.php"]
+        "files": [
+            "/dalmp.php"
+        ]
     }
 }
