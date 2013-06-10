@@ -1,5 +1,5 @@
 {
-    "name": "dalmp/dalmp",
+    "name": "dalmp/database",
     "type": "library",
     "description": "Database Abstraction Layer for MySQL using PHP",
     "keywords": [
