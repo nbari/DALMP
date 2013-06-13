@@ -2,12 +2,12 @@
 namespace DALMP;
 
 /**
- * DALMP_Logger - Logger
+ * Logger
  *
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 2.1
+ * @version 3.0
  */
 class Logger {
 

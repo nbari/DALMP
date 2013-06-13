@@ -7,7 +7,7 @@ namespace DALMP;
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 2.1
+ * @version 3.0
  */
 class Database {
 
@@ -1091,7 +1091,8 @@ class Database {
     // initialize the default cache engine if there are no caches
     if (empty(self::$cache)) {
       list($type, $host, $port, $compress) = @explode(':', $this->dsn['cache']) + array(null, null, null, null);
-      self::$cache[$type] = new DALMP_Cache($type);
+      $cache_ns ="DALMP\Cache\\$type";
+      self::$cache[$type] = new $cache_ns;
       self::$cache[$type]->host($host)->port($port)->compress($compress);
       $this->cachetype = $type;
     }
@@ -1111,7 +1112,7 @@ class Database {
 
     if ($this->debug) { $this->debug->log(__METHOD__, "flush: $sql, key: $key, cache: $this->cachetype"); }
 
-      $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
+    $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
     $hkey = sha1($skey . $sql . $key);
 
     if (strncmp($sql, 'group:', 6) == 0) {
@@ -1244,14 +1245,14 @@ class Database {
     case 'pget':
       if ($func = $get('pget')) {
         if ($this->debug) { $this->debug->log('PreparedStatements', __METHOD__); }
-          return call_user_func_array(array($this, 'PExecute'), $args) ? $this->_pFetch($func) : false;
+        return call_user_func_array(array($this, 'PExecute'), $args) ? $this->_pFetch($func) : false;
       }
       break;
 
     case 'cacheget':
       if ($func = $get('cacheget')) {
         if ($this->debug) { $this->debug->log('Cache', __METHOD__); }
-          array_unshift($args, $func);
+        array_unshift($args, $func);
         return call_user_func_array(array($this, '_Cache'), $args);
       }
       break;
@@ -1259,7 +1260,7 @@ class Database {
     case 'cachepget':
       if ($func = $get('cachepget')) {
         if ($this->debug) { $this->debug->log('CacheP', __METHOD__); }
-          array_unshift($args, $func);
+        array_unshift($args, $func);
         return call_user_func_array(array($this, '_CacheP'), $args);
       }
       break;

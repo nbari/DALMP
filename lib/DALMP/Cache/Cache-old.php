@@ -4,11 +4,15 @@ namespace DALMP;
 /**
  * DALMP_Cache - Cache class supporting redis, memcache, apc and dir storage
  *
+ * git clone git://github.com/nbari/DALMP.git
+ * @see http://dalmp.googlecode.com
+ *
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
  * @version 2.1
  */
+
 abstract class Cache {
 
   /**

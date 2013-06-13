@@ -71,11 +71,11 @@ class Sessions {
 
     session_module_name('user');
     session_set_save_handler(array($this, 'Sopen'),
-                             array($this, 'Sclose'),
-                             array($this, 'Sread'),
-                             array($this, 'Swrite'),
-                             array($this, 'Sdestroy'),
-                             array($this, 'Sgc'));
+      array($this, 'Sclose'),
+      array($this, 'Sread'),
+      array($this, 'Swrite'),
+      array($this, 'Sdestroy'),
+      array($this, 'Sgc'));
     register_shutdown_function('session_write_close');
 
     ini_set('session.gc_maxlifetime', defined('DALMP_SESSIONS_MAXLIFETIME') ? DALMP_SESSIONS_MAXLIFETIME : get_cfg_var('session.gc_maxlifetime'));
@@ -89,24 +89,24 @@ class Sessions {
     session_start();
   }
 
- /**
-  * The open handler
-  */
+  /**
+   * The open handler
+   */
   public function Sopen() {
     switch (true) {
-      case $this->storage instanceof DALMP:
-        break;
+    case $this->storage instanceof DALMP:
+      break;
 
-      case $this->storage instanceof DALMP_Cache:
-        break;
+    case $this->storage instanceof DALMP_Cache:
+      break;
 
-      default :
-        $this->sdb = new SQLite3($this->dalmp_sessions_sqlite_db);
-        $this->sdb->busyTimeout(2000);
-        if (defined('DALMP_SQLITE_ENC_KEY')) $this->sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
-        $this->sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
-        $rs = $this->sdb->exec('CREATE TABLE IF NOT EXISTS ' . $this->dalmp_sessions_table . ' (sid varchar(40) NOT NULL, expiry INTEGER NOT NULL, data text, ref text, PRIMARY KEY(sid)); CREATE INDEX IF NOT EXISTS "dalmp_index" ON ' . $this->dalmp_sessions_table . ' ("sid" DESC, "expiry" DESC, "ref" DESC)');
-        break;
+    default :
+      $this->sdb = new SQLite3($this->dalmp_sessions_sqlite_db);
+      $this->sdb->busyTimeout(2000);
+      if (defined('DALMP_SQLITE_ENC_KEY')) $this->sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
+      $this->sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
+      $rs = $this->sdb->exec('CREATE TABLE IF NOT EXISTS ' . $this->dalmp_sessions_table . ' (sid varchar(40) NOT NULL, expiry INTEGER NOT NULL, data text, ref text, PRIMARY KEY(sid)); CREATE INDEX IF NOT EXISTS "dalmp_index" ON ' . $this->dalmp_sessions_table . ' ("sid" DESC, "expiry" DESC, "ref" DESC)');
+      break;
     }
     return true;
   }
@@ -128,19 +128,19 @@ class Sessions {
   public function Sread($sid) {
     $expiry = time();
     switch (true) {
-      case $this->storage instanceof DALMP_Cache:
-        $key = sha1($this->dalmp_sessions_key.$sid);
-        return $this->storage->get($key);
-        break;
+    case $this->storage instanceof DALMP_Cache:
+      $key = sha1($this->dalmp_sessions_key.$sid);
+      return $this->storage->get($key);
+      break;
 
-      case $this->storage instanceof DALMP:
-        return ($rs = $this->storage->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, $expiry)) ? $rs : '';
-        break;
+    case $this->storage instanceof DALMP:
+      return ($rs = $this->storage->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, $expiry)) ? $rs : '';
+      break;
 
-      default :
-        $rs = $this->sdb->querySingle("SELECT data FROM $this->dalmp_sessions_table WHERE sid='$sid' AND expiry >= $expiry");
-        return $rs ?  : false;
-        break;
+    default :
+      $rs = $this->sdb->querySingle("SELECT data FROM $this->dalmp_sessions_table WHERE sid='$sid' AND expiry >= $expiry");
+      return $rs ?  : false;
+      break;
     }
   }
 
@@ -153,41 +153,41 @@ class Sessions {
     $expiry = time() + $timeout;
 
     switch (true) {
-      case $this->storage instanceof DALMP_Cache:
-        $key = sha1($this->dalmp_sessions_key.$sid);
-        $rs = $this->storage->Set($key, $data, $timeout);
-        /**
-         * store REF on cache
-         */
-        if ($ref) {
-          $ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
-          $refs = $this->storage->Get($ref_key);
-          switch (true) {
-            case $refs;
-              foreach ($refs as $rkey => $rexpiry) {
-                if (current($rexpiry) < time()) {
-                  unset($refs[$rkey]);
-                }
-              }
-              break;
-
-            default :
-              $refs = array();
+    case $this->storage instanceof DALMP_Cache:
+      $key = sha1($this->dalmp_sessions_key.$sid);
+      $rs = $this->storage->Set($key, $data, $timeout);
+      /**
+       * store REF on cache
+       */
+      if ($ref) {
+        $ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
+        $refs = $this->storage->Get($ref_key);
+        switch (true) {
+          case $refs;
+          foreach ($refs as $rkey => $rexpiry) {
+            if (current($rexpiry) < time()) {
+              unset($refs[$rkey]);
+            }
           }
-          $refs[$key] = array($ref => $expiry);
-          $this->storage->Set($ref_key, $refs, 0);
+          break;
+
+        default :
+          $refs = array();
         }
-        break;
+        $refs[$key] = array($ref => $expiry);
+        $this->storage->Set($ref_key, $refs, 0);
+      }
+      break;
 
-      case $this->storage instanceof DALMP:
-        $sql = "REPLACE INTO $this->dalmp_sessions_table (sid, expiry, data, ref) VALUES(?,?,?,?)";
-        $this->storage->PExecute($sql, $sid, $expiry, $data, $ref);
-        break;
+    case $this->storage instanceof DALMP:
+      $sql = "REPLACE INTO $this->dalmp_sessions_table (sid, expiry, data, ref) VALUES(?,?,?,?)";
+      $this->storage->PExecute($sql, $sid, $expiry, $data, $ref);
+      break;
 
-      default :
-        $sql = "INSERT OR REPLACE INTO $this->dalmp_sessions_table (sid, expiry, data, ref) VALUES ('$sid',$expiry,'$data','$ref')";
-        $this->sdb->exec($sql);
-        break;
+    default :
+      $sql = "INSERT OR REPLACE INTO $this->dalmp_sessions_table (sid, expiry, data, ref) VALUES ('$sid',$expiry,'$data','$ref')";
+      $this->sdb->exec($sql);
+      break;
     }
     return true;
   }
@@ -197,30 +197,30 @@ class Sessions {
    */
   public function Sdestroy($sid) {
     switch (true) {
-      case $this->storage instanceof DALMP_Cache:
-        $key = sha1($this->dalmp_sessions_key.$sid);
-        $this->storage->delete($key);
-        /**
-         * destroy REF on cache
-         */
-        $ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
-        $refs = $this->storage->Get($ref_key);
-        if (is_array($refs)) {
-          unset($refs[$key]);
-        }
-        $this->storage->Set($ref_key, $refs, 0);
-        return true;
-        break;
+    case $this->storage instanceof DALMP_Cache:
+      $key = sha1($this->dalmp_sessions_key.$sid);
+      $this->storage->delete($key);
+      /**
+       * destroy REF on cache
+       */
+      $ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
+      $refs = $this->storage->Get($ref_key);
+      if (is_array($refs)) {
+        unset($refs[$key]);
+      }
+      $this->storage->Set($ref_key, $refs, 0);
+      return true;
+      break;
 
-      case $this->storage instanceof DALMP:
-        $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE sid=?';
-        return $this->storage->PExecute($sql, $sid);
-        break;
+    case $this->storage instanceof DALMP:
+      $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE sid=?';
+      return $this->storage->PExecute($sql, $sid);
+      break;
 
-      default :
-        $sql = "DELETE FROM $this->dalmp_sessions_table WHERE sid='$sid'";
-        return $this->sdb->exec($sql);
-        break;
+    default :
+      $sql = "DELETE FROM $this->dalmp_sessions_table WHERE sid='$sid'";
+      return $this->sdb->exec($sql);
+      break;
     }
   }
 
@@ -229,23 +229,23 @@ class Sessions {
    */
   public function Sgc() {
     switch (true) {
-      case $this->storage instanceof DALMP:
-        $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE expiry < UNIX_TIMESTAMP()';
-        $this->storage->Execute($sql);
-        $sql = 'OPTIMIZE TABLE ' . $this->dalmp_sessions_table;
-        $this->storage->Execute($sql);
-        return true;
-        break;
+    case $this->storage instanceof DALMP:
+      $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE expiry < UNIX_TIMESTAMP()';
+      $this->storage->Execute($sql);
+      $sql = 'OPTIMIZE TABLE ' . $this->dalmp_sessions_table;
+      $this->storage->Execute($sql);
+      return true;
+      break;
 
-      case $this->sdb instanceof SQLite3:
-        $sql = "DELETE FROM $this->dalmp_sessions_table WHERE expiry < " . time();
-        $this->sdb->exec($sql);
-        $this->sdb->exec('VACUUM');
-        return true;
-        break;
+    case $this->sdb instanceof SQLite3:
+      $sql = "DELETE FROM $this->dalmp_sessions_table WHERE expiry < " . time();
+      $this->sdb->exec($sql);
+      $this->sdb->exec('VACUUM');
+      return true;
+      break;
 
-      default :
-        return true;
+    default :
+      return true;
     }
   }
 
@@ -258,25 +258,25 @@ class Sessions {
   public function getSessionsRefs($expiry=null) {
     $refs = array();
     switch (true) {
-      case $this->storage instanceof DALMP_Cache:
-        $ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
-        $refs = $this->storage->Get($ref_key) ?: array();
-        break;
+    case $this->storage instanceof DALMP_Cache:
+      $ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
+      $refs = $this->storage->Get($ref_key) ?: array();
+      break;
 
-      case $this->storage instanceof DALMP:
-        $db_refs = isset($expiry) ? $this->storage->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > UNIX_TIMESTAMP()") : $this->storage->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
-        if ($db_refs) {
-          foreach ($db_refs as $value) {
-            $refs[$value['sid']] = array($value['ref'] => $value['expiry']);
-          }
-        }
-        break;
-
-      default :
-        $db_refs = isset($expiry) ? $this->sdb->query("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > strftime('%s','now')") : $this->sdb->query("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
-        while ($value = $db_refs->fetchArray(SQLITE3_ASSOC)) {
+    case $this->storage instanceof DALMP:
+      $db_refs = isset($expiry) ? $this->storage->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > UNIX_TIMESTAMP()") : $this->storage->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
+      if ($db_refs) {
+        foreach ($db_refs as $value) {
           $refs[$value['sid']] = array($value['ref'] => $value['expiry']);
         }
+      }
+      break;
+
+    default :
+      $db_refs = isset($expiry) ? $this->sdb->query("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > strftime('%s','now')") : $this->sdb->query("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table");
+      while ($value = $db_refs->fetchArray(SQLITE3_ASSOC)) {
+        $refs[$value['sid']] = array($value['ref'] => $value['expiry']);
+      }
     }
     return $refs;
   }
@@ -305,26 +305,26 @@ class Sessions {
    */
   public function delSessionRef($ref) {
     switch (true) {
-      case $this->storage instanceof DALMP_Cache:
-        $ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
-        $refs = $this->storage->Get($ref_key);
-        if (is_array($refs)) {
-          foreach ($refs as $key => $expiry) {
-            if (key($expiry) == $ref) {
-              unset($refs[$key]);
-              $this->storage->Delete($key);
-            }
+    case $this->storage instanceof DALMP_Cache:
+      $ref_key = sha1($this->dalmp_sessions_ref.$this->dalmp_sessions_key);
+      $refs = $this->storage->Get($ref_key);
+      if (is_array($refs)) {
+        foreach ($refs as $key => $expiry) {
+          if (key($expiry) == $ref) {
+            unset($refs[$key]);
+            $this->storage->Delete($key);
           }
-          $this->storage->Set($ref_key, $refs, 0);
         }
-        return true;
-        break;
-
-      case $this->storage instanceof DALMP:
-        return $this->storage->PExecute('DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE ref=?', $ref);
+        $this->storage->Set($ref_key, $refs, 0);
+      }
+      return true;
       break;
 
-      default :
+    case $this->storage instanceof DALMP:
+      return $this->storage->PExecute('DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE ref=?', $ref);
+      break;
+
+    default :
       return $this->sdb->exec("DELETE FROM $this->dalmp_sessions_table WHERE ref='$ref'");
     }
   }
