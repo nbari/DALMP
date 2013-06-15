@@ -11,8 +11,10 @@ namespace DALMP\Cache;
  */
 class Redis implements Cache {
 
-  public function __construct() {
-      echo "my namespace is: ",__NAMESPACE__;
+  public function __construct($host='127.0.0.1', $port=6379, $timeout=1, $compress=False) {
+    $this->host = $host;
+    $this->port = $port;
+    $this->timeout = (int)$timeout;
   }
 
   /**
@@ -21,6 +23,8 @@ class Redis implements Cache {
    * @param string $host
    */
   public function host($host = null) {
+    $this->host = $host ? $host : '127.0.0.1';
+    return $this;
   }
 
   /**
@@ -30,6 +34,8 @@ class Redis implements Cache {
    * @param int $port
    */
   public function port($port = null) {
+    $this->port = $port ? (int) $port : null;
+    return $this;
   }
 
   /**
@@ -38,6 +44,18 @@ class Redis implements Cache {
    * @param int $timeout
    */
   public function timeout($timeout = 1){
+    $this->timeout = (int) $timeout;
+    return $this;
+  }
+
+  /**
+   * Enable / disable compression
+   * currently only works for memcache (nginx)
+   *
+   * @param int $status
+   */
+  public function compress($status) {
+    return $this;
   }
 
   /**
@@ -47,7 +65,15 @@ class Redis implements Cache {
    * @param string $value
    * @param int $expire time in seconds(default is 0 meaning unlimited)
    */
-  public function Set($key, $value, $expire = 0){
+  public function Set($key, $value, $expire = 0) {
+    $rs = false;
+    if ($this->connect()) {
+      $rs = ($expire == 0 || $expire == -1) ? $this->cache->set($key, serialize($value)) : $this->cache->setex($key, $expire, serialize($value));
+    }
+    if ($rs) {
+    } else {
+      /* cache on disk */
+    }
   }
 
   /**
@@ -84,6 +110,30 @@ class Redis implements Cache {
    * @return cache object
    */
   public function X(){
+  }
+
+  /**
+   * try to establish a connection
+   */
+  protected function connect() {
+    if ($this->cache instanceof Redis) {
+      return True;
+    } else {
+      if (!extension_loaded('redis')) {
+        trigger_error('ERROR ->' . __METHOD__ . ': redis extension not loaded! - http://github.com/nicolasff/phpredis', E_USER_NOTICE);
+        return False;
+      }
+
+      $redis = new Redis();
+
+      try {
+        $this->cache = $redis->connect($this->host, $this->port, $this->timeout) ? $redis : False;
+      } Catch (RedisException $e) {
+        trigger_error('ERROR ->' . __METHOD__ . $e->getMessage(), E_USER_NOTICE);
+        return False;
+      }
+      return True;
+    }
   }
 
 }
