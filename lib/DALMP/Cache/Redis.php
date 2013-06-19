@@ -9,7 +9,7 @@ namespace DALMP\Cache;
  * @license BSD License
  * @version 2.1
  */
-class Redis implements Cache {
+class Redis extends Base implements Cache {
 	private $host;
 	private $port;
 	private $timeout;
@@ -27,7 +27,7 @@ class Redis implements Cache {
 	 * @param string $value
 	 * @param int $expire time in seconds(default is 0 meaning unlimited)
 	 */
-	public function Set($key, $value, $expire = 0) {
+	protected function _set($key, $value, $expire = 0) {
 		$rs = false;
 		if ($this->connect()) {
 			$rs = ($expire == 0 || $expire == -1) ? $this->cache->set($key, serialize($value)) : $this->cache->setex($key, $expire, serialize($value));

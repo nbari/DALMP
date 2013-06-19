@@ -19,7 +19,7 @@ require_once 'lib/dalmp.php';
  */
 $type = 'Redis';
 $cache_ns = "DALMP\Cache\\$type";
-$cache = new  $cache_ns;
+$cache = new  $cache_ns('/tmp/redis.sock');
 
 # -----------------------------------------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;

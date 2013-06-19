@@ -2,14 +2,14 @@
 namespace DALMP\Cache;
 
 /**
- * Cache - Interface cache class
+ * CacheInterface - interface class
  *
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
  * @version 3.0
  */
-interface Cache {
+interface CacheInterface {
 
   /**
    * Constructor
