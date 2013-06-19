@@ -15,53 +15,9 @@ class Redis implements Cache {
 	private $timeout;
 
 	public function __construct($host='127.0.0.1', $port=6379, $timeout=1, $compress=False) {
-		if (strpos($string, '/') !== false) {
-			$this->sock = True;
-		}
 		$this->host = $host;
 		$this->port = $port;
 		$this->timeout = (int) $timeout;
-	}
-
-	/**
-	 * host, IP, or the path to a unix domain socket
-	 *
-	 * @param string $host
-	 */
-	public function host($host = null) {
-		$this->host = $host ? $host : '127.0.0.1';
-		return $this;
-	}
-
-	/**
-	 * Point to the port where the cache is listening for connections.
-	 * Set this parameter to 0 when using UNIX domain sockets.
-	 *
-	 * @param int $port
-	 */
-	public function port($port = null) {
-		$this->port = $port ? (int) $port : null;
-		return $this;
-	}
-
-	/**
-	 * Value in seconds which will be used for connecting
-	 *
-	 * @param int $timeout
-	 */
-	public function timeout($timeout = 1){
-		$this->timeout = (int) $timeout;
-		return $this;
-	}
-
-	/**
-	 * Enable / disable compression
-	 * currently only works for memcache (nginx)
-	 *
-	 * @param int $status
-	 */
-	public function compress($status) {
-		return $this;
 	}
 
 	/**
@@ -136,7 +92,7 @@ class Redis implements Cache {
 				/**
 				 * if a / found try to connect via socket
 				 */
-				if (strpos($string, '/') !== false) {
+				if (strpos($this->host, '/') !== false) {
 					$this->cache = $redis->connect($this->host) ? $redis : False;
 				} else {
 					$this->cache = $redis->connect($this->host, $this->port, $this->timeout) ? $redis : False;
