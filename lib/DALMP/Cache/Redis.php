@@ -9,7 +9,7 @@ namespace DALMP\Cache;
  * @license BSD License
  * @version 2.1
  */
-class Redis extends Base implements Cache {
+class Redis implements Cache {
 	private $host;
 	private $port;
 	private $timeout;
@@ -27,16 +27,12 @@ class Redis extends Base implements Cache {
 	 * @param string $value
 	 * @param int $expire time in seconds(default is 0 meaning unlimited)
 	 */
-	protected function _set($key, $value, $expire = 0) {
-		$rs = false;
+	protected function set($key, $value, $expire = 0) {
 		if ($this->connect()) {
-			$rs = ($expire == 0 || $expire == -1) ? $this->cache->set($key, serialize($value)) : $this->cache->setex($key, $expire, serialize($value));
-		}
-		if ($rs) {
-      return $rs;
-		} else {
-			/* set cache on disk */
-		}
+			return ($expire == 0 || $expire == -1) ? $this->cache->set($key, serialize($value)) : $this->cache->setex($key, $expire, serialize($value));
+    } else {
+      return False;
+    }
 	}
 
 	/**
@@ -45,15 +41,7 @@ class Redis extends Base implements Cache {
 	 * @param string $key
 	 */
 	public function Get($key){
-    $rs = false;
-    if ($this->connect()) {
-      $rs = unserialize($this->cache->get($key));
-    }
-    if ($rs) {
-      return $rs;
-    } else {
-      /* get cache from disk */
-    }
+    return $this->connect() ? unserialize($this->cache->get($key)) : false;
 	}
 
 	/*
@@ -87,7 +75,7 @@ class Redis extends Base implements Cache {
 	/**
 	 * try to establish a connection
 	 */
-	protected function connect() {
+	private function connect() {
 		if ($this->cache instanceof Redis) {
 			return True;
 		} else {
