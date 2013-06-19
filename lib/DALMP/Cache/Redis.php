@@ -33,8 +33,9 @@ class Redis implements Cache {
 			$rs = ($expire == 0 || $expire == -1) ? $this->cache->set($key, serialize($value)) : $this->cache->setex($key, $expire, serialize($value));
 		}
 		if ($rs) {
+      return $rs;
 		} else {
-			/* cache on disk */
+			/* set cache on disk */
 		}
 	}
 
@@ -44,6 +45,15 @@ class Redis implements Cache {
 	 * @param string $key
 	 */
 	public function Get($key){
+    $rs = false;
+    if ($this->connect()) {
+      $rs = unserialize($this->cache->get($key));
+    }
+    if ($rs) {
+      return $rs;
+    } else {
+      /* get cache from disk */
+    }
 	}
 
 	/*
@@ -97,7 +107,7 @@ class Redis implements Cache {
 				} else {
 					$this->cache = $redis->connect($this->host, $this->port, $this->timeout) ? $redis : False;
 				}
-			}Catch(RedisException $e) {
+			} catch (RedisException $e) {
 				trigger_error('ERROR ->' . __METHOD__ . $e->getMessage(), E_USER_NOTICE);
 				return False;
 			}
