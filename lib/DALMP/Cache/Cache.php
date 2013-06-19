@@ -7,39 +7,19 @@ namespace DALMP\Cache;
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 2.1
+ * @version 3.0
  */
 interface Cache {
 
   /**
-   * host, IP, or the path to a unix domain socket
+   * Constructor
    *
    * @param string $host
-   */
-  public function host($host = null);
-
-  /**
-   * Point to the port where the cache is listening for connections.
-   * Set this parameter to 0 when using UNIX domain sockets.
-   *
    * @param int $port
-   */
-  public function port($port = null);
-
-  /**
-   * Value in seconds which will be used for connecting
-   *
    * @param int $timeout
+   * @param bool $compress
    */
-  public function timeout($timeout = 1);
-
-  /**
-   * Enable / disable compression
-   * currently only works for memcache (nginx)
-   *
-   * @param int $status
-   */
-  public function compress($status);
+  public function __construct($host, $port, $timeout=1, $compress=False);
 
   /**
    * Store data at the server
