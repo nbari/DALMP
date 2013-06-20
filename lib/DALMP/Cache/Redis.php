@@ -9,12 +9,21 @@ namespace DALMP\Cache;
  * @license BSD License
  * @version 2.1
  */
-class Redis implements Cache {
+class Redis implements ICache {
 	private $host;
 	private $port;
 	private $timeout;
+  protected $cache;
 
-	public function __construct($host='127.0.0.1', $port=6379, $timeout=1, $compress=False) {
+  /**
+   * Constructor
+   *
+   * @param string $host
+   * @param int $port
+   * @param int $timeout
+   * @param bool $compress
+   */
+	public function __construct($host='127.0.0.1', $port=6379, $timeout=1) {
 		$this->host = $host;
 		$this->port = $port;
 		$this->timeout = (int) $timeout;
@@ -27,9 +36,9 @@ class Redis implements Cache {
 	 * @param string $value
 	 * @param int $expire time in seconds(default is 0 meaning unlimited)
 	 */
-	protected function set($key, $value, $expire = 0) {
+	public function set($key, $value, $expire = 0) {
 		if ($this->connect()) {
-			return ($expire == 0 || $expire == -1) ? $this->cache->set($key, serialize($value)) : $this->cache->setex($key, $expire, serialize($value));
+			return (bool) ($expire == 0 || $expire == -1) ? $this->cache->set($key, serialize($value)) : $this->cache->setex($key, $expire, serialize($value));
     } else {
       return False;
     }
@@ -44,7 +53,7 @@ class Redis implements Cache {
     return $this->connect() ? unserialize($this->cache->get($key)) : false;
 	}
 
-	/*
+	/**
 	 * Delete item from the server
 	 *
 	 * @param string $key
@@ -84,7 +93,7 @@ class Redis implements Cache {
 				return False;
 			}
 
-			$redis = new Redis();
+			$redis = new \Redis();
 
 			try {
 				/**

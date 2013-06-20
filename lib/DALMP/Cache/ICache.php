@@ -2,24 +2,14 @@
 namespace DALMP\Cache;
 
 /**
- * CacheInterface - interface class
+ * ICache - interface cache class
  *
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
  * @version 3.0
  */
-interface CacheInterface {
-
-  /**
-   * Constructor
-   *
-   * @param string $host
-   * @param int $port
-   * @param int $timeout
-   * @param bool $compress
-   */
-  public function __construct($host, $port, $timeout=1, $compress=False);
+interface ICache {
 
   /**
    * Store data at the server
