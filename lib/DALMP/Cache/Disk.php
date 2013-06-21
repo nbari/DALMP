@@ -12,17 +12,18 @@ namespace DALMP\Cache;
 class Disk implements ICache {
 
   public $cache_dir;
+
   /**
    * Constructor
    *
-   * @param string $host
-   * @param int $port
-   * @param int $timeout
-   * @param bool $compress
+   * @param string $dir
    */
   public function __construct($dir) {
-    $cache_dir = defined('DALMP_CACHE_DIR') ? DALMP_CACHE_DIR : '/tmp/dalmp';
-    $dalmp_cache_dir = $dalmp_cache_dir . '/' . substr($key, 0, 2);
+    if (!file_exists($dir)) {
+      if (!mkdir($dalmp_cache_dir, 0750, True)) {
+        throw new Exception("Can't create cache directory: $dir");
+      }
+    }
     $this->cache_dir = $dir;
   }
 
@@ -34,18 +35,10 @@ class Disk implements ICache {
    * @param int $expire time in seconds(default is 0 meaning unlimited)
    */
   public function set($key, $value, $expire = 0) {
-    $dalmp_cache_dir = defined('DALMP_CACHE_DIR') ? DALMP_CACHE_DIR : '/tmp/dalmp';
-    $dalmp_cache_dir = $dalmp_cache_dir . '/' . substr($key, 0, 2);
-    if (!file_exists($dalmp_cache_dir)) {
-      if (!mkdir($dalmp_cache_dir, 0750, true)) {
-        trigger_error('ERROR -> ' . __METHOD__ . ": dirCache - Cannot create: $dalmp_cache_dir", E_USER_NOTICE);
-        return false;
-      }
-    }
-    $cache_file = "$dalmp_cache_dir/dalmp_$key.cache";
+    $key = sha1($key);
+    $cache_file = $this->cache_dir . "/dalmp_{$key}.cache";
     if (!($fp = fopen($cache_file, 'w'))) {
-      trigger_error('ERROR -> ' . __METHOD__ . ": dirCache - Cannot create cache file $cache_file", E_USER_NOTICE);
-      return false;
+      throw new Exception('ERROR -> ' . __METHOD__ . ": Cannot create cache file $cache_file");
     }
     if (flock($fp, LOCK_EX) && ftruncate($fp, 0)) {
       if (fwrite($fp, serialize($value))) {
@@ -53,14 +46,12 @@ class Disk implements ICache {
         fclose($fp);
         chmod($cache_file, 0644);
         $time = time() + $expire;
-        touch($cache_file, $time);
-        return $this;
+        return touch($cache_file, $time);
       } else {
-        return false;
+        return False;
       }
     } else {
-      trigger_error('ERROR -> ' . __METHOD__ . ": dirCache Cannot lock/truncate the cache file: $cache_file", E_USER_NOTICE);
-      return false;
+      throw new Exception('ERROR -> ' . __METHOD__ . ": Cannot lock/truncate the cache file: $cache_file");
     }
   }
 
@@ -70,7 +61,8 @@ class Disk implements ICache {
    * @param string $key
    */
   public function Get($key){
-    $dalmp_cache_dir = defined('DALMP_CACHE_DIR') ? DALMP_CACHE_DIR : '/tmp/dalmp';
+    $key = sha1($key);
+    $cache_file = $this->cache_dir . "/dalmp_{$key}.cache";
     $dalmp_cache_dir = $dalmp_cache_dir . '/' . substr($key, 0, 2);
     $cache_file = "$dalmp_cache_dir/dalmp_$key.cache";
     $content = @file_get_contents($cache_file);
