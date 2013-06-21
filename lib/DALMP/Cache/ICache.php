@@ -42,7 +42,7 @@ interface ICache {
   /**
    * Get cache stats
    */
-  public function getStats();
+  public function Stats();
 
   /**
    * X execute/call custom methods

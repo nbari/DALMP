@@ -20,7 +20,7 @@ class Disk implements ICache {
    */
   public function __construct($dir) {
     if (!file_exists($dir)) {
-      if (!mkdir($dalmp_cache_dir, 0750, True)) {
+      if (!mkdir($dir, 0750, True)) {
         throw new Exception("Can't create cache directory: $dir");
       }
     }
@@ -36,22 +36,32 @@ class Disk implements ICache {
    */
   public function set($key, $value, $expire = 0) {
     $key = sha1($key);
-    $cache_file = $this->cache_dir . "/dalmp_{$key}.cache";
-    if (!($fp = fopen($cache_file, 'w'))) {
-      throw new Exception('ERROR -> ' . __METHOD__ . ": Cannot create cache file $cache_file");
+
+    $cache_path = sprintf('%s/%s/%s/%s', $this->cache_dir, substr($key, 0, 2), substr($key, 2, 2),  substr($key, 4, 2));
+
+    if (!file_exists($cache_path)) {
+      if (!mkdir($cache_path, 0750, True)) {
+        throw new Exception("Can't create cache directory tree : $cache_path");
+      }
     }
+
+    $cache_file = sprintf('%s/%s', $cache_path, "dalmp_{$key}.cache");
+
+    if (!($fp = fopen($cache_file, 'w'))) {
+      throw new Exception(__METHOD__ . ": Cannot create cache file $cache_file");
+    }
+
     if (flock($fp, LOCK_EX) && ftruncate($fp, 0)) {
       if (fwrite($fp, serialize($value))) {
         flock($fp, LOCK_UN);
         fclose($fp);
-        chmod($cache_file, 0644);
         $time = time() + $expire;
         return touch($cache_file, $time);
       } else {
         return False;
       }
     } else {
-      throw new Exception('ERROR -> ' . __METHOD__ . ": Cannot lock/truncate the cache file: $cache_file");
+      throw new Exception(__METHOD__ . ": Cannot lock/truncate the cache file: $cache_file");
     }
   }
 
@@ -62,23 +72,20 @@ class Disk implements ICache {
    */
   public function Get($key){
     $key = sha1($key);
-    $cache_file = $this->cache_dir . "/dalmp_{$key}.cache";
-    $dalmp_cache_dir = $dalmp_cache_dir . '/' . substr($key, 0, 2);
-    $cache_file = "$dalmp_cache_dir/dalmp_$key.cache";
+    $cache_file = sprintf('%s/%s/%s/%s/%s', $this->cache_dir, substr($key, 0, 2), substr($key, 2, 2),  substr($key, 4, 2), "dalmp_{$key}.cache");
     $content = @file_get_contents($cache_file);
     if ($content) {
-      $cache = unserialize(file_get_contents($cache_file));
-      $time = time();
+      $cache = unserialize($content);
       $cache_time = filemtime($cache_file);
-      $life = $cache_time - $time;
+      $life = $cache_time - time();
       if ($life > 0) {
         return $cache;
       } else {
         @unlink($cache_file);
-        return false;
+        return False;
       }
     } else {
-      return false;
+      return False;
     }
   }
 
@@ -99,7 +106,7 @@ class Disk implements ICache {
   /**
    * Get cache stats
    */
-  public function getStats(){
+  public function Stats(){
   }
 
   /**

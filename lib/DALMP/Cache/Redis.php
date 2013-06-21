@@ -21,7 +21,6 @@ class Redis implements ICache {
    * @param string $host
    * @param int $port
    * @param int $timeout
-   * @param bool $compress
    */
 	public function __construct($host='127.0.0.1', $port=6379, $timeout=1) {
 		$this->host = $host;
@@ -50,7 +49,7 @@ class Redis implements ICache {
 	 * @param string $key
 	 */
 	public function Get($key){
-    return $this->connect() ? unserialize($this->cache->get($key)) : false;
+    return $this->connect() ? unserialize($this->cache->get($key)) : False;
 	}
 
 	/**
@@ -59,18 +58,21 @@ class Redis implements ICache {
 	 * @param string $key
 	 */
 	public function Delete($key){
+    return $this->connect() ? $this->cache->delete($key) : False;
 	}
 
 	/**
 	 * Flush cache
 	 */
 	public function Flush(){
+    return $this->connect() ? $this->cache->flushDB() : False;
 	}
 
 	/**
 	 * Get cache stats
 	 */
-	public function getStats(){
+	public function Stats(){
+    return $this->connect() ? $this->cache->info() : False;
 	}
 
 	/**
@@ -79,6 +81,7 @@ class Redis implements ICache {
 	 * @return cache object
 	 */
 	public function X(){
+    return $this->connect() ? $this->cache : False;
 	}
 
 	/**
@@ -89,26 +92,23 @@ class Redis implements ICache {
 			return True;
 		} else {
 			if (!extension_loaded('redis')) {
-				trigger_error('ERROR ->' . __METHOD__ . ': redis extension not loaded! - http://github.com/nicolasff/phpredis', E_USER_NOTICE);
-				return False;
+        throw new Exception(__CLASS__ . 'redis extension not loaded! - http://github.com/nicolasff/phpredis');
 			}
 
 			$redis = new \Redis();
-
 			try {
 				/**
 				 * if a / found try to connect via socket
 				 */
 				if (strpos($this->host, '/') !== false) {
-					$this->cache = $redis->connect($this->host) ? $redis : False;
+					return $this->cache = $redis->connect($this->host) ? $redis : False;
 				} else {
-					$this->cache = $redis->connect($this->host, $this->port, $this->timeout) ? $redis : False;
+					return $this->cache = $redis->connect($this->host, $this->port, $this->timeout) ? $redis : False;
 				}
 			} catch (RedisException $e) {
 				trigger_error('ERROR ->' . __METHOD__ . $e->getMessage(), E_USER_NOTICE);
 				return False;
 			}
-			return True;
 		}
 	}
 
