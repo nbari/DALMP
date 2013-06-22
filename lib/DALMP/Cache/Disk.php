@@ -7,7 +7,7 @@ namespace DALMP\Cache;
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 2.1
+ * @version 3.0
  */
 class Disk implements CacheInterface {
 
@@ -95,12 +95,16 @@ class Disk implements CacheInterface {
    * @param string $key
    */
   public function Delete($key){
+    $key = sha1($key);
+    $cache_file = sprintf('%s/%s/%s/%s/%s', $this->cache_dir, substr($key, 0, 2), substr($key, 2, 2),  substr($key, 4, 2), "dalmp_{$key}.cache");
+    return @unlink($cache_file) ? $this : false;
   }
 
   /**
    * Flush cache
    */
   public function Flush(){
+    return $this->delTree($this->cache_dir);
   }
 
   /**
@@ -115,37 +119,28 @@ class Disk implements CacheInterface {
    * @return cache object
    */
   public function X(){
+    return $this;
   }
 
   /**
    * try to establish a connection
    */
   private function connect() {
-    if ($this->cache instanceof Redis) {
-      return True;
-    } else {
-      if (!extension_loaded('redis')) {
-        trigger_error('ERROR ->' . __METHOD__ . ': redis extension not loaded! - http://github.com/nicolasff/phpredis', E_USER_NOTICE);
-        return False;
-      }
+    return True;
+  }
 
-      $redis = new \Redis();
-
-      try {
-        /**
-         * if a / found try to connect via socket
-         */
-        if (strpos($this->host, '/') !== false) {
-          $this->cache = $redis->connect($this->host) ? $redis : False;
-        } else {
-          $this->cache = $redis->connect($this->host, $this->port, $this->timeout) ? $redis : False;
-        }
-      } catch (RedisException $e) {
-        trigger_error('ERROR ->' . __METHOD__ . $e->getMessage(), E_USER_NOTICE);
-        return False;
-      }
-      return True;
+  /**
+   * recursive method for deleting directories
+   *
+   * @param string $dir
+   * @return TRUE on success or FALSE on failure.
+   */
+  protected function delTree($dir) {
+    $files = array_diff(scandir($dir), array('.','..'));
+    foreach ($files as $file) {
+      (is_dir("$dir/$file")) ? $this->delTree("$dir/$file") : unlink("$dir/$file");
     }
+    return rmdir($dir);
   }
 
 }
