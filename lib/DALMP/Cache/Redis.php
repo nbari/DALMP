@@ -9,7 +9,7 @@ namespace DALMP\Cache;
  * @license BSD License
  * @version 2.1
  */
-class Redis implements ICache {
+class Redis implements CacheInterface {
 	private $host;
 	private $port;
 	private $timeout;

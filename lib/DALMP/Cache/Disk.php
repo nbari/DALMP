@@ -9,7 +9,7 @@ namespace DALMP\Cache;
  * @license BSD License
  * @version 2.1
  */
-class Disk implements ICache {
+class Disk implements CacheInterface {
 
   public $cache_dir;
 

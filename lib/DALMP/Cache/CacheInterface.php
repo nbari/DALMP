@@ -2,14 +2,14 @@
 namespace DALMP\Cache;
 
 /**
- * ICache - interface cache class
+ * CacheInterface - interface cache class
  *
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
  * @version 3.0
  */
-interface ICache {
+interface CacheInterface {
 
   /**
    * Store data at the server

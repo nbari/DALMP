@@ -9,7 +9,7 @@ namespace DALMP\Cache;
  * @license BSD License
  * @version 2.1
  */
-class Memcache implements ICache {
+class Memcache implements CacheInterface {
   private $host;
   private $port;
   private $timeout;
