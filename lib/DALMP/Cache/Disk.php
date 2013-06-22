@@ -21,7 +21,7 @@ class Disk implements CacheInterface {
   public function __construct($dir) {
     if (!file_exists($dir)) {
       if (!mkdir($dir, 0750, True)) {
-        throw new Exception("Can't create cache directory: $dir");
+        throw new \Exception("Can't create cache directory: $dir");
       }
     }
     $this->cache_dir = $dir;
@@ -41,14 +41,14 @@ class Disk implements CacheInterface {
 
     if (!file_exists($cache_path)) {
       if (!mkdir($cache_path, 0750, True)) {
-        throw new Exception("Can't create cache directory tree : $cache_path");
+        throw new \Exception("Can't create cache directory tree : $cache_path");
       }
     }
 
     $cache_file = sprintf('%s/%s', $cache_path, "dalmp_{$key}.cache");
 
     if (!($fp = fopen($cache_file, 'w'))) {
-      throw new Exception(__METHOD__ . ": Cannot create cache file $cache_file");
+      throw new \Exception(__METHOD__ . ": Cannot create cache file $cache_file");
     }
 
     if (flock($fp, LOCK_EX) && ftruncate($fp, 0)) {
@@ -61,7 +61,7 @@ class Disk implements CacheInterface {
         return False;
       }
     } else {
-      throw new Exception(__METHOD__ . ": Cannot lock/truncate the cache file: $cache_file");
+      throw new \Exception(__METHOD__ . ": Cannot lock/truncate the cache file: $cache_file");
     }
   }
 

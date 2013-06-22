@@ -98,7 +98,7 @@ class Memcache implements CacheInterface {
       return True;
     } else {
       if (!extension_loaded('memcache')) {
-        throw new Exception(__CLASS__ . 'Memcache PECL extension not loaded! - http://pecl.php.net/package/memcache');
+        throw new \Exception(__CLASS__ . 'Memcache PECL extension not loaded! - http://pecl.php.net/package/memcache');
       }
 
       $memcache = new \Memcache();

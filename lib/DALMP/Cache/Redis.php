@@ -92,7 +92,7 @@ class Redis implements CacheInterface {
 			return True;
 		} else {
 			if (!extension_loaded('redis')) {
-        throw new Exception(__CLASS__ . 'redis extension not loaded! - http://github.com/nicolasff/phpredis');
+        throw new \Exception(__CLASS__ . 'redis extension not loaded! - http://github.com/nicolasff/phpredis');
 			}
 
 			$redis = new \Redis();
@@ -105,7 +105,7 @@ class Redis implements CacheInterface {
 				} else {
 					return $this->cache = $redis->connect($this->host, $this->port, $this->timeout) ? $redis : False;
 				}
-			} catch (RedisException $e) {
+			} catch (\RedisException $e) {
 				trigger_error('ERROR ->' . __METHOD__ . $e->getMessage(), E_USER_NOTICE);
 				return False;
 			}

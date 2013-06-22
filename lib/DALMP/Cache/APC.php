@@ -22,7 +22,7 @@ class APC implements CacheInterface {
    */
   public function __construct() {
     if (!extension_loaded('apc') && !ini_get('apc.enabled')) {
-      throw new Exception(__CLASS__ . ': APC PECL extension not loaded or enabled!');
+      throw new \Exception(__CLASS__ . ': APC PECL extension not loaded or enabled!');
     }
   }
 
