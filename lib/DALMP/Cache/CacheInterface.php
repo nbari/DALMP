@@ -2,7 +2,7 @@
 namespace DALMP\Cache;
 
 /**
- * CacheInterface - interface cache class
+ * CacheInterface - cache interface
  *
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
@@ -16,14 +16,16 @@ interface CacheInterface {
    *
    * @param string $key
    * @param string $value
-   * @param int $expire time in seconds(default is 0 meaning unlimited)
+   * @param int $ttl time in seconds(default is 0 meaning unlimited)
+   * @return bool
    */
-  public function Set($key, $value, $expire = 0);
+  public function Set($key, $value, $ttl = 0);
 
   /**
    * Retrieve item from the server
    *
    * @param string $key
+   * @return mixed
    */
   public function Get($key);
 
@@ -31,16 +33,21 @@ interface CacheInterface {
    * Delete item from the server
    *
    * @param string $key
+   * @return bool
    */
   public function Delete($key);
 
   /**
    * Flush cache
+   *
+   * @return bool
    */
   public function Flush();
 
   /**
    * Get cache stats
+   *
+   * @return bool
    */
   public function Stats();
 

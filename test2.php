@@ -17,15 +17,16 @@ require_once 'lib/dalmp.php';
  * database: dalmptest
  *
  */
-$type = 'Redis';
-$cache_ns = "DALMP\Cache\\$type";
+#$type = 'Redis';
+#$cache_ns = "DALMP\Cache\\$type";
 #$cache = new $cache_ns('/tmp/redis.sock');
-$cache = new $cache_ns();
-$cache = new $cache_ns();
+#$cache = new $cache_ns();
+#$cache = new $cache_ns();
 #$cache = new DALMP\Cache\Disk('/tmp/dalmp');
-
 #$cache = new DALMP\Cache\Memcache;
-var_dump($cache->set('test', False, 300));
+
+$cache = new DALMP\Cache(new DALMP\Cache\DISK('/tmp/dalmp'));
+var_dump($cache->set('test', 'False', 300));
 var_dump($cache->get('test'));
 # print_r($cache->stats());
 
