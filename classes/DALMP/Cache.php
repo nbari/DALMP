@@ -317,10 +317,9 @@ class DALMP_Cache {
         $cache_file = "$dalmp_cache_dir/dalmp_$key.cache";
         $content = @file_get_contents($cache_file);
         if ($content) {
-          $cache = unserialize(file_get_contents($cache_file));
-          $time = time();
+          $cache = unserialize($content);
           $cache_time = filemtime($cache_file);
-          $life = $cache_time - $time;
+          $life = $cache_time - time();
           if ($life > 0) {
             return $cache;
           } else {
