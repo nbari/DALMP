@@ -21,7 +21,7 @@ class Disk implements CacheInterface {
   public function __construct($dir) {
     if (!file_exists($dir)) {
       if (!mkdir($dir, 0750, True)) {
-        throw new \Exception("Can't create cache directory: $dir");
+        throw new \Exception("Can't create cache directory: {$dir}");
       }
     }
     $this->cache_dir = $dir;
@@ -81,7 +81,7 @@ class Disk implements CacheInterface {
       if ($life > 0) {
         return $cache;
       } else {
-        @unlink($cache_file);
+        unlink($cache_file);
         return False;
       }
     } else {
@@ -97,20 +97,38 @@ class Disk implements CacheInterface {
   public function Delete($key){
     $key = sha1($key);
     $cache_file = sprintf('%s/%s/%s/%s/%s', $this->cache_dir, substr($key, 0, 2), substr($key, 2, 2),  substr($key, 4, 2), "dalmp_{$key}.cache");
-    return @unlink($cache_file) ? $this : false;
+    return unlink($cache_file);
   }
 
   /**
    * Flush cache
    */
   public function Flush(){
-    return $this->delTree($this->cache_dir);
+    $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->cache_dir, \RecursiveDirectoryIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
+
+    foreach ($files as $fileinfo) {
+      $todo = $fileinfo->isDir() ? 'rmdir' : 'unlink';
+      $todo($fileinfo->getRealPath());
+    }
+
+    return rmdir($this->cache_dir);
   }
 
   /**
    * Get cache stats
    */
   public function Stats(){
+    $total_bytes = 0;
+    $total_files = 0;
+
+    $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->cache_dir, \RecursiveDirectoryIterator::SKIP_DOTS));
+    foreach ($files as $fileinfo) {
+      $total_bytes += $fileinfo->getSize();
+      $total_files++;
+    }
+
+    return array('Total Bytes' => number_format($total_bytes),
+      'Files' => $total_files);
   }
 
   /**
@@ -120,27 +138,6 @@ class Disk implements CacheInterface {
    */
   public function X(){
     return $this;
-  }
-
-  /**
-   * try to establish a connection
-   */
-  private function connect() {
-    return True;
-  }
-
-  /**
-   * recursive method for deleting directories
-   *
-   * @param string $dir
-   * @return TRUE on success or FALSE on failure.
-   */
-  protected function delTree($dir) {
-    $files = array_diff(scandir($dir), array('.','..'));
-    foreach ($files as $file) {
-      (is_dir("$dir/$file")) ? $this->delTree("$dir/$file") : unlink("$dir/$file");
-    }
-    return rmdir($dir);
   }
 
 }
