@@ -72,11 +72,10 @@ class Logger {
           if (!is_dir(dirname($logfile)) && !mkdir(dirname($logfile), 0700, True)) {
             throw new \Exception("Can't create log directory for: {$logfile}");
           }
-        } else {
-          $this->log2file = True;
-          $this->logfile = $logfile;
         }
       }
+      $this->log2file = (int) $log2file;
+      $this->logfile = $logfile;
     }
 
     if (php_sapi_name() === 'cli') {
