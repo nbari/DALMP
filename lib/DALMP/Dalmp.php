@@ -9,7 +9,7 @@ namespace DALMP;
  * @license BSD License
  * @version 3.0
  */
-class DALMP {
+class Database {
 
   /**
    * Contains database object
