@@ -12,15 +12,15 @@ namespace DALMP;
 class Logger {
 
   /**
-   * write debug output to file
+   * write log to file
    *
    * @access private
    * @var boolean
    */
-  private $log2file;
+  private $log2file = False;
 
   /**
-   * file to write logs
+   * file to write log
    *
    * @access private
    * @var mixed
@@ -65,23 +65,25 @@ class Logger {
    * @param int $log2file if > 1 will create separate log files
    * @param string $logfile
    */
-  public function __construct($log2file = false, $logfile = false) {
-    $this->log2file = $log2file;
-    $this->time_start = microtime(true);
+  public function __construct($log2file = False, $logfile = False) {
+    if ($log2file) {
+      if ($logfile) {
+        if (!file_exists($logfile)) {
+          if (!is_dir(dirname($logfile)) && !mkdir(dirname($logfile), 0700, True)) {
+            throw new \Exception("Can't create log directory for: {$logfile}");
+          }
+        } else {
+          $this->log2file = True;
+          $this->logfile = $logfile;
+        }
+      }
+    }
 
     if (php_sapi_name() === 'cli') {
       $this->is_cli = True;
     }
 
-    if ($log2file && $logfile) {
-      if (!file_exists($logfile)) {
-        if (!is_dir(dirname($logfile)) && !mkdir(dirname($logfile), 0700, True)) {
-          throw new \Exception("Can't create log directory for: {$logfile}");
-        }
-      }
-      $this->logfile = $logfile;
-    }
-
+    $this->time_start = microtime(true);
   }
 
   public function log() {
