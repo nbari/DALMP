@@ -20,6 +20,14 @@ class Logger {
   private $log2file;
 
   /**
+   * file to write logs
+   *
+   * @access private
+   * @var mixed
+   */
+  private $logfile;
+
+  /**
    * holds the time where debug begins
    *
    * @access private
@@ -33,7 +41,7 @@ class Logger {
    * @access private
    * @var int
    */
-  private $decimals = 4;
+  private $decimals = 5;
 
   /**
    * Contents the log
@@ -51,12 +59,29 @@ class Logger {
    */
   private $is_cli = False;
 
-  public function __construct($log2file = false) {
+  /**
+   * constructor
+   *
+   * @param int $log2file if > 1 will create separate log files
+   * @param string $logfile
+   */
+  public function __construct($log2file = false, $logfile = false) {
     $this->log2file = $log2file;
     $this->time_start = microtime(true);
+
     if (php_sapi_name() === 'cli') {
       $this->is_cli = True;
     }
+
+    if ($log2file && $logfile) {
+      if (!file_exists($logfile)) {
+        if (!is_dir(dirname($logfile)) && !mkdir(dirname($logfile), 0700, True)) {
+          throw new \Exception("Can't create log directory for: {$logfile}");
+        }
+      }
+      $this->logfile = $logfile;
+    }
+
   }
 
   public function log() {
@@ -70,15 +95,14 @@ class Logger {
 
   public function getLog() {
     if ($this->log2file) {
-      $debugFile = defined('DALMP_DEBUG_FILE') ? DALMP_DEBUG_FILE : DALMP_DIR . '/dalmp.log';
-      if (!file_exists($debugFile)) {
-        @mkdir(dirname($debugFile), 0700, true);
-      }
       if ($this->log2file > 1) {
-        $debugFile .= '-' . microtime(true);
+        $this->logfile .= '-' . microtime(true);
       }
-      $fh = fopen($debugFile, 'a+');
+      $fh = fopen($this->logfile, 'a+');
       $start = str_repeat('-', 80) . PHP_EOL;
+      if ($this->log2file > 1) {
+        fwrite($fh, $start);
+      }
       fwrite($fh, 'START ' . @date('c') . PHP_EOL);
       fwrite($fh, $start);
     } elseif ($this->is_cli) {
@@ -96,7 +120,7 @@ class Logger {
         if ($this->log2file) {
           fwrite($fh, "$spaces$key - $etime - " . stripslashes($log) . PHP_EOL);
         } else {
-          echo "$hr$spaces$key - $etime - " . stripslashes($log) . '<br/>';
+          echo "$hr$spaces$key - $etime - " . stripslashes($log) . ($this->is_cli ? PHP_EOL : '<br/>');
         }
       }
     }
