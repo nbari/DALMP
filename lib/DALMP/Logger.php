@@ -43,9 +43,20 @@ class Logger {
    */
   private $log = array();
 
+  /**
+   * is_cli
+   *
+   * @access private
+   * @var bool
+   */
+  private $is_cli = False;
+
   public function __construct($log2file = false) {
     $this->log2file = $log2file;
     $this->time_start = microtime(true);
+    if (php_sapi_name() === 'cli') {
+      $this->is_cli = True;
+    }
   }
 
   public function log() {
@@ -70,7 +81,7 @@ class Logger {
       $start = str_repeat('-', 80) . PHP_EOL;
       fwrite($fh, 'START ' . @date('c') . PHP_EOL);
       fwrite($fh, $start);
-    } elseif (DALMP::isCli()) {
+    } elseif ($this->is_cli) {
       echo str_repeat('-', 80) . PHP_EOL;
       $hr = null;
     } else {
@@ -85,7 +96,7 @@ class Logger {
         if ($this->log2file) {
           fwrite($fh, "$spaces$key - $etime - " . stripslashes($log) . PHP_EOL);
         } else {
-          echo "$hr$spaces$key - $etime - " . stripslashes($log) . DALMP::isCli(1);
+          echo "$hr$spaces$key - $etime - " . stripslashes($log) . '<br/>';
         }
       }
     }
@@ -95,7 +106,7 @@ class Logger {
       fwrite($fh, 'END ' . @date('c') . ' - [Memory usage: ' . memory_get_usage(true) . ', ' . memory_get_peak_usage(true) . ']' . PHP_EOL);
       fwrite($fh, $start);
       fclose($fh);
-    } elseif (DALMP::isCli()) {
+    } elseif ($this->is_cli) {
       echo str_repeat('-', 80) . PHP_EOL;
     } else {
       echo '</div>';
