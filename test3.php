@@ -7,8 +7,14 @@ $timer = new mplt();
  */
 require_once 'lib/dalmp.php';
 
-$ses = new DALMP\Sessions();
+$files = new DALMP\Sessions\Files();
+$ses = new DALMP\Sessions($files);
 
+var_dump($ses);
 
+$_SESSION['ok'] = True;
+
+echo $_SESSION['ok'];
+echo 'aa';
 # -----------------------------------------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;

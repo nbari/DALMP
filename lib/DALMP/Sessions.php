@@ -9,7 +9,7 @@ class Sessions {
    * @access private
    * @SessionHandlerInterface
    */
-  private $sessions_handler;
+  private $session_handler;
 
   /**
    * construct - set the sesion save handler
@@ -19,10 +19,10 @@ class Sessions {
   public function __construct() {
     $args = func_get_args();
     if (empty($args)) {
-      $this->sessions_handler = new DALMP\Sessions\SQLite();
+      $this->session_handler = new DALMP\Sessions\SQLite();
     } else {
       if ($args[0] instanceof \SessionHandlerInterface) {
-        $this->sessions_handler = $args[0];
+        $this->session_handler = $args[0];
       } else {
         throw new \InvalidArgumentException((string) $args[0] . ' is not an intance of SessionHandlerInterface');
       }

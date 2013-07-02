@@ -1,7 +1,7 @@
 <?php
 namespace DALMP\Sessions;
 
-class SQLite implements \SessionHandlerInterface {
+class Redis implements \SessionHandlerInterface {
 
   public function close() {
   }
