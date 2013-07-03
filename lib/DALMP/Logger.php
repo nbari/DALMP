@@ -68,7 +68,7 @@ class Logger {
   public function __construct($log2file = False, $logfile = False) {
     if ($log2file) {
       if ($logfile) {
-        if (!file_exists($logfile)) {
+        if (!is_writable($logfile)) {
           if (!is_dir(dirname($logfile)) && !mkdir(dirname($logfile), 0700, True)) {
             throw new \Exception("Can't create log directory for: {$logfile}");
           }
