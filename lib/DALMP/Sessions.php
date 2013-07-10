@@ -28,6 +28,7 @@ class Sessions {
       }
     }
 
+    session_module_name('user');
     session_set_save_handler($this->session_handler, True);
 
     ini_set('session.gc_maxlifetime', defined('DALMP_SESSIONS_MAXLIFETIME') ? DALMP_SESSIONS_MAXLIFETIME : get_cfg_var('session.gc_maxlifetime'));
