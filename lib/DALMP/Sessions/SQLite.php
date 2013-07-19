@@ -82,4 +82,7 @@ class SQLite implements \SessionHandlerInterface {
     return $this->sdb->exec($sql);
   }
 
+  public function getSessionsRefs($expiry = NULL) {
+  }
+
 }
