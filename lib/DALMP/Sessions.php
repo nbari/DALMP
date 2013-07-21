@@ -39,6 +39,8 @@ class Sessions {
     ini_set('session.use_trans_sid', 0);
     ini_set('session.hash_function', 'sha256');
     ini_set('session.hash_bits_per_character', 5);
+    @ini_set('session.entropy_file', '/dev/urandom');
+    @ini_set('session.entropy_length', '128');
 
     session_start();
   }
