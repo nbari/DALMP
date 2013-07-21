@@ -42,4 +42,13 @@ class Sessions {
     session_start();
   }
 
+  public function __call($method, $args) {
+    if (!method_exists($this->session_handler, $method)) {
+      throw new \Exception("Undefined method {$method}");
+    }
+
+    return call_user_func_array(array($this->session_handler, $method), $args);
+
+  }
+
 }

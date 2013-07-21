@@ -82,7 +82,80 @@ class SQLite implements \SessionHandlerInterface {
     return $this->sdb->exec($sql);
   }
 
-  public function getSessionsRefs($expiry = NULL) {
+  /**
+   * getSessionsRefs - get all sessions containing references
+   *
+   * @param int $expiry
+   * @return array of sessions
+   */
+  public function getSessionsRefs($expired_sessions = False) {
+    $refs = array();
+    $rs = ($expired_sessions) ? $this->sdb->query("SELECT sid, ref, expiry FROM dalmp_sessions WHERE expiry > strftime('%s','now')") : $this->sdb->query('SELECT sid, ref, expiry FROM dalmp_sessions');
+    while ($value = $rs->fetchArray(SQLITE3_ASSOC)) {
+      $refs[$value['sid']] = array($value['ref'] => $value['expiry']);
+    }
+    return $refs;
+  }
+
+  /**
+   * getSessionsRef - get session containing a specific reference
+   *
+   * @param string $ref
+   * @return array sessions
+   */
+  public function getSessionRef($ref) {
+    $refs = $this->getSessionsRefs();
+    $rs = array();
+    foreach ($refs as $key => $expiry) {
+      if (key($expiry) == $ref) {
+        $rs[$key] = key($expiry);
+      }
+    }
+    return $rs;
+  }
+
+  /**
+   * del sessions ref - delete sessions containing a specific reference
+   *
+   * @param string $ref
+   * @return boolean
+   */
+  public function delSessionRef($ref) {
+    return $this->sdb->exec("DELETE FROM dalmp_sessions WHERE ref='$ref'");
+  }
+
+  /**
+   * regenerate id - regenerate sessions and create a fingerprint, helps to
+   * prevent HTTP session hijacking attacks.
+   *
+   * @param int $check_ipv4_blocks
+   */
+  public function regenerate_id($check_ipv4_blocks = null) {
+    $fingerprint = 'DALMP-|' . @$_SERVER['HTTP_ACCEPT_LANGUAGE'] . @$_SERVER['HTTP_USER_AGENT'] . '|';
+    if ($check_ipv4_blocks) {
+      $num_blocks = abs($check_ipv4_blocks);
+      if ($num_blocks > 4) {
+        $num_blocks = 4;
+      }
+      if ($ip = $this->getIPv4()) { // pending validation for ipv6
+        $blocks = explode('.', $ip);
+        for ($i = 0; $i < $num_blocks; $i++) {
+          $fingerprint.= $blocks[$i] . '.';
+        }
+      }
+    }
+    $fingerprint = sha1($fingerprint);
+    $old_sid = session_id();
+    if ( (isset($_SESSION['fingerprint']) && $_SESSION['fingerprint'] != $fingerprint) ) {
+      $_SESSION = array();
+      session_destroy();
+    }
+    if (session_regenerate_id(true)) {
+      $_SESSION['fingerprint'] = $fingerprint;
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }
