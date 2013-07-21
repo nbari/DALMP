@@ -130,31 +130,18 @@ class SQLite implements \SessionHandlerInterface {
    *
    * @param int $check_ipv4_blocks
    */
-  public function regenerate_id($check_ipv4_blocks = null) {
-    $fingerprint = 'DALMP-|' . @$_SERVER['HTTP_ACCEPT_LANGUAGE'] . @$_SERVER['HTTP_USER_AGENT'] . '|';
-    if ($check_ipv4_blocks) {
-      $num_blocks = abs($check_ipv4_blocks);
-      if ($num_blocks > 4) {
-        $num_blocks = 4;
-      }
-      if ($ip = $this->getIPv4()) { // pending validation for ipv6
-        $blocks = explode('.', $ip);
-        for ($i = 0; $i < $num_blocks; $i++) {
-          $fingerprint.= $blocks[$i] . '.';
-        }
-      }
-    }
-    $fingerprint = sha1($fingerprint);
+  public function regenerate_id() {
+    $fingerprint = sha1('DALMP' . @$_SERVER['HTTP_ACCEPT_LANGUAGE'] . @$_SERVER['HTTP_USER_AGENT'] . @$_SERVER['REMOTE_ADDR']);
     $old_sid = session_id();
     if ( (isset($_SESSION['fingerprint']) && $_SESSION['fingerprint'] != $fingerprint) ) {
       $_SESSION = array();
       session_destroy();
     }
-    if (session_regenerate_id(true)) {
+    if (session_regenerate_id(True)) {
       $_SESSION['fingerprint'] = $fingerprint;
-      return true;
+      return True;
     } else {
-      return false;
+      return False;
     }
   }
 

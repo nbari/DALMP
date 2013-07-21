@@ -35,9 +35,10 @@ class Sessions {
     ini_set('session.name', 'DALMP');
     ini_set('session.use_cookies', 1);
     ini_set('session.use_only_cookies', 1);
+    ini_set('session.cookie_httponly', 1);
     ini_set('session.use_trans_sid', 0);
-    @ini_set('session.hash_function', 1); // sha1
-    @ini_set('session.hash_bits_per_character', 5);
+    ini_set('session.hash_function', 'sha256');
+    ini_set('session.hash_bits_per_character', 5);
 
     session_start();
   }
