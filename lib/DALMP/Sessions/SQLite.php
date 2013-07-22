@@ -42,7 +42,7 @@ class SQLite implements \SessionHandlerInterface {
     }
 
     $this->sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
-    $this->sdb->exec('CREATE TABLE IF NOT EXISTS dalmp_sessions (sid varchar(40) NOT NULL, expiry INTEGER NOT NULL, data text, ref text, PRIMARY KEY(sid)); CREATE INDEX IF NOT EXISTS "dalmp_index" ON dalmp_sessions ("sid" DESC, "expiry" DESC, "ref" DESC)');
+    $this->sdb->exec('CREATE TABLE IF NOT EXISTS dalmp_sessions (sid VARCHAR NOT NULL, expiry INTEGER NOT NULL, data TEXT, ref TEXT, PRIMARY KEY(sid)); CREATE INDEX IF NOT EXISTS "dalmp_index" ON dalmp_sessions ("sid" DESC, "expiry" DESC, "ref" DESC)');
     $this->sessions_ref = $sessions_ref;
   }
 
