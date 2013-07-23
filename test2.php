@@ -25,7 +25,7 @@ require_once 'lib/dalmp.php';
 #$cache = new DALMP\Cache\Disk('/tmp/dalmp');
 #$cache = new DALMP\Cache\Memcache;
 
-$cache = new DALMP\Cache(new DALMP\Cache\DISK('/tmp/dalmp'));
+$cache = new DALMP\Cache(new DALMP\Cache\Disk('/tmp/dalmp'));
 $log = new DALMP\Logger(0, '/tmp/my.log');
 var_dump($cache->set('test', False, 300));
 var_dump($cache->get('test'));
