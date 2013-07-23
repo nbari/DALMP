@@ -84,8 +84,7 @@ class SQLite implements \SessionHandlerInterface {
 
   public function write($session_id, $session_data) {
     $ref = (isset($GLOBALS[$this->sessions_ref]) && !empty($GLOBALS[$this->sessions_ref])) ? $GLOBALS[$this->sessions_ref] : NULL;
-    $timeout = ini_get('session.gc_maxlifetime');
-    $expiry = time() + $timeout;
+    $expiry = time() + ini_get('session.gc_maxlifetime');
     $stmt = $this->sdb->prepare('INSERT OR REPLACE INTO dalmp_sessions (sid, expiry, data, ref) VALUES (:sid, :expiry, :data, :ref)');
     $stmt->bindValue(':sid', $session_id, SQLITE3_TEXT);
     $stmt->bindValue(':expiry', $expiry, SQLITE3_INTEGER);
@@ -103,8 +102,8 @@ class SQLite implements \SessionHandlerInterface {
   public function getSessionsRefs($expired_sessions = False) {
     $refs = array();
     $rs = ($expired_sessions) ? $this->sdb->query("SELECT sid, ref, expiry FROM dalmp_sessions WHERE expiry > strftime('%s','now')") : $this->sdb->query('SELECT sid, ref, expiry FROM dalmp_sessions');
-    while ($value = $rs->fetchArray(SQLITE3_ASSOC)) {
-      $refs[$value['sid']] = array($value['ref'] => $value['expiry']);
+    while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
+      $refs[$row['sid']] = array($row['ref'] => $row['expiry']);
     }
     return $refs;
   }
@@ -118,9 +117,9 @@ class SQLite implements \SessionHandlerInterface {
   public function getSessionRef($ref) {
     $refs = $this->getSessionsRefs();
     $rs = array();
-    foreach ($refs as $key => $expiry) {
-      if (key($expiry) == $ref) {
-        $rs[$key] = key($expiry);
+    foreach ($refs as $sid => $data) {
+      if (key($data) == $ref) {
+        $rs[$sid] = key($data);
       }
     }
     return $rs;
