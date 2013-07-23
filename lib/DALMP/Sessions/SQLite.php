@@ -100,7 +100,7 @@ class SQLite implements \SessionHandlerInterface {
    */
   public function getSessionsRefs($expired_sessions = False) {
     $refs = array();
-    $rs = ($expired_sessions) ? $this->sdb->query("SELECT sid, ref, expiry FROM dalmp_sessions WHERE expiry > strftime('%s','now')") : $this->sdb->query('SELECT sid, ref, expiry FROM dalmp_sessions');
+    $rs = ($expired_sessions) ? $this->sdb->query("SELECT sid, ref, expiry FROM dalmp_sessions WHERE expiry > strftime('%s','now') AND ref NOT NULL") : $this->sdb->query('SELECT sid, ref, expiry FROM dalmp_sessions WHERE ref NOT NULL');
     while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
       $refs[$row['sid']] = array($row['ref'] => $row['expiry']);
     }
