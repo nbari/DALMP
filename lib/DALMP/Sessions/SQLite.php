@@ -115,7 +115,7 @@ class SQLite implements \SessionHandlerInterface {
    */
   public function getSessionRef($ref) {
     $refs = array();
-    $stmt = $this->sdb->prepare('SELECT sid, ref, expiry FROM dalmp_sessions WHERE ref = :ref');
+    $stmt = $this->sdb->prepare('SELECT sid, ref, expiry FROM dalmp_sessions WHERE ref=:ref');
     $stmt->bindValue(':ref', $ref, SQLITE3_TEXT);
     if ($rs = $stmt->execute()) {
       while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
