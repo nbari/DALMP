@@ -126,7 +126,7 @@ class SQLite implements \SessionHandlerInterface {
   }
 
   /**
-   * del sessions ref - delete sessions containing a specific reference
+   * delSessionRef - delete sessions containing a specific reference
    *
    * @param string $ref
    * @return boolean
