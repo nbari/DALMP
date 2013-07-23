@@ -14,16 +14,17 @@ class Sessions {
   /**
    * construct - set the sesion save handler
    *
-   * @param SessionHandlerInterface object
+   * @param SessionHandlerInterface $session_handler
+   * @param hash_algo $session_hash
    */
-  public function __construct($session_handler = False, $session_hash = 'sha256') {
-    if (!($session_handler)) {
+  public function __construct($session_handler = False, $hash_algo = 'sha256') {
+    if (!$session_handler) {
       $this->session_handler = new DALMP\Sessions\SQLite();
     } else {
       if ($session_handler instanceof \SessionHandlerInterface) {
         $this->session_handler = $session_handler;
       } else {
-        throw new \InvalidArgumentException((string) $session_handler . ' is not an intance of SessionHandlerInterface');
+        throw new \InvalidArgumentException((string) $session_handler . ' is not an instance of SessionHandlerInterface');
       }
     }
 
@@ -33,7 +34,7 @@ class Sessions {
     ini_set('session.cookie_httponly', 1);
     ini_set('session.use_trans_sid', 0);
     ini_set('session.hash_bits_per_character', 5);
-    ini_set('session.hash_function', in_array($session_hash, hash_algos()) ? $session_hash : 1);
+    ini_set('session.hash_function', in_array($hash_algo, hash_algos()) ? $hash_algo : 1);
     ini_set('session.name', 'DALMP');
 
     session_module_name('user');

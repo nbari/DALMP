@@ -24,7 +24,7 @@ class SQLite implements \SessionHandlerInterface {
    * @param string $filename Path to the SQLite database
    * @param string $encryption_key
    */
-  public function __construct($filename = null, $sessions_ref = 'UID', $encryption_key = null) {
+  public function __construct($filename = False, $sessions_ref = 'UID', $encryption_key = False) {
     if (!$filename) {
       if (!is_writable('/tmp')) {
         if (!is_dir('/tmp') && !mkdir('/tmp', 0700, True)) {
@@ -38,7 +38,7 @@ class SQLite implements \SessionHandlerInterface {
     $this->sdb->busyTimeout(2000);
 
     if ($encryption_key) {
-      $this->sdb->exec("PRAGMA key='" . $encryption_key . "'");
+      $this->sdb->exec("PRAGMA key='{$encryption_key}'");
     }
 
     $this->sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
@@ -53,15 +53,16 @@ class SQLite implements \SessionHandlerInterface {
   }
 
   public function destroy($session_id) {
-    $sql = "DELETE FROM dalmp_sessions WHERE sid='$session_id'";
-    return $this->sdb->exec($sql);
+    $stmt = $this->sdb->prepare('DELETE FROM dalmp_sessions WHERE sid=:sid');
+    $stmt->bindValue(':sid', $session_id, SQLITE3_TEXT);
+    return $stmt->execute() ? True : False;
   }
 
   public function gc($maxlifetime) {
-    $sql = "DELETE FROM dalmp_sessions WHERE expiry < " . time();
-    $this->sdb->exec($sql);
-    $this->sdb->exec('VACUUM');
-    return True;
+    $stmt = $this->sdb->prepare('DELETE FROM dalmp_sessions WHERE expiry < :expiry');
+    $stmt->bindValue(':expiry', time(), SQLITE3_INTEGER);
+    $stmt->execute();
+    return $this->sdb->exec('VACUUM');
   }
 
   public function open($save_path, $name) {
@@ -69,17 +70,28 @@ class SQLite implements \SessionHandlerInterface {
   }
 
   public function read($session_id) {
-    return $this->sdb->querySingle("SELECT data FROM dalmp_sessions WHERE sid='$session_id' AND expiry >= ". time());
+    $stmt = $this->sdb->prepare('SELECT data FROM dalmp_sessions WHERE sid=:sid AND expiry >=:expiry');
+    $stmt->bindValue(':sid', $session_id, SQLITE3_TEXT);
+    $stmt->bindValue(':expiry', time(), SQLITE3_INTEGER);
+    $query = $stmt->execute();
+    if ($query) {
+      $rs = $query->fetchArray(SQLITE3_ASSOC);
+      return $rs['data'];
+    } else {
+      return False;
+    }
   }
 
   public function write($session_id, $session_data) {
     $ref = (isset($GLOBALS[$this->sessions_ref]) && !empty($GLOBALS[$this->sessions_ref])) ? $GLOBALS[$this->sessions_ref] : NULL;
-
     $timeout = ini_get('session.gc_maxlifetime');
     $expiry = time() + $timeout;
-
-    $sql = "INSERT OR REPLACE INTO dalmp_sessions (sid, expiry, data, ref) VALUES ('$session_id',$expiry,'$session_data','$ref')";
-    return $this->sdb->exec($sql);
+    $stmt = $this->sdb->prepare('INSERT OR REPLACE INTO dalmp_sessions (sid, expiry, data, ref) VALUES (:sid, :expiry, :data, :ref)');
+    $stmt->bindValue(':sid', $session_id, SQLITE3_TEXT);
+    $stmt->bindValue(':expiry', $expiry, SQLITE3_INTEGER);
+    $stmt->bindValue(':data', $session_data, SQLITE3_TEXT);
+    $stmt->bindValue(':ref', $ref, SQLITE3_TEXT);
+    return $stmt->execute() ? True : False;
   }
 
   /**
@@ -121,7 +133,9 @@ class SQLite implements \SessionHandlerInterface {
    * @return boolean
    */
   public function delSessionRef($ref) {
-    return $this->sdb->exec("DELETE FROM dalmp_sessions WHERE ref='$ref'");
+    $stmt = $this->sdb->prepare('DELETE FROM dalmp_sessions WHERE ref=:ref');
+    $stmt->bindValue(':ref', $ref, SQLITE3_TEXT);
+    return $stmt->execute() ? True : False;
   }
 
   /**
@@ -130,10 +144,13 @@ class SQLite implements \SessionHandlerInterface {
    *
    * @param int $check_ipv4_blocks
    */
-  public function regenerate_id() {
-    $fingerprint = sha1('DALMP' . @$_SERVER['HTTP_ACCEPT_LANGUAGE'] . @$_SERVER['HTTP_USER_AGENT'] . @$_SERVER['REMOTE_ADDR']);
-    $old_sid = session_id();
-    if ( (isset($_SESSION['fingerprint']) && $_SESSION['fingerprint'] != $fingerprint) ) {
+  public function regenerate_id($use_IP = True) {
+    $fingerprint = @$_SERVER['HTTP_ACCEPT'] . @$_SERVER['HTTP_USER_AGENT'] . @$_SERVER['HTTP_ACCEPT_ENCODING'] . @$_SERVER['HTTP_ACCEPT_LANGUAGE'];
+    if ($use_IP) {
+      $fingerprint .= @$_SERVER['SERVER_ADDR'];
+    }
+    $fingerprint = sha1('DALMP' . $fingerprint);
+    if ((isset($_SESSION['fingerprint']) && $_SESSION['fingerprint'] != $fingerprint)) {
       $_SESSION = array();
       session_destroy();
     }

@@ -14,7 +14,7 @@ $ses = new DALMP\Sessions($so);
 
 $_SESSION['test'] = 1 + @$_SESSION['test'];
 
-#$ses->regenerate_id();
+$ses->regenerate_id();
 
 echo $_SESSION['test'];
 

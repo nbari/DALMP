@@ -1,33 +1,33 @@
 {
-    "name": "dalmp/dalmp",
-    "type": "library",
-    "description": "Database Abstraction Layer for MySQL using PHP",
-    "keywords": [
-        "database",
-        "cache",
-        "sessions"
-    ],
-    "homepage": "http://www.dalmp.com",
-    "license": "BSD-3-Clause",
-    "authors": [
-        {
-            "name": "Nicolas Embriz",
-            "email": "nbari@dalmp.com"
-        }
-    ],
-    "require": {
-        "ext-mysqli": "*"
-    },
-    "suggest": {
-        "ext-session": "handle sessions",
-        "ext-redis": "Use redis as cache engine",
-        "ext-memcache": "Use memcache as cache engine",
-        "ext-sqlite3": "Use sqlite for queues"
-    },
-    "autoload": {
-        "files": [
-            "/dalmp.php"
-        ]
-    },
-    "minimum-stability": "dev"
+  "name": "dalmp/dalmp",
+  "type": "library",
+  "description": "Database Abstraction Layer for MySQL using PHP",
+  "keywords": [
+    "database",
+    "cache",
+    "sessions"
+  ],
+  "homepage": "http://www.dalmp.com",
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Nicolas Embriz",
+      "email": "nbari@dalmp.com"
+    }
+  ],
+  "require": {
+    "ext-mysqli": "*"
+  },
+  "suggest": {
+    "ext-session": "handle sessions",
+    "ext-redis": "Use redis as cache engine",
+    "ext-memcache": "Use memcache as cache engine",
+    "ext-sqlite3": "Use sqlite for queues"
+  },
+  "autoload": {
+    "files": [
+      "/dalmp.php"
+    ]
+  },
+  "minimum-stability": "dev"
 }
