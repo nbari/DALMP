@@ -73,8 +73,7 @@ class SQLite implements \SessionHandlerInterface {
     $stmt = $this->sdb->prepare('SELECT data FROM dalmp_sessions WHERE sid=:sid AND expiry >=:expiry');
     $stmt->bindValue(':sid', $session_id, SQLITE3_TEXT);
     $stmt->bindValue(':expiry', time(), SQLITE3_INTEGER);
-    $query = $stmt->execute();
-    if ($query) {
+    if ($query = $stmt->execute()) {
       $rs = $query->fetchArray(SQLITE3_ASSOC);
       return $rs['data'];
     } else {
@@ -109,20 +108,21 @@ class SQLite implements \SessionHandlerInterface {
   }
 
   /**
-   * getSessionsRef - get session containing a specific reference
+   * getSessionRef - get sessions containing a specific reference
    *
    * @param string $ref
    * @return array sessions
    */
   public function getSessionRef($ref) {
-    $refs = $this->getSessionsRefs();
-    $rs = array();
-    foreach ($refs as $sid => $data) {
-      if (key($data) == $ref) {
-        $rs[$sid] = key($data);
+    $refs = array();
+    $stmt = $this->sdb->prepare('SELECT sid, ref, expiry FROM dalmp_sessions WHERE ref = :ref');
+    $stmt->bindValue(':ref', $ref, SQLITE3_TEXT);
+    if ($rs = $stmt->execute()) {
+      while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
+        $refs[$row['sid']] = array($row['ref'] => $row['expiry']);
       }
     }
-    return $rs;
+    return $refs;
   }
 
   /**

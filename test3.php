@@ -8,8 +8,8 @@ $timer = new mplt();
 require_once 'lib/dalmp.php';
 
 #$so = new DALMP\Sessions\Files('/tmp/sess');
-$so = new DALMP\Sessions\Files();
-#$so = new DALMP\Sessions\SQLite('/tmp/sessions.db');
+#$so = new DALMP\Sessions\Files();
+$so = new DALMP\Sessions\SQLite('/tmp/sessions.db');
 $ses = new DALMP\Sessions($so);
 
 $GLOBALS['UID'] = 3;
@@ -22,7 +22,7 @@ if ((mt_rand() % 10) == 0) {
 
 echo $_SESSION['test'];
 
-$rs = $ses->getSessionsRefs(3);
+$rs = $ses->getSessionsRefs();
 
 echo '<pre>';
 print_r($rs);
