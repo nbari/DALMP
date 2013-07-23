@@ -7,8 +7,9 @@ $timer = new mplt();
  */
 require_once 'lib/dalmp.php';
 
-$so = new DALMP\Sessions\Files('/tmp/sess');
-$so = new DALMP\Sessions\SQLite('/tmp/sessions.db');
+#$so = new DALMP\Sessions\Files('/tmp/sess');
+$so = new DALMP\Sessions\Files();
+#$so = new DALMP\Sessions\SQLite('/tmp/sessions.db');
 $ses = new DALMP\Sessions($so);
 
 $GLOBALS['UID'] = 3;

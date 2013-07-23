@@ -1,6 +1,12 @@
 <?php
 namespace DALMP\Sessions;
 
+/**
+ * Sessions Files class - Store sessions on disk files
+ *
+ * Pending work for storing references, possible approach is to use something
+ * similar on engines like memcache / redis
+ */
 class Files implements \SessionHandlerInterface {
 
   /**
@@ -30,7 +36,7 @@ class Files implements \SessionHandlerInterface {
           throw new \Exception('/tmp  not accessible');
         }
       } else {
-        $this->savePath = '/tmp';
+        $this->savePath = '/tmp/dalmp_sessions';
       }
     }
   }
@@ -40,15 +46,17 @@ class Files implements \SessionHandlerInterface {
   }
 
   public function destroy($session_id) {
-    $file = "$this->savePath/sess_$session_id";
-    if (file_exists($file)) {
-      unlink($file);
+    $sess_path = $this->savePath . '/' . substr($session_id, 0, 2) . '/' . substr($session_id, 2, 2) . '/' . substr($session_id, 4, 2) . '/';
+    $sess_file = $sess_path . "{$session_id}.sess";
+    if (file_exists($sess_file)) {
+      unlink($sess_file);
     }
     return True;
   }
 
   public function gc($maxlifetime) {
-    foreach (glob("$this->savePath/sess_*") as $file) {
+    $session_files = $this->rsearch($this->savePath, '#^.*\.sess$#');
+    foreach ($session_files as $file) {
       if (filemtime($file) + $maxlifetime < time() && file_exists($file)) {
         unlink($file);
       }
@@ -61,11 +69,69 @@ class Files implements \SessionHandlerInterface {
   }
 
   public function read($session_id) {
-    return (string) @file_get_contents("$this->savePath/sess_$session_id");
+    $sess_path = $this->savePath . '/' . substr($session_id, 0, 2) . '/' . substr($session_id, 2, 2) . '/' . substr($session_id, 4, 2) . '/';
+    if (!is_dir($sess_path) && !mkdir($sess_path, 0700, True)) {
+      throw new \Exception("$sess_path  not accessible");
+    }
+    $sess_file = $sess_path . "{$session_id}.sess";
+    return (string) @file_get_contents($sess_file);
   }
 
   public function write($session_id, $session_data) {
-    return file_put_contents("$this->savePath/sess_$session_id", $session_data) === False ? False : True;
+    $sess_path = $this->savePath . '/' . substr($session_id, 0, 2) . '/' . substr($session_id, 2, 2) . '/' . substr($session_id, 4, 2) . '/';
+    if (!is_dir($sess_path) && !mkdir($sess_path, 0700, True)) {
+      throw new \Exception("$sess_path  not accessible");
+    }
+    $sess_file = $sess_path . "{$session_id}.sess";
+    return file_put_contents($sess_file, $session_data) === False ? False : True;
+  }
+
+  /**
+   * getSessionsRefs - get all sessions containing references
+   *
+   * @param int $expiry
+   * @return array of sessions
+   */
+  public function getSessionsRefs($expired_sessions = False) {
+    $refs = array();
+    return False;
+  }
+
+  /**
+   * getSessionsRef - get session containing a specific reference
+   *
+   * @param string $ref
+   * @return array sessions
+   */
+  public function getSessionRef($ref) {
+    return False;
+  }
+
+  /**
+   * del sessions ref - delete sessions containing a specific reference
+   *
+   * @param string $ref
+   * @return boolean
+   */
+  public function delSessionRef($ref) {
+    return False;
+  }
+
+  /**
+   * recursive dir search
+   *
+   * @param string $folder
+   * @param string $pattern example: '#^.*\.sess$#'
+   */
+  public function rsearch($folder, $pattern) {
+    $dir = new RecursiveDirectoryIterator($folder);
+    $ite = new RecursiveIteratorIterator($dir);
+    $files = new RegexIterator($ite, $pattern, RegexIterator::GET_MATCH);
+    $fileList = array();
+    foreach($files as $file) {
+      $fileList = array_merge($fileList, $file);
+    }
+    return $fileList;
   }
 
 }
