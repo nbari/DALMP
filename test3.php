@@ -10,7 +10,9 @@ require_once 'lib/dalmp.php';
 #$so = new DALMP\Sessions\Files('/tmp/sess');
 #$so = new DALMP\Sessions\Files();
 #$so = new DALMP\Sessions\SQLite('/tmp/sessions.db');
-$so = new DALMP\Sessions\Memcache(new DALMP\Cache\Memcache);
+#$so = new DALMP\Sessions\Memcache(new DALMP\Cache\Memcache);
+#$so = new DALMP\Sessions\Memcache(new DALMP\Cache\Memcache);
+$so = new DALMP\Sessions\Redis(new DALMP\Cache\Redis);
 $ses = new DALMP\Sessions($so);
 
 $GLOBALS['UID'] = 3;

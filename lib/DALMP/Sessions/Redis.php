@@ -58,7 +58,7 @@ class Redis implements \SessionHandlerInterface {
       unset($refs[$key]);
     }
 
-    $this->cache->Set($ref_key, $refs, 0);
+    $this->cache->Set($ref_key, $refs, 86400);
 
     return True;
   }
@@ -102,7 +102,7 @@ class Redis implements \SessionHandlerInterface {
       }
 
       $refs[$key] = array($ref => $expiry);
-      $this->cache->Set($ref_key, $refs, 0);
+      $this->cache->Set($ref_key, $refs, 86400);
     }
 
     return True;
@@ -157,7 +157,7 @@ class Redis implements \SessionHandlerInterface {
       }
     }
 
-    return $this->cache->Set($ref_key, $refs, 0);
+    return $this->cache->Set($ref_key, $refs, 86400);
   }
 
 }
