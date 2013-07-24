@@ -7,8 +7,7 @@ namespace DALMP\Cache;
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0
- */
+ * @version 3.0\ */
 class Memcache implements CacheInterface {
   private $host;
   private $port;
@@ -24,7 +23,7 @@ class Memcache implements CacheInterface {
    * @param int $timeout
    * @param int $compress
    */
-  public function __construct($host='127.0.0.1', $port=11211, $timeout=1, $compress=False) {
+  public function __construct($host = '127.0.0.1', $port = 11211, $timeout = 1, $compress = False) {
     $this->host = $host;
     $this->port = $port;
     $this->timeout = (int) $timeout;
@@ -40,7 +39,7 @@ class Memcache implements CacheInterface {
    * @param string $value
    * @param int $expire time in seconds(default is 0 meaning unlimited)
    */
-  public function set($key, $value, $expire = 0) {
+  public function Set($key, $value, $expire = 0) {
     if ($this->connect()) {
       ( $this->compress === 0) && $this->cache->setCompressThreshold(0);
       return (bool) $this->cache->set($key, $value, $this->compress, $expire);

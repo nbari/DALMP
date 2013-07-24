@@ -5,6 +5,7 @@ class SQLite implements \SessionHandlerInterface {
 
   /**
    * REF - field used for storing references
+   *
    * @access private
    * @var mixed
    */
@@ -22,6 +23,7 @@ class SQLite implements \SessionHandlerInterface {
    * constructor
    *
    * @param string $filename Path to the SQLite database
+   * @param string $sessions_ref global variable to be stored as reference
    * @param string $encryption_key
    */
   public function __construct($filename = False, $sessions_ref = 'UID', $encryption_key = False) {
