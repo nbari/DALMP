@@ -73,6 +73,7 @@ class SQLite implements \SessionHandlerInterface {
     $stmt = $this->sdb->prepare('SELECT data FROM dalmp_sessions WHERE sid=:sid AND expiry >=:expiry');
     $stmt->bindValue(':sid', $session_id, SQLITE3_TEXT);
     $stmt->bindValue(':expiry', time(), SQLITE3_INTEGER);
+
     if ($query = $stmt->execute()) {
       $rs = $query->fetchArray(SQLITE3_ASSOC);
       return $rs['data'];
@@ -84,6 +85,7 @@ class SQLite implements \SessionHandlerInterface {
   public function write($session_id, $session_data) {
     $ref = (isset($GLOBALS[$this->sessions_ref]) && !empty($GLOBALS[$this->sessions_ref])) ? $GLOBALS[$this->sessions_ref] : NULL;
     $expiry = time() + ini_get('session.gc_maxlifetime');
+
     $stmt = $this->sdb->prepare('INSERT OR REPLACE INTO dalmp_sessions (sid, expiry, data, ref) VALUES (:sid, :expiry, :data, :ref)');
     $stmt->bindValue(':sid', $session_id, SQLITE3_TEXT);
     $stmt->bindValue(':expiry', $expiry, SQLITE3_INTEGER);
@@ -93,35 +95,39 @@ class SQLite implements \SessionHandlerInterface {
   }
 
   /**
-   * getSessionsRefs - get all sessions containing references
+   * getSessionsRefs
    *
    * @param int $expiry
-   * @return array of sessions
+   * @return array of sessions containing any reference
    */
   public function getSessionsRefs($expired_sessions = False) {
     $refs = array();
     $rs = ($expired_sessions) ? $this->sdb->query("SELECT sid, ref, expiry FROM dalmp_sessions WHERE expiry > strftime('%s','now') AND ref NOT NULL") : $this->sdb->query('SELECT sid, ref, expiry FROM dalmp_sessions WHERE ref NOT NULL');
+
     while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
       $refs[$row['sid']] = array($row['ref'] => $row['expiry']);
     }
+
     return $refs;
   }
 
   /**
-   * getSessionRef - get sessions containing a specific reference
+   * getSessionRef
    *
    * @param string $ref
-   * @return array sessions
+   * @return array of session containing a specific reference
    */
   public function getSessionRef($ref) {
     $refs = array();
     $stmt = $this->sdb->prepare('SELECT sid, ref, expiry FROM dalmp_sessions WHERE ref=:ref');
     $stmt->bindValue(':ref', $ref, SQLITE3_TEXT);
+
     if ($rs = $stmt->execute()) {
       while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
         $refs[$row['sid']] = array($row['ref'] => $row['expiry']);
       }
     }
+
     return $refs;
   }
 
