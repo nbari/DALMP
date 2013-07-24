@@ -47,6 +47,7 @@ class Sessions {
    * prevent HTTP session hijacking attacks.
    *
    * @param boolean $use_IP
+   * @return boolean
    */
   public function regenerate_id($use_IP = True) {
     $fingerprint = @$_SERVER['HTTP_ACCEPT'] . @$_SERVER['HTTP_USER_AGENT'] . @$_SERVER['HTTP_ACCEPT_ENCODING'] . @$_SERVER['HTTP_ACCEPT_LANGUAGE'];
