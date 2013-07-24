@@ -34,7 +34,7 @@ class Database {
   protected $_rs = null;
 
   /**
-   * returns a statement object or FALSE if an error occurred.
+   * returns a statement object or False if an error occurred.
    * @access protected
    * @var mixed
    */
@@ -59,7 +59,7 @@ class Database {
    * @access private
    * @var mixed
    */
-  private $debug = false;
+  private $debug = False;
 
   /**
    * Holds the fetchMode.
@@ -163,7 +163,7 @@ class Database {
     }
 
     $rs = @mysqli_real_connect($this->DB, $this->dsn['host'], $this->dsn['user'], $this->dsn['pass'], $this->dsn['dbName'], $this->dsn['port'], $this->dsn['socket']);
-    if ($rs === false || mysqli_connect_errno()) {
+    if ($rs === False || mysqli_connect_errno()) {
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'mysqli connection error');
       throw new \Exception(mysqli_connect_error(), mysqli_connect_errno());
     }
@@ -244,10 +244,10 @@ class Database {
    * Get the column names
    *
    * @param $table;
-   * @return array or false if no table set
+   * @return array or False if no table set
    */
   public function getColumnNames($table = null) {
-    return ($table) ? $this->getCol("DESCRIBE $table") : false;
+    return ($table) ? $this->getCol("DESCRIBE $table") : False;
   }
 
   /**
@@ -330,10 +330,12 @@ class Database {
 
     $sql = array_shift($args);
     $this->_stmt = $this->DB->prepare($sql);
+
     if (!$this->_stmt) {
       $this->closeConnection();
       trigger_error('ERROR -> ' . __METHOD__ . ": Please check your sql statement, unable to prepare: $sql with args: " . json_encode($args), E_USER_ERROR);
     }
+
     $params = array();
     $types = null;
 
@@ -358,6 +360,7 @@ class Database {
       if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__, "sql: $sql params:", $params);
       call_user_func_array(array($this->_stmt, 'bind_param'), $params);
     }
+
     /**
      * if you get erros like 'Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_general_ci,COERCIBLE)'
      * try to set your table fiels to:
@@ -385,7 +388,7 @@ class Database {
        * Zero indicates that no records where updated for an UPDATE/DELETE
        * statement, no rows matched the WHERE clause in the query or that no
        * query has yet been executed.
-       * if ($rs !== false) { query ok and records updated }
+       * if ($rs !== False) { query ok and records updated }
        */
       if ($this->_stmt->affected_rows > 0) {
         return True;
@@ -395,8 +398,11 @@ class Database {
       if (array_key_exists('error', $this->trans)) {
         $this->trans['error']++;
       }
+
       if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__, 'ERROR', "sql: $sql  params: ", $params, " Errorcode:" . $this->DB->errno);
+
       throw new \ErrorException(__METHOD__ . 'ERROR -> ' . $this->DB->error . " - sql: $sql with params: " . json_encode($params));
+
       return False;
     }
   }
@@ -410,10 +416,12 @@ class Database {
     if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__);
     $meta = $this->_stmt->result_metadata();
     $columns = array();
+
     while ($column = $meta->fetch_field()) {
       $columns[] = &$row[$column->name];
     }
     call_user_func_array(array($this->_stmt, 'bind_result'), $columns);
+
     return $this->_stmt->fetch();
   }
 
@@ -426,17 +434,20 @@ class Database {
 
     if (!$this->_stmt->num_rows) {
       $this->PClose();
-      return false;
+      return False;
     }
 
     $meta = $this->_stmt->result_metadata();
     $columns = array();
     $results = array();
-    while (($column = $meta->fetch_field()) !== false) {
+
+    while (($column = $meta->fetch_field()) !== False) {
       $columns[$column->name] = &$results[$column->name];
     }
     call_user_func_array(array($this->_stmt, 'bind_result'), $columns);
+
     $rs = array();
+
     switch ($get) {
     case 'one':
       while ($this->_stmt->fetch()) {
@@ -455,7 +466,7 @@ class Database {
     case 'assoc':
       if ($this->numOfFields < 2) {
         if ($this->debug) { $this->debug->log('PreparedStatements', __METHOD__, 'ERROR', $get, 'num of columns < 2'); }
-          return false;
+          return False;
       }
       if ($this->numOfFields == 2) {
         while ($this->_stmt->fetch()) {
@@ -493,8 +504,8 @@ class Database {
           break;
         }
       }
-      break;
     }
+
     $this->PClose();
     return $rs;
   }
@@ -516,18 +527,18 @@ class Database {
    * @param array $fields
    * @param string $mode
    * @param string $where
-   * @return true or false on error
+   * @return true or False on error
    */
   public function AutoExecute($table = null, $fields = null, $mode = 'INSERT', $where = null) {
     if (!$table || !is_array($fields)) {
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'either table or fields missing');
-      return false;
+      return False;
     }
     if ($this->debug) $this->debug->log(__METHOD__, 'args:', $table, $fields, $mode, $where);
     $mode = strtoupper($mode);
     if ($mode == 'UPDATE' && !$where) {
       if ($this->debug) $this->debug->log( __METHOD__, 'ERROR', 'WHERE clause missing');
-      return false;
+      return False;
     }
     if ($columnNames = $this->getColumnNames($table)) {
       $data = array();
@@ -540,10 +551,10 @@ class Database {
       }
       if (empty($data)) {
         if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', "no matching fields on table: $table with fields:", $fields);
-        return false;
+        return False;
       }
     } else {
-      return false;
+      return False;
     }
     switch ($mode) {
     case 'INSERT':
@@ -566,7 +577,7 @@ class Database {
 
     default :
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'mode must be INSERT or UPDATE');
-      return false;
+      return False;
     }
   }
 
@@ -574,7 +585,7 @@ class Database {
    * Execute SQL statement
    *
    * @param strign $sql
-   * @return true or false if there was an error in executing the sql.
+   * @return true or False if there was an error in executing the sql.
    */
   public function Execute($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
@@ -589,18 +600,18 @@ class Database {
         if ($this->debug) $this->debug->log(__METHOD__, 'returned object', "#rows: $this->numOfRows #fields: $this->numOfFields");
         if (!$this->numOfRows) {
           $this->Close();
-          return false;
+          return False;
         }
       }
       $this->numOfRowsAffected = @$this->DB->affected_rows;
-      return (@$this->DB->affected_rows >= 0 || $rs) ? true : false;
+      return (@$this->DB->affected_rows >= 0 || $rs) ? true : False;
     } else {
       if (array_key_exists('error', $this->trans)) {
         $this->trans['error']++;
       }
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', "sql: $sql Errorcode: " . $this->DB->errno);
       throw new \ErrorException(__METHOD__ . ' ERROR -> ' . $this->DB->error . " - sql: $sql");
-      return false;
+      return False;
     }
   }
 
@@ -645,7 +656,7 @@ class Database {
         $meta = $this->_stmt->result_metadata();
         $columns = array();
         $results = array();
-        while (($column = $meta->fetch_field()) !== false) {
+        while (($column = $meta->fetch_field()) !== False) {
           $columns[$column->name] = &$results[$column->name];
         }
         $fp = fopen('php://output', 'w');
@@ -674,7 +685,7 @@ class Database {
     if ($this->Execute($sql)) {
       return ($class_name) ? $this->_rs->fetch_object($class_name, $params) : $this->_rs->fetch_object();
     } else {
-      return false;
+      return False;
     }
   }
 
@@ -682,7 +693,7 @@ class Database {
    * Fetch a result row as an associative, a numeric array, or both
    *
    * @param SQL $sql
-   * @return array or false
+   * @return array or False
    */
   public function getAll($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
@@ -694,7 +705,7 @@ class Database {
       $this->Close();
       return $rows;
     } else {
-      return false;
+      return False;
     }
   }
 
@@ -702,7 +713,7 @@ class Database {
    * Get a Row
    *
    * @param SQL $sql
-   * @return the first row as an array or false.
+   * @return the first row as an array or False.
    */
   public function getRow($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
@@ -711,7 +722,7 @@ class Database {
       $this->Close();
       return $row;
     } else {
-      return false;
+      return False;
     }
   }
 
@@ -719,7 +730,7 @@ class Database {
    * Get a Column
    *
    * @param SQL $sql
-   * @return the first column as an array, or false.
+   * @return the first column as an array, or False.
    */
   public function getCol($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
@@ -731,7 +742,7 @@ class Database {
       $this->Close();
       return $col;
     } else {
-      return false;
+      return False;
     }
   }
 
@@ -739,7 +750,7 @@ class Database {
    * Get One
    *
    * @param SQL $sql
-   * @return the first field of the first row, or false.
+   * @return the first field of the first row, or False.
    */
   public function getOne($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
@@ -748,7 +759,7 @@ class Database {
       $this->Close();
       return reset($row);
     } else {
-      return false;
+      return False;
     }
   }
 
@@ -756,14 +767,14 @@ class Database {
    * Get an associative array using the first column as keys
    *
    * @param SQL $sql
-   * @return associative array, false if columns < 2, or no records found.
+   * @return associative array, False if columns < 2, or no records found.
    */
   public function getASSOC($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
     if ($this->Execute($sql)) {
       $cols = $this->numOfFields;
       if ($cols < 2) {
-        return false;
+        return False;
       }
       $this->fetchMode = MYSQLI_ASSOC;
       $assoc = array();
@@ -779,7 +790,7 @@ class Database {
       $this->Close();
       return $assoc;
     } else {
-      return false;
+      return False;
     }
   }
 
@@ -806,7 +817,7 @@ class Database {
   public function CompleteTrans() {
     if ($this->debug) $this->debug->log('transactions', __METHOD__);
     if (empty($this->trans)) {
-      return false;
+      return False;
     } else {
       if ($this->trans['error'] > 0) {
         if ($this->debug) $this->debug->log('transactions', __METHOD__, 'ERROR', 'error in level: ' . $this->trans['level']);
@@ -816,7 +827,7 @@ class Database {
         } else {
           $this->Execute('ROLLBACK');
         }
-        return false;
+        return False;
       }
       if ($this->trans['level'] == 0) {
         $this->trans = array();
@@ -832,7 +843,7 @@ class Database {
   /**
    * Rollback the transaction
    *
-   * @return false if there was an error executing the ROLLBACK.
+   * @return False if there was an error executing the ROLLBACK.
    */
   public function RollBackTrans() {
     if ($this->debug) $this->debug->log('transactions', __METHOD__);
@@ -892,9 +903,9 @@ class Database {
    */
   public function renumber($table, $row = 'id') {
     if (isset($table)) {
-      return $this->Execute('SET @var_dalmp=0') ? ($this->Execute("UPDATE $table SET $row = (@var_dalmp := @var_dalmp +1)") ? $this->Execute("ALTER TABLE $table AUTO_INCREMENT = 1") : false) : false;
+      return $this->Execute('SET @var_dalmp=0') ? ($this->Execute("UPDATE $table SET $row = (@var_dalmp := @var_dalmp +1)") ? $this->Execute("ALTER TABLE $table AUTO_INCREMENT = 1") : False) : False;
     } else {
-      return false;
+      return False;
     }
   }
 
@@ -1085,7 +1096,7 @@ class Database {
    * getCache - retrive data from cache
    *
    * @param string $hkey
-   * @return cached data or false
+   * @return cached data or False
    */
   public function getCache($hkey) {
     return $this->Cache($this->cachetype)->get($hkey);
@@ -1164,7 +1175,7 @@ class Database {
    */
   public static function isCli($eol = null) {
     ($cli = (php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR']))) && $cli = $eol ? PHP_EOL : true;
-    return $cli ?  : ($eol ? '<br/>' : false);
+    return $cli ?  : ($eol ? '<br/>' : False);
   }
 
   /**
@@ -1215,7 +1226,7 @@ class Database {
    * @param int print or return the queue
    * @return true or array
    */
-  public static function readQueue($queue = '*', $print = false) {
+  public static function readQueue($queue = '*', $print = False) {
     $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : DALMP_DIR.'/dalmp_queue.db';
     $sdb = new SQLite3($queue_db);
     if (defined('DALMP_SQLITE_ENC_KEY')) $sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
@@ -1246,14 +1257,14 @@ class Database {
 
     $get = function ($m) use ($n) {
       $method = explode($m, $n) + array(null, null);
-      return in_array($method[1], array('all', 'row', 'col', 'one', 'assoc')) ? $method[1] : false;
+      return in_array($method[1], array('all', 'row', 'col', 'one', 'assoc')) ? $method[1] : False;
     };
 
     switch ($method($n)) {
     case 'pget':
       if ($func = $get('pget')) {
         if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__);
-        return call_user_func_array(array($this, 'PExecute'), $args) ? $this->_pFetch($func) : false;
+        return call_user_func_array(array($this, 'PExecute'), $args) ? $this->_pFetch($func) : False;
       }
       break;
 
@@ -1291,7 +1302,9 @@ class Database {
     } else {
       $status = 'no connections available';
     }
+
     if ($this->debug) $this->debug->log(__METHOD__, $status);
+
     return $status;
   }
 
