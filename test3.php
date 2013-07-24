@@ -24,6 +24,8 @@ if ((mt_rand() % 10) == 0) {
 echo $_SESSION['test'].' -- '.session_id();
 
 $rs = $ses->getSessionsRefs();
+#$rs = $ses->getSessionRef(3);
+#$rs = $ses->delSessionRef(3);
 
 echo '<pre>';
 print_r($rs);
