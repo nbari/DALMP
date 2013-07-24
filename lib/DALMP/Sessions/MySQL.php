@@ -17,7 +17,7 @@ class MySQL implements \SessionHandlerInterface {
    * @access protected
    * @var DALMP\Database
    */
-  protected $db;
+  protected $DB;
 
   /**
    * REF - field used for storing references
@@ -40,8 +40,8 @@ class MySQL implements \SessionHandlerInterface {
    * @param DALMP\Database $db instance
    * @param string $sessions_ref global variable to be stored as reference
    */
-  public function __construct(\DALMP\Database $db, $sessions_ref = 'UID') {
-    $this->db = $db;
+  public function __construct(\DALMP\Database $DB, $sessions_ref = 'UID') {
+    $this->DB = $DB;
     $this->dalmp_sessions_ref = defined('DALMP_SESSIONS_REF') ? DALMP_SESSIONS_REF : $sessions_ref;
 
     if (defined('DALMP_SESSIONS_TABLE')) {
@@ -55,14 +55,14 @@ class MySQL implements \SessionHandlerInterface {
 
   public function destroy($session_id) {
     $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE sid=?';
-    return $this->db->PExecute($sql, $sid);
+    return $this->DB->PExecute($sql, $sid);
   }
 
   public function gc($maxlifetime) {
     $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE expiry < UNIX_TIMESTAMP()';
-    $this->db->Execute($sql);
+    $this->DB->Execute($sql);
     $sql = 'OPTIMIZE TABLE ' . $this->dalmp_sessions_table;
-    $this->db->Execute($sql);
+    $this->DB->Execute($sql);
     return True;
   }
 
@@ -71,14 +71,14 @@ class MySQL implements \SessionHandlerInterface {
   }
 
   public function read($session_id) {
-    return ($rs = $this->db->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, time())) ? $rs : '';
+    return ($rs = $this->DB->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, time())) ? $rs : '';
   }
 
   public function write($session_id, $session_data) {
     $ref = (isset($GLOBALS[$this->sessions_ref]) && !empty($GLOBALS[$this->sessions_ref])) ? $GLOBALS[$this->sessions_ref] : NULL;
     $expiry = time() + ini_get('session.gc_maxlifetime');
     $sql = "REPLACE INTO $this->dalmp_sessions_table (sid, expiry, data, ref) VALUES(?,?,?,?)";
-    return $this->db->PExecute($sql, $session_id, $expiry, $session_data, $ref);
+    return $this->DB->PExecute($sql, $session_id, $expiry, $session_data, $ref);
   }
 
   /**
@@ -90,7 +90,7 @@ class MySQL implements \SessionHandlerInterface {
   public function getSessionsRefs($expired_sessions = False) {
     $refs = array();
 
-    $db_refs = ($expired_sessions) ? $this->db->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > UNIX_TIMESTAMP() AND ref NOT NULL") : $this->db->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE ref NOT NULL");
+    $db_refs = ($expired_sessions) ? $this->DB->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > UNIX_TIMESTAMP() AND ref NOT NULL") : $this->DB->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE ref NOT NULL");
 
     if ($db_refs) {
       foreach ($db_refs as $value) {
@@ -110,7 +110,7 @@ class MySQL implements \SessionHandlerInterface {
   public function getSessionRef($ref) {
     $refs = array();
 
-    $db_refs = $this->db->PGetall('SELECT sid, ref, expiry FROM dalmp_sessions WHERE ref=?', $ref);
+    $db_refs = $this->DB->PGetall('SELECT sid, ref, expiry FROM dalmp_sessions WHERE ref=?', $ref);
 
     if ($db_refs) {
       foreach ($db_refs as $value) {
@@ -128,7 +128,7 @@ class MySQL implements \SessionHandlerInterface {
    * @return boolean
    */
   public function delSessionRef($ref) {
-    return $this->db->PExecute('DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE ref=?', $ref);
+    return $this->DB->PExecute('DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE ref=?', $ref);
   }
 
 }

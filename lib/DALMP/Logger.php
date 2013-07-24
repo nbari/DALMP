@@ -82,7 +82,7 @@ class Logger {
       $this->is_cli = True;
     }
 
-    $this->time_start = microtime(true);
+    $this->time_start = microtime(True);
   }
 
   public function log() {
@@ -90,14 +90,14 @@ class Logger {
     $key = array_shift($args);
     $method = is_array(reset($args)) ? json_encode(array_shift($args)) : array_shift($args);
     $log = empty($args) ? (empty($method) ? "[$key]" : "[$key - $method]") : "[$key - $method] -> " . json_encode($args);
-    $etime = number_format(microtime(true) - $this->time_start, $this->decimals);
+    $etime = number_format(microtime(True) - $this->time_start, $this->decimals);
     $this->log[][$etime] = $log;
   }
 
   public function getLog() {
     if ($this->log2file) {
       if ($this->log2file > 1) {
-        $this->logfile .= '-' . microtime(true);
+        $this->logfile .= '-' . microtime(True);
       }
       $fh = fopen($this->logfile, 'a+');
       $start = str_repeat('-', 80) . PHP_EOL;
@@ -128,7 +128,7 @@ class Logger {
 
     if ($this->log2file) {
       fwrite($fh, $start);
-      fwrite($fh, 'END ' . @date('c') . ' - [Memory usage: ' . memory_get_usage(true) . ', ' . memory_get_peak_usage(true) . ']' . PHP_EOL);
+      fwrite($fh, 'END ' . @date('c') . ' - [Memory usage: ' . memory_get_usage(True) . ', ' . memory_get_peak_usage(True) . ']' . PHP_EOL);
       fwrite($fh, $start);
       fclose($fh);
     } elseif ($this->is_cli) {

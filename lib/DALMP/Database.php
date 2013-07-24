@@ -2,7 +2,7 @@
 namespace DALMP;
 
 /**
- * Database - Database Abstraction Layer for MySQL
+ * Database - Abstraction Layer for MySQL
  *
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
