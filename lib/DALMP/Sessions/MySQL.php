@@ -60,19 +60,75 @@ class MySQL implements \SessionHandlerInterface {
 
   public function gc($maxlifetime) {
     $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE expiry < UNIX_TIMESTAMP()';
-    $this->storage->Execute($sql);
+    $this->db->Execute($sql);
     $sql = 'OPTIMIZE TABLE ' . $this->dalmp_sessions_table;
-    $this->storage->Execute($sql);
-    return true;
+    $this->db->Execute($sql);
+    return True;
   }
 
   public function open($save_path, $name) {
+    return True;
   }
 
   public function read($session_id) {
+    return ($rs = $this->db->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, time())) ? $rs : '';
   }
 
   public function write($session_id, $session_data) {
+    $ref = (isset($GLOBALS[$this->sessions_ref]) && !empty($GLOBALS[$this->sessions_ref])) ? $GLOBALS[$this->sessions_ref] : NULL;
+    $expiry = time() + ini_get('session.gc_maxlifetime');
+    $sql = "REPLACE INTO $this->dalmp_sessions_table (sid, expiry, data, ref) VALUES(?,?,?,?)";
+    return $this->db->PExecute($sql, $session_id, $expiry, $session_data, $ref);
+  }
+
+  /**
+   * getSessionsRefs
+   *
+   * @param int $expiry
+   * @return array of sessions containing any reference
+   */
+  public function getSessionsRefs($expired_sessions = False) {
+    $refs = array();
+
+    $db_refs = ($expired_sessions) ? $this->db->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > UNIX_TIMESTAMP() AND ref NOT NULL") : $this->db->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE ref NOT NULL");
+
+    if ($db_refs) {
+      foreach ($db_refs as $value) {
+        $refs[$value['sid']] = array($value['ref'] => $value['expiry']);
+      }
+    }
+
+    return $refs;
+  }
+
+  /**
+   * getSessionRef
+   *
+   * @param string $ref
+   * @return array of session containing a specific reference
+   */
+  public function getSessionRef($ref) {
+    $refs = array();
+
+    $db_refs = $this->db->PGetall('SELECT sid, ref, expiry FROM dalmp_sessions WHERE ref=?', $ref);
+
+    if ($db_refs) {
+      foreach ($db_refs as $value) {
+        $refs[$value['sid']] = array($value['ref'] => $value['expiry']);
+      }
+    }
+
+    return $refs;
+  }
+
+  /**
+   * delSessionRef - delete sessions containing a specific reference
+   *
+   * @param string $ref
+   * @return boolean
+   */
+  public function delSessionRef($ref) {
+    return $this->db->PExecute('DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE ref=?', $ref);
   }
 
 }
