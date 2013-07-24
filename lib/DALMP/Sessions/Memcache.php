@@ -45,6 +45,23 @@ class Memcache implements \SessionHandlerInterface {
   }
 
   public function destroy($session_id) {
+    $key = sprintf('DALMP_%s', sha1($this->dalmp_sessions_ref . $session_id));
+    $this->memcache->Delete($key);
+
+    /**
+     * destroy REF on cache
+     */
+    $ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
+    $refs = $this->memcache->Get($ref_key);
+
+    if (is_array($refs)) {
+      unset($refs[$key]);
+    }
+
+    $this->memcache->Set($ref_key, $refs, 0);
+
+    return true;
+
   }
 
   public function gc($maxlifetime) {
@@ -56,8 +73,8 @@ class Memcache implements \SessionHandlerInterface {
   }
 
   public function read($session_id) {
-    $key = sprintf('DALMP_%s.sess', sha1($this->dalmp_sessions_ref . $session_id));
-    return $this->memcache->Get($key, $session_data, $timeout);
+    $key = sprintf('DALMP_%s', sha1($this->dalmp_sessions_ref . $session_id));
+    return $this->memcache->Get($key);
   }
 
   public function write($session_id, $session_data) {
@@ -65,7 +82,7 @@ class Memcache implements \SessionHandlerInterface {
     $timeout = ini_get('session.gc_maxlifetime');
     $expiry = time() + $timeout;
 
-    $key = sprintf('DALMP_%s.sess', sha1($this->dalmp_sessions_ref . $session_id));
+    $key = sprintf('DALMP_%s', sha1($this->dalmp_sessions_ref . $session_id));
     $this->memcache->Set($key, $session_data, $timeout);
 
     /**
@@ -90,6 +107,59 @@ class Memcache implements \SessionHandlerInterface {
     }
 
     return True;
+
+  }
+
+  /**
+   * getSessionsRefs
+   *
+   * @param int $expiry
+   * @return array of sessions containing any reference
+   */
+  public function getSessionsRefs($expired_sessions = False) {
+    $ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
+    return $this->memcache->Get($ref_key) ?: array();
+  }
+
+  /**
+   * getSessionRef
+   *
+   * @param string $ref
+   * @return array of session containing a specific reference
+   */
+  public function getSessionRef($ref) {
+    $refs = $this->getSessionsRefs();
+    $rs = array();
+
+    foreach ($refs as $key => $data) {
+      if (key($data) == $ref) {
+        $rs[$key] = $data;
+      }
+    }
+
+    return $rs;
+  }
+
+  /**
+   * delSessionRef - delete sessions containing a specific reference
+   *
+   * @param string $ref
+   * @return boolean
+   */
+  public function delSessionRef($ref) {
+    $ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
+    $refs = $this->memcache->Get($ref_key);
+
+    if (is_array($refs)) {
+      foreach ($refs as $key => $data) {
+        if (key($data) == $ref) {
+          unset($refs[$key]);
+          $this->memcache->Delete($key);
+        }
+      }
+    }
+
+    return $this->memcache->Set($ref_key, $refs, 0);
 
   }
 
