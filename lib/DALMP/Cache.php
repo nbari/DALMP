@@ -1,6 +1,14 @@
 <?php
 namespace DALMP;
 
+/**
+ * Cache
+ *
+ * @author Nicolas de Bari Embriz <nbari@dalmp.com>
+ * @package DALMP
+ * @license BSD License
+ * @version 3.0
+ */
 class Cache {
 
   private $cache_object;
@@ -15,7 +23,6 @@ class Cache {
     }
 
     return call_user_func_array(array($this->cache_object, $method), $args);
-
   }
 
 }
