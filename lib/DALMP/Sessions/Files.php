@@ -2,10 +2,12 @@
 namespace DALMP\Sessions;
 
 /**
- * Sessions Files class - Store sessions on disk files
+ * Sessions\Files
  *
- * Pending work for storing references, possible approach is to use something
- * similar on engines like memcache / redis
+ * @author Nicolas de Bari Embriz <nbari@dalmp.com>
+ * @package DALMP
+ * @license BSD License
+ * @version 3.0
  */
 class Files implements \SessionHandlerInterface {
 

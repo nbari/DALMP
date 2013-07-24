@@ -1,6 +1,14 @@
 <?php
 namespace DALMP\Sessions;
 
+/**
+ * Sessions\Memcache
+ *
+ * @author Nicolas de Bari Embriz <nbari@dalmp.com>
+ * @package DALMP
+ * @license BSD License
+ * @version 3.0
+ */
 class Memcache implements \SessionHandlerInterface {
   /**
    * DALMP\Cache\Memcache instance
@@ -35,7 +43,6 @@ class Memcache implements \SessionHandlerInterface {
    */
   public function __construct(\DALMP\Cache\Memcache $cache, $sessions_ref = 'UID') {
     $this->cache = $cache;
-    $this->sessions_ref = $sessions_ref;
     $this->dalmp_sessions_ref = defined('DALMP_SESSIONS_REF') ? DALMP_SESSIONS_REF : $sessions_ref;
     $this->dalmp_sessions_key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : __FILE__;
   }

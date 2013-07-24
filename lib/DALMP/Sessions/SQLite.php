@@ -1,6 +1,14 @@
 <?php
 namespace DALMP\Sessions;
 
+/**
+ * Sessions\SQLite
+ *
+ * @author Nicolas de Bari Embriz <nbari@dalmp.com>
+ * @package DALMP
+ * @license BSD License
+ * @version 3.0
+ */
 class SQLite implements \SessionHandlerInterface {
 
   /**

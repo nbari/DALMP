@@ -15,7 +15,7 @@ require_once 'lib/dalmp.php';
 $so = new DALMP\Sessions\Redis(new DALMP\Cache\Redis);
 $ses = new DALMP\Sessions($so);
 
-$GLOBALS['UID'] = 3;
+$GLOBALS['UID'] = 4;
 
 $_SESSION['test'] = 1 + @$_SESSION['test'];
 
