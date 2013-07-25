@@ -83,9 +83,12 @@ class Redis implements \SessionHandlerInterface {
         }
       }
 
-      $redis = $this->cache->X();
-      return call_user_func_array(array($redis, 'HDEL'), $keys) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : False;
-
+      if (count($keys) > 1) {
+        $redis = $this->cache->X();
+        return call_user_func_array(array($redis, 'HDEL'), $keys) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : False;
+      } else {
+        return True;
+      }
     } else {
       return True;
     }
