@@ -120,7 +120,15 @@ class Redis implements \SessionHandlerInterface {
    * @return array of sessions containing any reference
    */
   public function getSessionsRefs() {
-    return $this->cache->X()->HGetALL($this->cache_ref_key);
+    $refs = $this->cache->X()->HGetALL($this->cache_ref_key);
+    $rs = array();
+
+    foreach ($refs as $key => $data) {
+      list($reference, $expiry) = explode('|', $data);
+      $rs[$key] = array($reference => $expiry);
+    }
+
+    return $rs;
   }
 
   /**
