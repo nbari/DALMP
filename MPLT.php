@@ -1,9 +1,13 @@
 <?php
-/**
- * Measure Page Load Time
- */
 
-class mplt {
+/**
+ * MPLT - Measure Page Load Time
+ *
+ * @author Nicolas Embriz <nbari@dalmp.com>
+ * @license BSD License
+ */
+class MPLT {
+
   private $decimals;
   private $time_start;
   private $time_end;
