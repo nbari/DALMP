@@ -73,7 +73,7 @@ class Redis implements \SessionHandlerInterface {
   public function gc($maxlifetime) {
     $refs = $this->cache->X()->HGETALL($this->cache_ref_key);
 
-    $keys = array();
+    $keys = array($this->cache_ref_keys);
 
     if (is_array($refs)) {
       foreach ($refs as $key => $sref) {
@@ -82,9 +82,13 @@ class Redis implements \SessionHandlerInterface {
           $keys[] = $key;
         }
       }
-    }
 
-    return $this->cache->X()->HDEL($this->cache_ref_key, implode(' ', $keys)) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : False;
+      $redis = $this->cache->X();
+      return call_user_func_array(array($redis, 'HDEL'), $keys) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : False;
+
+    } else {
+      return True;
+    }
   }
 
   public function open($save_path, $name) {
@@ -160,7 +164,7 @@ class Redis implements \SessionHandlerInterface {
   public function delSessionRef($ref) {
     $refs = $this->cache->X()->HGETALL($this->cache_ref_key);
 
-    $keys = array();
+    $keys = array($this->cache_ref_key);
 
     if (is_array($refs)) {
       foreach ($refs as $key => $data) {
@@ -171,7 +175,12 @@ class Redis implements \SessionHandlerInterface {
       }
     }
 
-    return $this->cache->delete($keys) ? $this->cache->X()->HDEL($this->cache_ref_key, implode(' ', $keys)) : False;
+    if (count($keys) > 1) {
+      $redis = $this->cache->X();
+      return $this->cache->delete($keys) ? call_user_func_array(array($redis, 'HDEL'), $keys) : False;
+    } else {
+      return False;
+    }
   }
 
 }
