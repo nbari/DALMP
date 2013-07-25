@@ -51,14 +51,18 @@ class Sessions {
    */
   public function regenerate_id($use_IP = True) {
     $fingerprint = @$_SERVER['HTTP_ACCEPT'] . @$_SERVER['HTTP_USER_AGENT'] . @$_SERVER['HTTP_ACCEPT_ENCODING'] . @$_SERVER['HTTP_ACCEPT_LANGUAGE'];
+
     if ($use_IP) {
       $fingerprint .= @$_SERVER['SERVER_ADDR'];
     }
+
     $fingerprint = sha1('DALMP' . $fingerprint);
+
     if ((isset($_SESSION['fingerprint']) && $_SESSION['fingerprint'] != $fingerprint)) {
       $_SESSION = array();
       session_destroy();
     }
+
     if (session_regenerate_id(True)) {
       $_SESSION['fingerprint'] = $fingerprint;
       return True;

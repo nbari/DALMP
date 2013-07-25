@@ -12,7 +12,9 @@ require_once 'lib/dalmp.php';
 #$so = new DALMP\Sessions\SQLite('/tmp/sessions.db');
 #$so = new DALMP\Sessions\Memcache(new DALMP\Cache\Memcache);
 #$so = new DALMP\Sessions\Memcache(new DALMP\Cache\Memcache);
-$so = new DALMP\Sessions\Redis(new DALMP\Cache\Redis);
+#$so = new DALMP\Sessions\Redis(new DALMP\Cache\Redis);
+$db = new DALMP\Database('utf8://dalmp:secret@mysql.local:3307/dalmp');
+$so = new DALMP\Sessions\MySQL($db);
 $ses = new DALMP\Sessions($so);
 
 $GLOBALS['UID'] = 4;

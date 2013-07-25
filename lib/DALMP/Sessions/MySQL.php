@@ -55,14 +55,16 @@ class MySQL implements \SessionHandlerInterface {
 
   public function destroy($session_id) {
     $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE sid=?';
-    return $this->DB->PExecute($sql, $sid);
+    return $this->DB->PExecute($sql, $session_id);
   }
 
   public function gc($maxlifetime) {
     $sql = 'DELETE FROM ' . $this->dalmp_sessions_table . ' WHERE expiry < UNIX_TIMESTAMP()';
     $this->DB->Execute($sql);
+
     $sql = 'OPTIMIZE TABLE ' . $this->dalmp_sessions_table;
     $this->DB->Execute($sql);
+
     return True;
   }
 
@@ -71,13 +73,16 @@ class MySQL implements \SessionHandlerInterface {
   }
 
   public function read($session_id) {
-    return ($rs = $this->DB->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $sid, time())) ? $rs : '';
+    return ($rs = $this->DB->PGetOne('SELECT data FROM ' . $this->dalmp_sessions_table . ' WHERE sid=? AND expiry >=?', $session_id, time())) ? $rs : '';
   }
 
   public function write($session_id, $session_data) {
-    $ref = (isset($GLOBALS[$this->sessions_ref]) && !empty($GLOBALS[$this->sessions_ref])) ? $GLOBALS[$this->sessions_ref] : NULL;
+    $ref = (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) ? $GLOBALS[$this->dalmp_sessions_ref] : NULL;
+
     $expiry = time() + ini_get('session.gc_maxlifetime');
+
     $sql = "REPLACE INTO $this->dalmp_sessions_table (sid, expiry, data, ref) VALUES(?,?,?,?)";
+
     return $this->DB->PExecute($sql, $session_id, $expiry, $session_data, $ref);
   }
 
@@ -90,7 +95,7 @@ class MySQL implements \SessionHandlerInterface {
   public function getSessionsRefs($expired_sessions = False) {
     $refs = array();
 
-    $db_refs = ($expired_sessions) ? $this->DB->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > UNIX_TIMESTAMP() AND ref NOT NULL") : $this->DB->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE ref NOT NULL");
+    $db_refs = ($expired_sessions) ? $this->DB->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE expiry > UNIX_TIMESTAMP() AND ref IS NOT NULL") : $this->DB->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE ref IS NOT NULL");
 
     if ($db_refs) {
       foreach ($db_refs as $value) {

@@ -17,7 +17,7 @@ class SQLite implements \SessionHandlerInterface {
    * @access private
    * @var mixed
    */
-  private $sessions_ref;
+  private $dalmp_sessions_ref;
 
   /**
    * SQLite instance
@@ -93,7 +93,7 @@ class SQLite implements \SessionHandlerInterface {
   }
 
   public function write($session_id, $session_data) {
-    $ref = (isset($GLOBALS[$this->sessions_ref]) && !empty($GLOBALS[$this->sessions_ref])) ? $GLOBALS[$this->sessions_ref] : NULL;
+    $ref = (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) ? $GLOBALS[$this->dalmp_sessions_ref] : NULL;
     $expiry = time() + ini_get('session.gc_maxlifetime');
 
     $stmt = $this->sdb->prepare('INSERT OR REPLACE INTO dalmp_sessions (sid, expiry, data, ref) VALUES (:sid, :expiry, :data, :ref)');
