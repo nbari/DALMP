@@ -2,14 +2,15 @@
 namespace DALMP\Cache;
 
 /**
- * Redis - Cache cache class
+ * APC
  *
- * @author Nicolas de Bari Embriz <nbari@dalmp.com>
+ * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
  * @version 3.0
  */
 class APC implements CacheInterface {
+
   protected $cache;
 
   /**

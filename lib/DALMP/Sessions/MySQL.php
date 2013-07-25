@@ -4,7 +4,7 @@ namespace DALMP\Sessions;
 /**
  * Sessions\MySQL
  *
- * @author Nicolas de Bari Embriz <nbari@dalmp.com>
+ * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
  * @version 3.0

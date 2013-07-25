@@ -2,9 +2,9 @@
 namespace DALMP\Cache;
 
 /**
- * Redis - Cache cache class
+ * Disk
  *
- * @author Nicolas de Bari Embriz <nbari@dalmp.com>
+ * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
  * @version 3.0

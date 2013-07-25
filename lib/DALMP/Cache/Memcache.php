@@ -2,12 +2,13 @@
 namespace DALMP\Cache;
 
 /**
- * Redis - Cache cache class
+ * Memcache
  *
- * @author Nicolas de Bari Embriz <nbari@dalmp.com>
+ * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0\ */
+ * @version 3.0
+ */
 class Memcache implements CacheInterface {
   private $host;
   private $port;
