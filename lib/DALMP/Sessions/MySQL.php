@@ -92,7 +92,17 @@ class MySQL implements \SessionHandlerInterface {
    * @return array of sessions containing any reference
    */
   public function getSessionsRefs() {
-    return $this->DB->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE ref IS NOT NULL");
+    $refs = array();
+
+    $db_refs = $this->DB->FetchMode('ASSOC')->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE ref IS NOT NULL");
+
+    if ($db_refs) {
+      foreach ($db_refs as $value) {
+        $refs[$value['sid']] = array($value['ref'] => $value['expiry']);
+      }
+    }
+
+    return $refs;
   }
 
   /**
