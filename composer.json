@@ -20,7 +20,10 @@
   },
   "require": {
     "ext-mysqli": "*",
-    "phpunit/phpunit": "3.7.*"
+    "phpunit/phpunit": "3.8.*"
+  },
+  "require-dev": {
+    "phpunit/php-invoker": "*"
   },
   "suggest": {
     "ext-session": "handle sessions",
