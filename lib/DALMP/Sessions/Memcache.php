@@ -19,6 +19,14 @@ class Memcache implements \SessionHandlerInterface {
   protected $cache;
 
   /**
+   * cache_ref_key key used to store the reference on the cache engine
+   *
+   * @access private
+   * @var string
+   */
+  private $cache_ref_key;
+
+  /**
    * REF - field used for storing references
    *
    * @access private
@@ -45,6 +53,7 @@ class Memcache implements \SessionHandlerInterface {
     $this->cache = $cache;
     $this->dalmp_sessions_ref = defined('DALMP_SESSIONS_REF') ? DALMP_SESSIONS_REF : $sessions_ref;
     $this->dalmp_sessions_key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : __FILE__;
+    $this->cache_ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
   }
 
   public function close() {
@@ -58,16 +67,13 @@ class Memcache implements \SessionHandlerInterface {
     /**
      * destroy REF on cache
      */
-    $ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
-    $refs = $this->cache->Get($ref_key);
+    $refs = $this->cache->Get($this->cache_ref_key);
 
     if (is_array($refs)) {
       unset($refs[$key]);
     }
 
-    $this->cache->Set($ref_key, $refs, 86400);
-
-    return True;
+    return $this->cache->Set($this->cache_ref_key, $refs, 3600);
   }
 
   public function gc($maxlifetime) {
@@ -89,14 +95,13 @@ class Memcache implements \SessionHandlerInterface {
     $expiry = time() + $timeout;
 
     $key = sprintf('DALMP_%s', sha1($this->dalmp_sessions_ref . $session_id));
-    $this->cache->Set($key, $session_data, $timeout);
+    $rs = $this->cache->Set($key, $session_data, $timeout);
 
     /**
      * store REF on cache
      */
-    if ($ref) {
-      $ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
-      $refs = $this->cache->Get($ref_key);
+    if ($rs && $ref) {
+      $refs = $this->cache->Get($this->cache_ref_key);
 
       if ($refs) {
         foreach ($refs as $rkey => $rexpiry) {
@@ -109,10 +114,10 @@ class Memcache implements \SessionHandlerInterface {
       }
 
       $refs[$key] = array($ref => $expiry);
-      $this->cache->Set($ref_key, $refs, 86400);
+      return $this->cache->Set($this->cache_ref_key, $refs, 3600);
+    } else {
+      return $rs;
     }
-
-    return True;
   }
 
   /**
@@ -122,8 +127,7 @@ class Memcache implements \SessionHandlerInterface {
    * @return array of sessions containing any reference
    */
   public function getSessionsRefs($expired_sessions = False) {
-    $ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
-    return $this->cache->Get($ref_key) ?: array();
+    return $this->cache->Get($this->cache_ref_key) ?: array();
   }
 
   /**
@@ -152,19 +156,25 @@ class Memcache implements \SessionHandlerInterface {
    * @return boolean
    */
   public function delSessionRef($ref) {
-    $ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
-    $refs = $this->cache->Get($ref_key);
+    $refs = $this->cache->Get($this->cache_ref_key);
 
     if (is_array($refs)) {
       foreach ($refs as $key => $data) {
+
         if (key($data) == $ref) {
           unset($refs[$key]);
-          $this->cache->Delete($key);
-        }
-      }
-    }
 
-    return $this->cache->Set($ref_key, $refs, 86400);
+          if (!$this->cache->Delete($key)) {
+            return False;
+          }
+
+        }
+
+      }
+      return $this->cache->Set($this->cache_ref_key, $refs, 3600);
+    } else {
+      return False;
+    }
   }
 
 }

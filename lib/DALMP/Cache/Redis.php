@@ -48,7 +48,7 @@ class Redis implements CacheInterface {
 	 *
 	 * @param string $key
 	 */
-	public function Get($key){
+	public function Get($key) {
     return $this->connect() ? unserialize($this->cache->get($key)) : False;
 	}
 
@@ -57,21 +57,21 @@ class Redis implements CacheInterface {
 	 *
 	 * @param string $key
 	 */
-	public function Delete($key){
+	public function Delete($key) {
     return $this->connect() ? $this->cache->delete($key) : False;
 	}
 
 	/**
 	 * Flush cache
 	 */
-	public function Flush(){
+	public function Flush() {
     return $this->connect() ? $this->cache->flushDB() : False;
 	}
 
 	/**
 	 * Get cache stats
 	 */
-	public function Stats(){
+	public function Stats() {
     return $this->connect() ? $this->cache->info() : False;
 	}
 
@@ -80,7 +80,7 @@ class Redis implements CacheInterface {
 	 *
 	 * @return cache object
 	 */
-	public function X(){
+	public function X() {
     return $this->connect() ? $this->cache : False;
 	}
 

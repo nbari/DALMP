@@ -19,6 +19,14 @@ class Redis implements \SessionHandlerInterface {
   protected $cache;
 
   /**
+   * cache_ref_key key used to store the reference on the cache engine
+   *
+   * @access private
+   * @var string
+   */
+  private $cache_ref_key;
+
+  /**
    * REF - field used for storing references
    *
    * @access private
@@ -45,6 +53,7 @@ class Redis implements \SessionHandlerInterface {
     $this->cache = $cache;
     $this->dalmp_sessions_ref = defined('DALMP_SESSIONS_REF') ? DALMP_SESSIONS_REF : $sessions_ref;
     $this->dalmp_sessions_key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : __FILE__;
+    $this->cache_ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
   }
 
   public function close() {
@@ -58,20 +67,24 @@ class Redis implements \SessionHandlerInterface {
     /**
      * destroy REF on cache
      */
-    $ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
-    $refs = $this->cache->Get($ref_key);
-
-    if (is_array($refs)) {
-      unset($refs[$key]);
-    }
-
-    $this->cache->Set($ref_key, $refs, 86400);
-
-    return True;
+    return $this->cache->X()->HDEL($this->cache_ref_key, $key) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : False;
   }
 
   public function gc($maxlifetime) {
-    return True;
+    $refs = $this->cache->X()->HGETALL($this->cache_ref_key);
+
+    $keys = array();
+
+    if (is_array($refs)) {
+      foreach ($refs as $key => $sref) {
+        $data = explode('|', $sref);
+        if (current($data) < time()) {
+          $keys[] = $key;
+        }
+      }
+    }
+
+    return $this->cache->X()->HDEL($this->cache_ref_key, implode(' ', $keys)) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : False;
   }
 
   public function open($save_path, $name) {
@@ -89,30 +102,16 @@ class Redis implements \SessionHandlerInterface {
     $expiry = time() + $timeout;
 
     $key = sprintf('DALMP_%s', sha1($this->dalmp_sessions_ref . $session_id));
-    $this->cache->Set($key, $session_data, $timeout);
+    $rs = $this->cache->Set($key, $session_data, $timeout);
 
     /**
      * store REF on cache
      */
-    if ($ref) {
-      $ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
-      $refs = $this->cache->Get($ref_key);
-
-      if ($refs) {
-        foreach ($refs as $rkey => $rexpiry) {
-          if (current($rexpiry) < time()) {
-            unset($refs[$rkey]);
-          }
-        }
-      } else {
-        $refs = array();
-      }
-
-      $refs[$key] = array($ref => $expiry);
-      $this->cache->Set($ref_key, $refs, 86400);
+    if ($rs && $ref) {
+      return $this->cache->X()->HSET($this->cache_ref_key, $key, sprintf('%s|%s', $ref, $expiry)) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : False;
+    } else {
+      return $rs;
     }
-
-    return True;
   }
 
   /**
@@ -122,8 +121,23 @@ class Redis implements \SessionHandlerInterface {
    * @return array of sessions containing any reference
    */
   public function getSessionsRefs($expired_sessions = False) {
-    $ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
-    return $this->cache->Get($ref_key) ?: array();
+    $refs = $this->cache->X()->HGetALL($this->cache_ref_key);
+    $rs = array();
+
+    foreach ($refs as $key => $data) {
+      list($reference, $expiry) = explode('|', $data);
+
+      if ($expired_sessions) {
+        if ($expiry > time()) {
+          $rs[$key] = array($reference => $expiry);
+        }
+      } else {
+        $rs[$key] = array($reference => $expiry);
+      }
+
+    }
+
+    return $rs;
   }
 
   /**
@@ -133,12 +147,13 @@ class Redis implements \SessionHandlerInterface {
    * @return array of session containing a specific reference
    */
   public function getSessionRef($ref) {
-    $refs = $this->getSessionsRefs();
+    $refs = $this->cache->X()->HGetALL($this->cache_ref_key);
     $rs = array();
 
     foreach ($refs as $key => $data) {
-      if (key($data) == $ref) {
-        $rs[$key] = $data;
+      list($reference, $expiry) = explode('|', $data);
+      if ($reference == $ref) {
+        $rs[$key] = array($reference => $expiry);
       }
     }
 
@@ -152,19 +167,20 @@ class Redis implements \SessionHandlerInterface {
    * @return boolean
    */
   public function delSessionRef($ref) {
-    $ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
-    $refs = $this->cache->Get($ref_key);
+    $refs = $this->cache->X()->HGETALL($this->cache_ref_key);
+
+    $keys = array();
 
     if (is_array($refs)) {
       foreach ($refs as $key => $data) {
-        if (key($data) == $ref) {
-          unset($refs[$key]);
-          $this->cache->Delete($key);
+        list($reference, $expiry) = explode('|', $data);
+        if ($reference == $ref) {
+          $keys[] = $key;
         }
       }
     }
 
-    return $this->cache->Set($ref_key, $refs, 86400);
+    return $this->cache->delete($keys) ? $this->cache->X()->HDEL($this->cache_ref_key, implode(' ', $keys)) : False;
   }
 
 }
