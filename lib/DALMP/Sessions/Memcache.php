@@ -123,10 +123,9 @@ class Memcache implements \SessionHandlerInterface {
   /**
    * getSessionsRefs
    *
-   * @param int $expiry
    * @return array of sessions containing any reference
    */
-  public function getSessionsRefs($expired_sessions = False) {
+  public function getSessionsRefs() {
     return $this->cache->Get($this->cache_ref_key) ?: array();
   }
 

@@ -117,27 +117,10 @@ class Redis implements \SessionHandlerInterface {
   /**
    * getSessionsRefs
    *
-   * @param int $expiry
    * @return array of sessions containing any reference
    */
-  public function getSessionsRefs($expired_sessions = False) {
-    $refs = $this->cache->X()->HGetALL($this->cache_ref_key);
-    $rs = array();
-
-    foreach ($refs as $key => $data) {
-      list($reference, $expiry) = explode('|', $data);
-
-      if ($expired_sessions) {
-        if ($expiry > time()) {
-          $rs[$key] = array($reference => $expiry);
-        }
-      } else {
-        $rs[$key] = array($reference => $expiry);
-      }
-
-    }
-
-    return $rs;
+  public function getSessionsRefs() {
+    return $this->cache->X()->HGetALL($this->cache_ref_key);
   }
 
   /**
