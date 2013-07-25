@@ -29,9 +29,9 @@
     "ext-sqlite3": "Use sqlite for queues"
   },
   "autoload": {
-    "files": [
-      "/dalmp.php"
-    ]
+    "psr-0": {
+      "DALMP\\": "src/"
+    }
   },
   "minimum-stability": "dev"
 }

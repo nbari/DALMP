@@ -28,3 +28,9 @@ Details
 
 *FreeBSD*
 Install from ports: /usr/ports/databases/dalmp
+
+
+Tests
+=====
+
+curl -sS https://getcomposer.org/installer | php -- --install-dir=bin
