@@ -15,8 +15,12 @@
       "email": "nbari@dalmp.com"
     }
   ],
+  "config": {
+    "bin-dir": "bin"
+  },
   "require": {
-    "ext-mysqli": "*"
+    "ext-mysqli": "*",
+    "phpunit/phpunit": "3.7.*"
   },
   "suggest": {
     "ext-session": "handle sessions",
