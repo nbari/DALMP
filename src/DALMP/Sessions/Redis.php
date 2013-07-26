@@ -62,18 +62,25 @@ class Redis implements \SessionHandlerInterface {
 
   public function destroy($session_id) {
     $key = sprintf('DALMP_%s', sha1($this->dalmp_sessions_ref . $session_id));
-    $this->cache->Delete($key);
+    if ($rs = $this->cache->Delete($key)) {
 
-    /**
-     * destroy REF on cache
-     */
-    return $this->cache->X()->HDEL($this->cache_ref_key, $key) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : False;
+      /**
+       * destroy REF on cache
+       */
+      if (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) {
+        $this->cache->X()->HDEL($this->cache_ref_key, $key);
+        $this->cache->X()->EXPIRE($this->cache_ref_key, 3600);
+      }
+      return True;
+    } else {
+      return False;
+    }
   }
 
   public function gc($maxlifetime) {
     $refs = $this->cache->X()->HGETALL($this->cache_ref_key);
 
-    $keys = array($this->cache_ref_keys);
+    $keys = array($this->cache_ref_key);
 
     if (is_array($refs)) {
       foreach ($refs as $key => $sref) {
@@ -85,13 +92,11 @@ class Redis implements \SessionHandlerInterface {
 
       if (count($keys) > 1) {
         $redis = $this->cache->X();
-        return call_user_func_array(array($redis, 'HDEL'), $keys) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : False;
-      } else {
-        return True;
+        call_user_func_array(array($redis, 'HDEL'), $keys);
+        $this->cache->X()->EXPIRE($this->cache_ref_key, 3600);
       }
-    } else {
-      return True;
     }
+    return True;
   }
 
   public function open($save_path, $name) {
