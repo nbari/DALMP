@@ -17,7 +17,7 @@ class test_sessions_memcache extends test_sessions_base {
    *
    * @var sess
    */
-  public $sess;
+  protected $sess;
 
   public function setUp() {
     if (!extension_loaded('memcache')) {

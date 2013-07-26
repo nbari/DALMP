@@ -12,6 +12,10 @@ abstract class test_sessions_base extends PHPUnit_Framework_TestCase {
 
   abstract public function testAttributes();
 
+  public function getSessionData() {
+    return "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+  }
+
   public function testOpen() {
     $this->assertTrue($this->sess->open(True, True));
   }
@@ -20,21 +24,27 @@ abstract class test_sessions_base extends PHPUnit_Framework_TestCase {
    * @depends testOpen
    */
   public function testWrite() {
-    $this->assertTrue($this->sess->write('sid', 'session_data'));
+    for ($i = 0; $i < 100; $i++) {
+      $this->assertTrue($this->sess->write(sha1("sid_{$i}"), $this->getSessionData()));
+    }
   }
 
   /**
    * @depends testWrite
    */
   public function testRead() {
-    $this->assertEquals('session_data', $this->sess->read('sid'));
+    for ($i = 0; $i < 100; $i++) {
+      $this->assertEquals($this->getSessionData(), $this->sess->read(sha1("sid_{$i}")));
+    }
   }
 
   /**
    * @depends testWrite
    */
   public function testDestroy() {
-    $this->assertTrue($this->sess->destroy('sid'));
+    for ($i = 0; $i < 100; $i++) {
+      $this->assertTrue($this->sess->destroy(sha1("sid_{$i}")));
+    }
   }
 
   /**
@@ -52,22 +62,27 @@ abstract class test_sessions_base extends PHPUnit_Framework_TestCase {
   }
 
   public function testWriteRef() {
-    $GLOBALS['UID'] = 'ca893913e71db9dee9b63c204a5e5242';
-    $this->assertTrue($this->sess->write('sid', 'session_data'));
+    for ($i = 0; $i < 100; $i++) {
+      $GLOBALS['UID'] = sha1($i);
+      $this->assertTrue($this->sess->write(sha1("sid_{$i}"), $this->getSessionData()));
+    }
   }
 
   public function testgetSessionsRefs() {
-    $rs = $this->sess->getSessionsRefs();
-    $this->assertEquals('ca893913e71db9dee9b63c204a5e5242', key(current($rs)));
+    $this->assertEquals(100, count($this->sess->getSessionsRefs()));
   }
 
   public function testgetSessionRef() {
-    $this->assertEquals(1, count($this->sess->getSessionRef('ca893913e71db9dee9b63c204a5e5242')));
+    for ($i = 0; $i < 100; $i++) {
+      $this->assertEquals(1, count($this->sess->getSessionRef(sha1($i))));
+    }
   }
 
   public function testdelSessionRef() {
-    $this->assertTrue($this->sess->delSessionRef('ca893913e71db9dee9b63c204a5e5242'));
-    $this->assertEquals(array(), $this->sess->getSessionRef('ca893913e71db9dee9b63c204a5e5242'));
+    for ($i = 0; $i < 100; $i++) {
+      $this->assertTrue($this->sess->delSessionRef(sha1($i)));
+      $this->assertEquals(array(), $this->sess->getSessionRef(sha1($i)));
+    }
   }
 
 }

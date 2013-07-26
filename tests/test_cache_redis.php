@@ -17,7 +17,7 @@ class test_cache_redis extends test_cache_base {
    *
    * @var Cache
    */
-  public $cache;
+  protected $cache;
 
   public function setUp() {
     if (!extension_loaded('redis')) {

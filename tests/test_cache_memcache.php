@@ -17,7 +17,7 @@ class test_cache_memcache extends test_cache_base {
    *
    * @var Cache
    */
-  public $cache;
+  protected $cache;
 
   public function setUp() {
     if (!extension_loaded('memcache')) {

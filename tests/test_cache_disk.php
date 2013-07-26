@@ -17,7 +17,7 @@ class test_cache_disk extends test_cache_base {
    *
    * @var Cache
    */
-  public $cache;
+  protected $cache;
 
   public function setUp() {
     $this->cache = new DALMP\Cache\Disk('/tmp/test_dalmp_disk');

@@ -48,3 +48,6 @@ For example to test only the Cache\Memcache:
 To run all the tests:
 
     ./bin/phpunit --tap -c phpunit.xml
+
+For testing the session_handler that uses mysql you need to edit the file:
+test_sessions_mysqli.php and enter your database credentials
