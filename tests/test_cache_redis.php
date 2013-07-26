@@ -20,6 +20,9 @@ class test_cache_redis extends test_cache_base {
   public $cache;
 
   public function setUp() {
+    if (!extension_loaded('redis')) {
+      $this->markTestSkipped('The redis extension is not available.');
+    }
     $this->cache = new DALMP\Cache\Redis;
   }
 

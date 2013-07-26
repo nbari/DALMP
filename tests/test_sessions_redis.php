@@ -20,6 +20,9 @@ class test_sessions_redis extends test_sessions_base {
   public $sess;
 
   public function setUp() {
+    if (!extension_loaded('redis')) {
+      $this->markTestSkipped('The redis extension is not available.');
+    }
     $this->sess = new DALMP\Sessions\Redis(new DALMP\Cache\Redis);
   }
 

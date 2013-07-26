@@ -9,5 +9,11 @@
     <testsuite name="CacheRedis">
       <file>tests/test_cache_redis.php</file>
     </testsuite>
+    <testsuite name="SessionsRedis">
+      <file>tests/test_sessions_redis.php</file>
+    </testsuite>
+    <testsuite name="SessionsMemcache">
+      <file>tests/test_sessions_memcache.php</file>
+    </testsuite>
   </testsuites>
 </phpunit>

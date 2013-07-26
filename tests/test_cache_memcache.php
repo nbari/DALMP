@@ -20,6 +20,9 @@ class test_cache_memcache extends test_cache_base {
   public $cache;
 
   public function setUp() {
+    if (!extension_loaded('memcache')) {
+      $this->markTestSkipped('The memcache extension is not available.');
+    }
     $this->cache = new DALMP\Cache\Memcache;
   }
 
