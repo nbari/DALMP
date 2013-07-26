@@ -3,7 +3,7 @@
 require_once 'test_cache_base.php';
 
 /**
- * Test for Memcache
+ * Test for Cache\Memcache
  *
  * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP

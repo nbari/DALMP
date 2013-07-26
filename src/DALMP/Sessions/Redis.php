@@ -185,7 +185,9 @@ class Redis implements \SessionHandlerInterface {
 
     if (count($keys) > 1) {
       $redis = $this->cache->X();
-      return $this->cache->delete($keys) ? call_user_func_array(array($redis, 'HDEL'), $keys) : False;
+      call_user_func_array(array($redis, 'HDEL'), $keys);
+      array_shift($keys);
+      return (boolean) $this->cache->delete($keys);
     } else {
       return False;
     }
