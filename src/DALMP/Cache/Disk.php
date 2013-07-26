@@ -32,9 +32,9 @@ class Disk implements CacheInterface {
    *
    * @param string $key
    * @param string $value
-   * @param int $expire time in seconds(default is 0 meaning unlimited)
+   * @param int $expire time in seconds(default is 2592000 '30 days')
    */
-  public function set($key, $value, $expire = 0) {
+  public function set($key, $value, $expire = 2592000) {
     $key = sha1($key);
 
     $cache_path = sprintf('%s/%s/%s/%s', $this->cache_dir, substr($key, 0, 2), substr($key, 2, 2),  substr($key, 4, 2));
@@ -55,7 +55,7 @@ class Disk implements CacheInterface {
       if (fwrite($fp, serialize($value))) {
         flock($fp, LOCK_UN);
         fclose($fp);
-        $time = time() + $expire;
+        $time = time() + (int) $expire;
         return touch($cache_file, $time);
       } else {
         return False;
@@ -72,14 +72,12 @@ class Disk implements CacheInterface {
    */
   public function Get($key){
     $key = sha1($key);
+
     $cache_file = sprintf('%s/%s/%s/%s/%s', $this->cache_dir, substr($key, 0, 2), substr($key, 2, 2),  substr($key, 4, 2), "dalmp_{$key}.cache");
-    $content = @file_get_contents($cache_file);
-    if ($content) {
-      $cache = unserialize($content);
-      $cache_time = filemtime($cache_file);
-      $life = $cache_time - time();
-      if ($life > 0) {
-        return $cache;
+
+    if (file_exists($cache_file)) {
+      if (filemtime($cache_file) > time()) {
+        return unserialize(file_get_contents($cache_file));
       } else {
         unlink($cache_file);
         return False;
@@ -107,8 +105,11 @@ class Disk implements CacheInterface {
     $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->cache_dir, \RecursiveDirectoryIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
 
     foreach ($files as $fileinfo) {
-      $todo = $fileinfo->isDir() ? 'rmdir' : 'unlink';
-      $todo($fileinfo->getRealPath());
+      if ($fileinfo->isDir()) {
+        rmdir($fileinfo->getRealPath());
+      } else {
+        unlink($fileinfo->getRealPath());
+      }
     }
 
     return rmdir($this->cache_dir);
