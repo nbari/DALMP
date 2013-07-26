@@ -43,7 +43,7 @@ Install phpunit via composer:
 
 For example to test only the Cache\Memcache:
 
-    ./bin/phpunit --testsuite CacheMemcache --tap
+    ./bin/phpunit --testsuite CacheMemcache --tap -c phpunit.xml
 
 To run all the tests:
 
