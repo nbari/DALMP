@@ -21,7 +21,7 @@ class Disk implements CacheInterface {
   public function __construct($dir) {
     if (!file_exists($dir)) {
       if (!mkdir($dir, 0750, True)) {
-        throw new \Exception("Can't create cache directory: {$dir}");
+        throw new \InvalidArgumentException("Can't create cache directory: {$dir}");
       }
     }
     $this->cache_dir = $dir;
