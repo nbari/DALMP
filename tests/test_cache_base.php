@@ -14,7 +14,7 @@ abstract class test_cache_base extends PHPUnit_Framework_TestCase {
 
   public function testSet() {
     $tmp_string = '';
-    foreach (range(1,100) as $id) {
+    foreach (range(1,1000) as $id) {
       $this->assertEquals(True, $this->cache->set("test_dalmp_key_{$id}", "val_{$id}"));
       /**
        * test expiry TTL
@@ -36,7 +36,7 @@ abstract class test_cache_base extends PHPUnit_Framework_TestCase {
      */
     sleep(2);
     $tmp_string = '';
-    foreach (range(1,100) as $id) {
+    foreach (range(1,1000) as $id) {
       $this->assertEquals("val_{$id}", $this->cache->get("test_dalmp_key_{$id}"));
       $this->assertEquals(False, $this->cache->get("test_dalmp_key_ttl_{$id}"));
       $tmp_string .= sha1($id);
@@ -47,7 +47,7 @@ abstract class test_cache_base extends PHPUnit_Framework_TestCase {
   }
 
   public function testDelete() {
-    foreach (range(1,100) as $id) {
+    foreach (range(1,1000) as $id) {
       $this->assertEquals(True, $this->cache->delete("test_dalmp_key_{$id}"));
     }
 
