@@ -27,7 +27,7 @@ class Sessions {
    */
   public function __construct($session_handler = False, $hash_algo = 'sha256') {
     if (!$session_handler) {
-      $this->session_handler = new DALMP\Sessions\SQLite();
+      $this->session_handler = new Sessions\SQLite();
     } else {
       if ($session_handler instanceof \SessionHandlerInterface) {
         $this->session_handler = $session_handler;
