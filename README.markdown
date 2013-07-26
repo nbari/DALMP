@@ -33,4 +33,12 @@ Install from ports: /usr/ports/databases/dalmp
 Tests
 =====
 
-curl -sS https://getcomposer.org/installer | php -- --install-dir=bin
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=bin
+
+For example to test only the Cache\Memcache:
+
+    ./bin/phpunit --testsuite CacheMemcache --tap
+
+To run all the tests:
+
+    ./bin/phpunit --tap -c phpunit.xml

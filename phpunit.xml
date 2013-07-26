@@ -1,0 +1,13 @@
+<phpunit colors="true" strict="true" verbose="true">
+  <testsuites>
+    <testsuite name="CacheDisk">
+      <file>tests/test_cache_disk.php</file>
+    </testsuite>
+    <testsuite name="CacheMemcache">
+      <file>tests/test_cache_memcache.php</file>
+    </testsuite>
+    <testsuite name="CacheRedis">
+      <file>tests/test_cache_redis.php</file>
+    </testsuite>
+  </testsuites>
+</phpunit>

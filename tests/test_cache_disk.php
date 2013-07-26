@@ -1,6 +1,6 @@
 <?php
 
-require 'test_cache_base.php';
+require_once 'test_cache_base.php';
 
 /**
  * Test for Disk

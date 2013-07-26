@@ -27,6 +27,9 @@ abstract class test_cache_base extends PHPUnit_Framework_TestCase {
     $this->assertEquals(True, $this->cache->set("test_dalmp_key_gz", gzcompress($tmp_string)));
   }
 
+  /**
+   * @medium
+   */
   public function testGet() {
     /**
      * wait 2 seconds to let keys expire
