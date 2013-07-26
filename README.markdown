@@ -33,7 +33,13 @@ Install from ports: /usr/ports/databases/dalmp
 Tests
 =====
 
+Install composer and required packages:
+
     curl -sS https://getcomposer.org/installer | php -- --install-dir=bin
+
+Install phpunit via composer:
+
+    ./bin/composer.phar install
 
 For example to test only the Cache\Memcache:
 
