@@ -1,4 +1,4 @@
-<phpunit colors="true" strict="true" verbose="true">
+<phpunit colors="true" strict="false" verbose="true">
   <testsuites>
     <testsuite name="CacheDisk">
       <file>tests/test_cache_disk.php</file>

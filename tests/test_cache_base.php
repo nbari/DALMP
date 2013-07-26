@@ -24,7 +24,6 @@ abstract class test_cache_base extends PHPUnit_Framework_TestCase {
     }
 
     $this->assertEquals(True, $this->cache->set("test_dalmp_key_tmp_string", $tmp_string));
-    $this->assertEquals(True, $this->cache->set("test_dalmp_key_gz", gzcompress($tmp_string)));
   }
 
   /**
@@ -43,7 +42,6 @@ abstract class test_cache_base extends PHPUnit_Framework_TestCase {
     }
 
     $this->assertEquals($tmp_string, $this->cache->get("test_dalmp_key_tmp_string"));
-    $this->assertEquals($tmp_string, gzuncompress($this->cache->get("test_dalmp_key_gz")));
   }
 
   public function testDelete() {
@@ -52,7 +50,6 @@ abstract class test_cache_base extends PHPUnit_Framework_TestCase {
     }
 
     $this->assertEquals(True, $this->cache->delete("test_dalmp_key_tmp_string"));
-    $this->assertEquals(True, $this->cache->delete("test_dalmp_key_gz"));
   }
 
   public function testFlush() {
