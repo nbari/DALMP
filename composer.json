@@ -1,5 +1,5 @@
 {
-  "name": "dalmp/dalmp",
+  "name": "DALMP/dalmp",
   "type": "library",
   "description": "Database Abstraction Layer for MySQL using PHP",
   "keywords": [
@@ -19,6 +19,7 @@
     "bin-dir": "bin"
   },
   "require": {
+    "php": ">=5.4.0",
     "ext-mysqli": "*"  
   },
   "require-dev": {
