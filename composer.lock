@@ -3,8 +3,11 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "059c90902b858058685be62ad02daa59",
+    "hash": "2d1b4f3ccc17bb45199c90c9bc4ad4cf",
     "packages": [
+
+    ],
+    "packages-dev": [
         {
             "name": "phpunit/php-code-coverage",
             "version": "dev-master",
@@ -111,6 +114,52 @@
                 "iterator"
             ],
             "time": "2013-01-07 10:47:05"
+        },
+        {
+            "name": "phpunit/php-invoker",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/php-invoker.git",
+                "reference": "0fd584a6abb9cc446a2dad6d3b995f854c85efe8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-invoker/zipball/0fd584a6abb9cc446a2dad6d3b995f854c85efe8",
+                "reference": "0fd584a6abb9cc446a2dad6d3b995f854c85efe8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pcntl": "*",
+                "php": ">=5.4.7",
+                "phpunit/php-timer": ">=1.1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "PHP/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                ""
+            ],
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sb@sebastian-bergmann.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Utility class for invoking callables with a timeout.",
+            "homepage": "https://github.com/sebastianbergmann/php-invoker/",
+            "keywords": [
+                "process"
+            ],
+            "time": "2013-01-30 06:30:12"
         },
         {
             "name": "phpunit/php-text-template",
@@ -576,54 +625,6 @@
             "time": "2013-07-21 20:19:01"
         }
     ],
-    "packages-dev": [
-        {
-            "name": "phpunit/php-invoker",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sebastianbergmann/php-invoker.git",
-                "reference": "0fd584a6abb9cc446a2dad6d3b995f854c85efe8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-invoker/zipball/0fd584a6abb9cc446a2dad6d3b995f854c85efe8",
-                "reference": "0fd584a6abb9cc446a2dad6d3b995f854c85efe8",
-                "shasum": ""
-            },
-            "require": {
-                "ext-pcntl": "*",
-                "php": ">=5.4.7",
-                "phpunit/php-timer": ">=1.1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "PHP/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                ""
-            ],
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Bergmann",
-                    "email": "sb@sebastian-bergmann.de",
-                    "role": "lead"
-                }
-            ],
-            "description": "Utility class for invoking callables with a timeout.",
-            "homepage": "https://github.com/sebastianbergmann/php-invoker/",
-            "keywords": [
-                "process"
-            ],
-            "time": "2013-01-30 06:30:12"
-        }
-    ],
     "aliases": [
 
     ],
@@ -632,6 +633,7 @@
 
     ],
     "platform": {
+        "php": ">=5.4.0",
         "ext-mysqli": "*"
     },
     "platform-dev": [

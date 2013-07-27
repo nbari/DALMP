@@ -20,7 +20,7 @@
   },
   "require": {
     "php": ">=5.4.0",
-    "ext-mysqli": "*"  
+    "ext-mysqli": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "3.8.*",
@@ -35,8 +35,7 @@
   },
   "autoload": {
     "psr-0": {
-      "DALMP\\": "src/",
-      "UnitTests": "tests/"
+      "DALMP\\": "src/"
     }
   },
   "minimum-stability": "dev"

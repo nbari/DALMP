@@ -56,7 +56,7 @@ Install composer and required packages:
 
 Install phpunit via composer:
 
-    ./bin/composer.phar install
+    ./bin/composer.phar install --dev
 
 For example to test only the Cache\Memcache:
 
