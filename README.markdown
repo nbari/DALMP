@@ -42,7 +42,7 @@ For storing PHP sessions on mysql you need to create a table with the following 
     `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`sid`),
     KEY `index` (`ref`,`sid`,`expiry`)
-    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+    ) DEFAULT CHARSET=utf8;
 
 Tests
 =====
