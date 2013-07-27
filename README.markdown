@@ -6,7 +6,7 @@ DALMP - Database Abstraction Layer for MySQL using PHP
 handbook: www.dalmp.com
 
 Details
-=======
+-------
 
   * Redis.io support.
   * Memcache single or multiple hosts and socket support.
@@ -30,7 +30,7 @@ Details
 Install from ports: /usr/ports/databases/dalmp
 
 Sessions
-========
+--------
 
 For storing PHP sessions on mysql you need to create a table with the following schema
 
@@ -45,7 +45,7 @@ For storing PHP sessions on mysql you need to create a table with the following 
     ) DEFAULT CHARSET=utf8;
 
 Tests
-=====
+-----
 
 Install composer and required packages:
 
@@ -71,6 +71,6 @@ test_sessions_mysqli.php and enter your database credentials:
 
 
 Bugs / suggestions / comments
-=============================
+-----------------------------
 
 If you found a bug of have any other inquiries please use the the DALMP group at :https://groups.google.com/group/dalmp
