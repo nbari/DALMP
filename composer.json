@@ -35,7 +35,8 @@
   },
   "autoload": {
     "psr-0": {
-      "DALMP\\": "src/"
+      "DALMP\\": "src/",
+      "UnitTests": "tests/"
     }
   },
   "minimum-stability": "dev"
