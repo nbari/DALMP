@@ -29,6 +29,20 @@ Details
 *FreeBSD*
 Install from ports: /usr/ports/databases/dalmp
 
+Sessions
+========
+
+For storing PHP sessions on mysql you need to create a table with the following schema
+
+    CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
+    `sid` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+    `expiry` int(11) unsigned NOT NULL DEFAULT '0',
+    `data` longtext CHARACTER SET utf8 COLLATE utf8_bin,
+    `ref` varchar(255) DEFAULT NULL,
+    `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`sid`),
+    KEY `index` (`ref`,`sid`,`expiry`)
+    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 Tests
 =====
@@ -50,19 +64,13 @@ To run all the tests:
     ./bin/phpunit --tap -c phpunit.xml
 
 For testing the session_handler that uses mysql you need to edit the file:
-test_sessions_mysqli.php and enter your database credentials
+test_sessions_mysqli.php and enter your database credentials:
 
-Sessions
-========
+   $db = new DALMP\Database('utf8://user:password@host:3306/your_database');
 
-For storing PHP sessions on mysql you need to create a table with the following schema
 
-    CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
-    `sid` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
-    `expiry` int(11) unsigned NOT NULL DEFAULT '0',
-    `data` longtext CHARACTER SET utf8 COLLATE utf8_bin,
-    `ref` varchar(255) DEFAULT NULL,
-    `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`sid`),
-    KEY `index` (`ref`,`sid`,`expiry`)
-    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+Bugs / suggestions / comments
+=============================
+
+If you found a bug of have any other inquiries please use the the DALMP group at :https://groups.google.com/group/dalmp
