@@ -19,10 +19,10 @@
     "bin-dir": "bin"
   },
   "require": {
-    "ext-mysqli": "*",
-    "phpunit/phpunit": "3.8.*"
+    "ext-mysqli": "*"  
   },
   "require-dev": {
+    "phpunit/phpunit": "3.8.*"
     "phpunit/php-invoker": "*"
   },
   "suggest": {
