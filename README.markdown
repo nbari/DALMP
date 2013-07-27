@@ -51,3 +51,18 @@ To run all the tests:
 
 For testing the session_handler that uses mysql you need to edit the file:
 test_sessions_mysqli.php and enter your database credentials
+
+Sessions
+========
+
+For storing PHP sessions on mysql you need to create a table with the following schema
+
+    CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
+    `sid` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+    `expiry` int(11) unsigned NOT NULL DEFAULT '0',
+    `data` longtext CHARACTER SET utf8 COLLATE utf8_bin,
+    `ref` varchar(255) DEFAULT NULL,
+    `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`sid`),
+    KEY `index` (`ref`,`sid`,`expiry`)
+    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
