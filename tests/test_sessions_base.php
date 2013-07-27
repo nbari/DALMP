@@ -24,7 +24,7 @@ abstract class test_sessions_base extends PHPUnit_Framework_TestCase {
    * @depends testOpen
    */
   public function testWrite() {
-    for ($i = 0; $i < 1000; $i++) {
+    for ($i = 0; $i < 100; $i++) {
       $this->assertTrue($this->sess->write(sha1("sid_{$i}"), $this->getSessionData()));
     }
   }
@@ -33,7 +33,7 @@ abstract class test_sessions_base extends PHPUnit_Framework_TestCase {
    * @depends testWrite
    */
   public function testRead() {
-    for ($i = 0; $i < 1000; $i++) {
+    for ($i = 0; $i < 100; $i++) {
       $this->assertEquals($this->getSessionData(), $this->sess->read(sha1("sid_{$i}")));
     }
   }
@@ -42,7 +42,7 @@ abstract class test_sessions_base extends PHPUnit_Framework_TestCase {
    * @depends testWrite
    */
   public function testDestroy() {
-    for ($i = 0; $i < 1000; $i++) {
+    for ($i = 0; $i < 100; $i++) {
       $this->assertTrue($this->sess->destroy(sha1("sid_{$i}")));
     }
   }
@@ -62,24 +62,24 @@ abstract class test_sessions_base extends PHPUnit_Framework_TestCase {
   }
 
   public function testWriteRef() {
-    for ($i = 0; $i < 1000; $i++) {
+    for ($i = 0; $i < 100; $i++) {
       $GLOBALS['UID'] = sha1($i);
       $this->assertTrue($this->sess->write(sha1("sid_{$i}"), $this->getSessionData()));
     }
   }
 
   public function testgetSessionsRefs() {
-    $this->assertEquals(1000, count($this->sess->getSessionsRefs()));
+    $this->assertEquals(100, count($this->sess->getSessionsRefs()));
   }
 
   public function testgetSessionRef() {
-    for ($i = 0; $i < 1000; $i++) {
+    for ($i = 0; $i < 100; $i++) {
       $this->assertEquals(1, count($this->sess->getSessionRef(sha1($i))));
     }
   }
 
   public function testdelSessionRef() {
-    for ($i = 0; $i < 1000; $i++) {
+    for ($i = 0; $i < 100; $i++) {
       $this->assertTrue($this->sess->delSessionRef(sha1($i)));
       $this->assertEquals(array(), $this->sess->getSessionRef(sha1($i)));
     }
