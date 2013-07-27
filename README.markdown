@@ -1,4 +1,4 @@
-DALMP 
+DALMP
 =====
 
 Database Abstraction Layer for MySQL using PHP
@@ -27,6 +27,7 @@ Details
   * Trace/measure everything enabling the debugger by just setting something like $db->debug(1).
   * Works outof the box with Cloud databases like Amazon RDS.
   * Lazy database connection. Connect only when needed.
+  * PSR-0 compliance.
 
 *FreeBSD*
 Install from ports: /usr/ports/databases/dalmp
