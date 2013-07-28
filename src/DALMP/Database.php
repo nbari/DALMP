@@ -48,17 +48,9 @@ class Database {
    * cache instances
    *
    * @access private
-   * @var array
+   * @var mixed
    */
-  private static $cache = array();
-
-  /**
-   * Cache type
-   *
-   * @access private
-   * @var string
-   */
-  private $cachetype;
+  private static $cache = NULL;
 
   /**
    * If enabled, logs all queries and executions.
@@ -951,38 +943,49 @@ class Database {
   }
 
   /**
-   * Start the Cache Object
+   * Cache
    *
-   * @param string $type
+   * @return DALMP\Cache instance
    */
-  public function Cache($type = NULL) {
-    if (is_NULL($type) && empty(self::$cache)) {
+  public function Cache() {
+    if (is_null(self::$cache)) {
       list($type, $host, $port, $compress) = @explode(':', $this->dsn['cache']) + array(NULL, NULL, NULL, NULL);
-      self::$cache[$type] = new DALMP\Cache($type);
-      self::$cache[$type]->host($host)->port($port)->compress($compress);
-    } elseif ($type !== NULL && !isset(self::$cache[$type])) {
-      self::$cache[$type] = new DALMP\Cache($type);
-    }
 
-    if ($type) {
-      $this->cachetype = $type;
-      self::$cache[$type]->type($type);
+      if ($this->debug) $this->debug->log('Cache', $this->dsn['cache']);
+
+      $cache_type = strtolower($type);
+
+      switch ($cache_type) {
+      case 'apc':
+        self::$cache = new DAMLP\Cache\APC();
+        break;
+
+      case 'memcache':
+        self::$cache = new DAMLP\Cache\Memcache($host, $port, 1, $compress);
+        break;
+
+      case 'redis':
+        self::$cache = new DAMLP\Cache\Redis($host, $port, $compress);
+        break;
+
+      default:
+        self::$cache = new DALMP\Cache\Disk($host);
+      }
     } else {
-      $type = $this->cachetype;
+      return self::$cache;
     }
-    return self::$cache[$type];
   }
 
   /**
    * general method for caching
    *
-   * args: $method, $cachetype, $expire, $sql, $key, $group
+   * args: $method, $expire, $sql, $key, $group
    * @access protected;
    */
   protected function _Cache() {
     $args = func_get_args();
+
     $fetch = array_shift($args);
-    $this->cachetype = in_array(reset($args), array('dir', 'apc', 'memcache', 'redis')) ? array_shift($args) : $this->cachetype;
     $expire = (int) (reset($args)) ? array_shift($args) : 3600;
     $sql = array_shift($args);
     $key = isset($args[0]) ? $args[0] : $fetch;
@@ -997,9 +1000,9 @@ class Database {
     $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
     $hkey = sha1($skey . $sql . $key);
 
-    if ($this->debug) $this->debug->log("Cache - GET - $this->cachetype", "method: $fetch expire: $expire sql: [ $sql ] key: $key group: $group hkey: $hkey");
+    if ($this->debug) $this->debug->log('Cache - GET', "method: $fetch expire: $expire sql: [ $sql ] key: $key group: $group hkey: $hkey");
 
-    if ($cache = $this->Cache($this->cachetype)->get($hkey)) {
+    if ($cache = $this->Cache()->get($hkey)) {
       return $cache;
     } else {
       switch ($fetch) {
@@ -1023,7 +1026,7 @@ class Database {
 
       $this->setCache($hkey, $cache, $expire, $group);
 
-      if ($this->debug) $this->debug->log("Cache - SET - $this->cachetype", "method: $fetch expire: $expire sql: [ $sql ] key: $key group: $group hkey: $hkey");
+      if ($this->debug) $this->debug->log('Cache - SET', "method: $fetch expire: $expire sql: [ $sql ] key: $key group: $group hkey: $hkey");
 
       return $cache;
     }
@@ -1036,8 +1039,8 @@ class Database {
    */
   protected function _CacheP() {
     $args = func_get_args();
+
     $fetch = array_shift($args);
-    $cachetype = in_array(reset($args), array('dir', 'apc', 'memcache', 'redis')) ? array_shift($args) : $this->cachetype;
     $expire = (int) (reset($args)) ? array_shift($args) : 3600;
     $sql = array_shift($args);
 
@@ -1066,16 +1069,18 @@ class Database {
       $params = $args;
       $group = NULL;
     }
+
     array_unshift($args, $sql);
+
     $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
     $hkey = sha1($skey . $sql . $key);
 
-    if ($this->debug) $this->debug->log("Cache - GET - $this->cachetype", "PreparedStatements method: $fetch expire: $expire, sql: $sql params: " . implode('|', $params) . " key: $key group: $group");
+    if ($this->debug) $this->debug->log('Cache - GET', "PreparedStatements method: $fetch expire: $expire, sql: $sql params: " . implode('|', $params) . " key: $key group: $group");
 
-    if ($cache = $this->Cache($cachetype)->get($hkey)) {
+    if ($cache = $this->Cache()->Get($hkey)) {
       return $cache;
     } else {
-      if ($this->debug) $this->debug->log('Cache', __METHOD__ . " - $cachetype", 'PreparedStatements no cache returned, executing query PExecute with args: ', $args);
+      if ($this->debug) $this->debug->log('Cache', __METHOD__, 'PreparedStatements no cache returned, executing query PExecute with args: ', $args);
 
       $nargs = array();
       foreach (array_keys($args) as $akey) {
@@ -1090,7 +1095,7 @@ class Database {
 
       $this->setCache($hkey, $cache, $expire, $group);
 
-      if ($this->debug) $this->debug->log("Cache - SET - $this->cachetype", "method: $fetch expire: $expire sql: [ $sql ] key: $key group: $group hkey: $hkey");
+      if ($this->debug) $this->debug->log('Cache - SET', "method: $fetch expire: $expire sql: [ $sql ] key: $key group: $group hkey: $hkey");
 
       return $cache;
     }
@@ -1110,7 +1115,7 @@ class Database {
       $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
       $gkey = sha1($skey . $group);
 
-      if ($gCache = $this->Cache($this->cachetype)->get($gkey)) {
+      if ($gCache = $this->Cache()->Get($gkey)) {
         foreach ($gCache as $key => $exp) {
           if ($exp < time()) {
             unset($gCache[$key]);
@@ -1122,25 +1127,15 @@ class Database {
 
       $gCache[$hkey] = time() + $expire;
 
-      if (!$this->Cache($this->cachetype)->set($hkey, $cache, $expire)->set($gkey, $gCache, $expire)) {
+      if (!$this->Cache()->Set($hkey, $cache, $expire)->Set($gkey, $gCache, $expire)) {
         trigger_error('ERROR -> ' . __METHOD__ . " setCache: Error saving data to cache.", E_USER_NOTICE);
       }
     } else {
-      if (!$this->Cache($this->cachetype)->set($hkey, $cache, $expire)) {
+      if (!$this->Cache()->Set($hkey, $cache, $expire)) {
         trigger_error('ERROR -> ' . __METHOD__ . " setCache: Error saving data to cache.", E_USER_NOTICE);
       }
     }
     return True;
-  }
-
-  /**
-   * getCache - retrive data from cache
-   *
-   * @param string $hkey
-   * @return cached data or False
-   */
-  public function getCache($hkey) {
-    return $this->Cache($this->cachetype)->get($hkey);
   }
 
   /**
@@ -1149,41 +1144,25 @@ class Database {
    * @param SQL $sql, cache group or NULL
    */
   public function CacheFlush($sql = NULL, $key = NULL) {
-    // initialize the default cache engine if there are no caches
-    if (empty(self::$cache)) {
-      list($type, $host, $port, $compress) = @explode(':', $this->dsn['cache']) + array(NULL, NULL, NULL, NULL);
-      self::$cache[$type] = new DALMP\Cache($type);
-      self::$cache[$type]->host($host)->port($port)->compress($compress);
-      $this->cachetype = $type;
+    if (is_null($sql)) {
+      return $this->Cache($type)->Flush();
     }
 
-    if (in_array($sql, array('dir', 'apc', 'memcache', 'redis')) || is_NULL($sql)) {
-      if ($sql) {
-        if ($this->debug) $this->debug->log(__METHOD__, "flushing $sql");
-        return $this->Cache($sql)->flush();
-      }
-
-      if ($this->debug) $this->debug->log(__METHOD__, 'flushing all caches ' . implode(':', array_keys(self::$cache)));
-      foreach (array_keys(self::$cache) as $type) {
-        $this->Cache($type)->flush();
-      }
-      return;
-    }
-
-    if ($this->debug) $this->debug->log(__METHOD__, "flush: $sql, key: $key, cache: $this->cachetype");
+    if ($this->debug) $this->debug->log(__METHOD__, "flush: $sql, key: $key");
 
     $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
     $hkey = sha1($skey . $sql . $key);
 
     if (strncmp($sql, 'group:', 6) == 0) {
       $gkey = sha1($skey . $sql);
-      $group = $this->Cache($this->cachetype)->get($gkey);
+      $group = $this->Cache()->get($gkey);
       $group = is_array($group) ? $group : array();
       foreach ($group as $key => $timeout) {
-        $this->Cache($this->cachetype)->delete($key);
+        $this->Cache()->Delete($key);
       }
     }
-    return $this->Cache($this->cachetype)->delete($hkey);
+
+    return $this->Cache()->Delete($hkey);
   }
 
   /**
@@ -1249,13 +1228,17 @@ class Database {
     $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : DALMP_DIR.'/dalmp_queue.db';
     $sdb = new SQLite3($queue_db);
     $sdb->busyTimeout(2000);
+
     if (defined('DALMP_SQLITE_ENC_KEY')) $sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
+
     $sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
     $sdb->exec('CREATE TABLE IF NOT EXISTS queues (id INTEGER PRIMARY KEY, queue VARCHAR (64) NOT NULL, data TEXT, cdate DATE)');
     $sql = "INSERT INTO queues VALUES (NULL, '$queue', '" . base64_encode($data) . "', '" . @date('Y-m-d H:i:s') . "')";
+
     if (!$sdb->exec($sql)) {
       trigger_error("queue: could not save $data - $queue on $queue_db", E_USER_NOTICE);
     }
+
     $sdb->busyTimeout(0);
     $sdb->close();
   }
@@ -1270,8 +1253,11 @@ class Database {
   public static function readQueue($queue = '*', $print = False) {
     $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : DALMP_DIR.'/dalmp_queue.db';
     $sdb = new SQLite3($queue_db);
+
     if (defined('DALMP_SQLITE_ENC_KEY')) $sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
+
     $rs = ($queue === '*') ? @$sdb->query('SELECT * FROM queues') : @$sdb->query("SELECT * FROM queues WHERE queue='$queue'");
+
     if ($rs) {
       if ($print) {
         while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
@@ -1330,6 +1316,7 @@ class Database {
 
   /**
    * usage: echo $db;
+   *
    * @return DALMP stats
    */
   public function __toString() {

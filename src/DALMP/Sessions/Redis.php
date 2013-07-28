@@ -114,13 +114,13 @@ class Redis implements \SessionHandlerInterface {
     $expiry = time() + $timeout;
 
     $key = sprintf('DALMP_%s', sha1($this->dalmp_sessions_ref . $session_id));
-    $rs = $this->cache->Set($key, $session_data, $timeout);
+    $rs = (bool) $this->cache->Set($key, $session_data, $timeout);
 
     /**
      * store REF on cache
      */
     if ($rs && $ref) {
-      return $this->cache->X()->HSET($this->cache_ref_key, $key, sprintf('%s|%s', $ref, $expiry)) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : False;
+      return (bool) ($this->cache->X()->HSET($this->cache_ref_key, $key, sprintf('%s|%s', $ref, $expiry)) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : False);
     } else {
       return $rs;
     }
@@ -187,7 +187,7 @@ class Redis implements \SessionHandlerInterface {
       $redis = $this->cache->X();
       call_user_func_array(array($redis, 'HDEL'), $keys);
       array_shift($keys);
-      return (boolean) $this->cache->delete($keys);
+      return (bool) $this->cache->delete($keys);
     } else {
       return False;
     }

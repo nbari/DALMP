@@ -17,30 +17,25 @@ class Files implements \SessionHandlerInterface {
    * @access private
    * @var string
    */
-  private $savePath;
+  private $sessions_dir;
 
   /**
    * constructor
    *
-   * @param $savePath string
+   * @param string $dir
    */
-  public function __construct($savePath = null) {
-    if ($savePath) {
-      if (!is_writable($savePath)) {
-        if (!is_dir($savePath) && !mkdir($savePath, 0700, True)) {
-          throw new \InvalidArgumentException($savePath . ' not accessible');
-        }
-      }
-      $this->savePath = $savePath;
-    } else {
-      if (!is_writable('/tmp')) {
-        if (!is_dir('/tmp') && !mkdir('/tmp', 0700, True)) {
-          throw new \Exception('/tmp  not accessible');
-        }
-      } else {
-        $this->savePath = '/tmp/dalmp_sessions';
+  public function __construct($sessions_dir = False) {
+    if (!$sessions_dir) {
+      $sessions_dir = defined('DALMP_SESSIONS_DIR') ? DALMP_SESSIONS_DIR : '/tmp/dalmp_sessions';
+    }
+
+    if (!is_writable($sessions_dir)) {
+      if (!is_dir($sessions_dir) && !mkdir($sessions_dir, 0700, True)) {
+        throw new \InvalidArgumentException($sessions_dir . ' not accessible');
       }
     }
+
+    $this->sessions_dir = $dir;
   }
 
   public function close() {
@@ -48,7 +43,7 @@ class Files implements \SessionHandlerInterface {
   }
 
   public function destroy($session_id) {
-    $sess_path = sprintf('%s/%s/%s/%s', $this->savePath, substr($session_id, 0, 2), substr($session_id, 2, 2),  substr($session_id, 4, 2));
+    $sess_path = sprintf('%s/%s/%s/%s', $this->sessions_dir, substr($session_id, 0, 2), substr($session_id, 2, 2),  substr($session_id, 4, 2));
     $sess_file = sprintf('%s/%s', $sess_path , "{$session_id}.sess");
 
     if (file_exists($sess_file)) {
@@ -59,7 +54,7 @@ class Files implements \SessionHandlerInterface {
   }
 
   public function gc($maxlifetime) {
-    $session_files = $this->rsearch($this->savePath, '#^.*\.sess$#');
+    $session_files = $this->rsearch($this->sessions_dir, '#^.*\.sess$#');
 
     foreach ($session_files as $file) {
       if (filemtime($file) + $maxlifetime < time() && file_exists($file)) {
@@ -75,7 +70,7 @@ class Files implements \SessionHandlerInterface {
   }
 
   public function read($session_id) {
-    $sess_path = sprintf('%s/%s/%s/%s', $this->savePath, substr($session_id, 0, 2), substr($session_id, 2, 2),  substr($session_id, 4, 2));
+    $sess_path = sprintf('%s/%s/%s/%s', $this->sessions_dir, substr($session_id, 0, 2), substr($session_id, 2, 2),  substr($session_id, 4, 2));
 
     if (!is_dir($sess_path) && !mkdir($sess_path, 0700, True)) {
       throw new \Exception("$sess_path  not accessible");
@@ -87,7 +82,7 @@ class Files implements \SessionHandlerInterface {
   }
 
   public function write($session_id, $session_data) {
-    $sess_path = sprintf('%s/%s/%s/%s', $this->savePath, substr($session_id, 0, 2), substr($session_id, 2, 2),  substr($session_id, 4, 2));
+    $sess_path = sprintf('%s/%s/%s/%s', $this->sessions_dir, substr($session_id, 0, 2), substr($session_id, 2, 2),  substr($session_id, 4, 2));
 
     if (!is_dir($sess_path) && !mkdir($sess_path, 0700, True)) {
       throw new \Exception("$sess_path  not accessible");

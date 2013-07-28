@@ -18,13 +18,22 @@ class Disk implements CacheInterface {
    *
    * @param string $dir
    */
-  public function __construct($dir) {
-    if (!file_exists($dir)) {
-      if (!mkdir($dir, 0750, True)) {
-        throw new \InvalidArgumentException("Can't create cache directory: {$dir}");
+  public function __construct() {
+    $args = func_get_args();
+
+    if (!$args) {
+      $cache_dir = defined('DALMP_CACHE_DIR') ? DALMP_CACHE_DIR : '/tmp/dalmp_cache';
+    } else {
+      $cache_dir = $args[0];
+    }
+
+    if (!is_writable($cache_dir)) {
+      if (!is_dir($cache_dir) && !mkdir($cache_dir, 0700, True)) {
+        throw new \InvalidArgumentException($cache_dir . ' not accessible');
       }
     }
-    $this->cache_dir = $dir;
+
+    $this->cache_dir = $cache_dir;
   }
 
   /**
@@ -56,7 +65,7 @@ class Disk implements CacheInterface {
         flock($fp, LOCK_UN);
         fclose($fp);
         $time = time() + (int) $expire;
-        return touch($cache_file, $time);
+        return touch($cache_file, $time) ? $this : False;
       } else {
         return False;
       }

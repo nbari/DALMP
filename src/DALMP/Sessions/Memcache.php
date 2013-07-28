@@ -73,7 +73,7 @@ class Memcache implements \SessionHandlerInterface {
       unset($refs[$key]);
     }
 
-    return $this->cache->Set($this->cache_ref_key, $refs, 3600);
+    return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3600);
   }
 
   public function gc($maxlifetime) {
@@ -95,7 +95,7 @@ class Memcache implements \SessionHandlerInterface {
     $expiry = time() + $timeout;
 
     $key = sprintf('DALMP_%s', sha1($this->dalmp_sessions_ref . $session_id));
-    $rs = $this->cache->Set($key, $session_data, $timeout);
+    $rs = (bool) $this->cache->Set($key, $session_data, $timeout);
 
     /**
      * store REF on cache
@@ -114,7 +114,7 @@ class Memcache implements \SessionHandlerInterface {
       }
 
       $refs[$key] = array($ref => $expiry);
-      return $this->cache->Set($this->cache_ref_key, $refs, 3600);
+      return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3600);
     } else {
       return $rs;
     }
@@ -170,7 +170,7 @@ class Memcache implements \SessionHandlerInterface {
         }
 
       }
-      return $this->cache->Set($this->cache_ref_key, $refs, 3600);
+      return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3600);
     } else {
       return False;
     }

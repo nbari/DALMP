@@ -10,9 +10,9 @@ namespace DALMP\Cache;
  * @version 3.0
  */
 class Memcache implements CacheInterface {
-  private $host;
-  private $port;
-  private $timeout;
+  private $host = '127.0.0.1';
+  private $port = 11211;
+  private $timeout = 1;
   private $compress = False;
   protected $cache;
 
@@ -24,12 +24,16 @@ class Memcache implements CacheInterface {
    * @param int $timeout
    * @param int $compress
    */
-  public function __construct($host = '127.0.0.1', $port = 11211, $timeout = 1, $compress = False) {
-    $this->host = $host;
-    $this->port = $port;
-    $this->timeout = (int) $timeout;
-    if ($compress) {
-      $this->compress = MEMCACHE_COMPRESSED;
+  public function __construct() {
+    $args = func_get_args();
+
+    if ($args) {
+      $this->host = $args[0];
+      $this->port = isset($args[1]) ? (int) $args[1] : 11211;
+      $this->timeout = isset($args[2]) ? (int) $args[2] : 1;
+      if (isset($args[3])) {
+        $this->compress = MEMCACHE_COMPRESSED;
+      }
     }
   }
 
@@ -42,8 +46,8 @@ class Memcache implements CacheInterface {
    */
   public function Set($key, $value, $expire = 0) {
     if ($this->connect()) {
-      ( $this->compress === 0) && $this->cache->setCompressThreshold(0);
-      return (bool) $this->cache->set($key, $value, $this->compress, $expire);
+      ($this->compress === False) && $this->cache->setCompressThreshold(0);
+      return $this->cache->set($key, $value, $this->compress, $expire) ? $this : False;
     } else {
       return False;
     }

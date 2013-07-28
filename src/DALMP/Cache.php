@@ -11,9 +11,15 @@ namespace DALMP;
  */
 class Cache {
 
+  /**
+   * CacheInterface instance
+   *
+   * @var CacheInterface
+   * @access private
+   */
   private $cache_object;
 
-  public function __construct(Cache\CacheInterface  $object) {
+  public function __construct(Cache\CacheInterface $object) {
     $this->cache_object = $object;
   }
 

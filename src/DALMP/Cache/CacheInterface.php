@@ -17,7 +17,7 @@ interface CacheInterface {
    * @param string $key
    * @param string $value
    * @param int $ttl time in seconds(default is 0 meaning unlimited)
-   * @return bool
+   * @return this
    */
   public function Set($key, $value, $ttl = 0);
 
