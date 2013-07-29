@@ -12,8 +12,8 @@ abstract class test_sessions_base extends PHPUnit_Framework_TestCase {
 
   abstract public function testAttributes();
 
-  public function getSessionData() {
-    return "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+  public function getSessionData($i) {
+    return "{$i}. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
   }
 
   public function testOpen() {
@@ -25,7 +25,7 @@ abstract class test_sessions_base extends PHPUnit_Framework_TestCase {
    */
   public function testWrite() {
     for ($i = 0; $i < 100; $i++) {
-      $this->assertTrue($this->sess->write(sha1("sid_{$i}"), $this->getSessionData()));
+      $this->assertTrue($this->sess->write(sha1("sid_{$i}"), $this->getSessionData($i)));
     }
   }
 
@@ -34,7 +34,7 @@ abstract class test_sessions_base extends PHPUnit_Framework_TestCase {
    */
   public function testRead() {
     for ($i = 0; $i < 100; $i++) {
-      $this->assertEquals($this->getSessionData(), $this->sess->read(sha1("sid_{$i}")));
+      $this->assertEquals($this->getSessionData($i), $this->sess->read(sha1("sid_{$i}")));
     }
   }
 
@@ -64,7 +64,7 @@ abstract class test_sessions_base extends PHPUnit_Framework_TestCase {
   public function testWriteRef() {
     for ($i = 0; $i < 100; $i++) {
       $GLOBALS['UID'] = sha1($i);
-      $this->assertTrue($this->sess->write(sha1("sid_{$i}"), $this->getSessionData()));
+      $this->assertTrue($this->sess->write(sha1("sid_{$i}"), $this->getSessionData($i)));
     }
   }
 
