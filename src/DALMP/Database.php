@@ -186,7 +186,7 @@ class Database {
    */
   public function debug($log2file = False, $debugFile = False) {
     $debugFile = $debugFile ?: (defined('DALMP_DEBUG_FILE') ? DALMP_DEBUG_FILE : '/tmp/dalmp.log');
-    $this->debug = new DALMP\Logger($log2file, $debugFile);
+    $this->debug = new Logger($log2file, $debugFile);
     $this->debug->log('DSN', $this->dsn);
     if ($this->isConnected()) {
       $this->debug->log('DALMP', mysqli_get_host_info($this->DB), 'protocol version: ' . mysqli_get_proto_info($this->DB), 'character set: ' . mysqli_character_set_name($this->DB));
@@ -360,20 +360,27 @@ class Database {
     if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__, 'args:',$args);
 
     if (!empty($args)) {
+
       foreach ($args as $key => $param) {
         $params[] = &$args[$key];
+
         if (!in_array($key, array('i', 'd', 's', 'b'), True)) {
+
           if (is_numeric($param)) {
             $param = !strcmp(intval($param), $param) ? (int) $param : (!strcmp(floatval($param), $param) ? (float) $param : $param);
           }
+
           $key = is_int($param) ? 'i' : (is_float($param) ? 'd' : (is_string($param) ? 's' : 'b'));
         }
+
         if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__, "key: $key param: $param");
         $types .= $key;
       }
 
       array_unshift($params, $types);
+
       if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__, "sql: $sql params:", $params);
+
       call_user_func_array(array($this->_stmt, 'bind_param'), $params);
     }
 

@@ -24,8 +24,10 @@ class test_sessions_mysql extends test_sessions_base {
       $this->markTestSkipped('The mysqli extension is not available.');
     }
 
-    #$db = new DALMP\Database('utf8://user:password@host:3306/your_database');
-    $db = new DALMP\Database('utf8://root@localhost:3306/dalmp');
+    /**
+     * read DSN from phpunit.xml
+     */
+    $db = new DALMP\Database($GLOBALS['DSN']);
     $this->sess = new DALMP\Sessions\MySQL($db);
   }
 

@@ -66,11 +66,17 @@ To run all the tests:
 
     ./bin/phpunit --tap -c phpunit.xml
 
-For testing the session_handler that uses mysql you need to edit the file:
-test_sessions_mysqli.php and enter your database credentials:
+For testing the session_handler that uses mysql you need to edit phpunit.xml
+file and enter your database DSN:
 
     DSN format: charset://username:password@host:port/database
     $db = new DALMP\Database('utf8://user:password@host:3306/your_database');
+
+    ...
+    <php>
+      <var name="DSN" value="utf8://root@localhost:3306/dalmp" />
+    </php>
+    ...
 
 For testing the database load the world.sql.gz located at the examples dir:
 
@@ -78,6 +84,9 @@ For testing the database load the world.sql.gz located at the examples dir:
 
 That will load all the world tables into the dalmp database.
 
+For testing purposes the same DSN (same database) is used when testing sessions
+and database, in practice you can have different DSN depending on your
+requirements.
 
 
 Bugs / suggestions / comments

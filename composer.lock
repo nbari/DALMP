@@ -211,12 +211,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-timer.git",
-                "reference": "b8711450c866702ba33666a507eb366e4e5d4ff1"
+                "reference": "925c950a4b421369b1cb8dc7a437a3326806d591"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/b8711450c866702ba33666a507eb366e4e5d4ff1",
-                "reference": "b8711450c866702ba33666a507eb366e4e5d4ff1",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/925c950a4b421369b1cb8dc7a437a3326806d591",
+                "reference": "925c950a4b421369b1cb8dc7a437a3326806d591",
                 "shasum": ""
             },
             "require": {
@@ -247,7 +247,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2013-02-18 08:52:11"
+            "time": "2013-07-22 06:56:22"
         },
         {
             "name": "phpunit/php-token-stream",

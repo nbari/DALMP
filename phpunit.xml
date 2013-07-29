@@ -1,4 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <phpunit colors="true" strict="false" verbose="true">
+  <php>
+    <var name="DSN" value="utf8://root@localhost:3306/dalmp" />
+  </php>
   <testsuites>
     <testsuite name="CacheDisk">
       <file>tests/test_cache_disk.php</file>
