@@ -68,17 +68,17 @@ abstract class test_sessions_base extends PHPUnit_Framework_TestCase {
     }
   }
 
-  public function testgetSessionsRefs() {
+  public function testGetSessionsRefs() {
     $this->assertEquals(100, count($this->sess->getSessionsRefs()));
   }
 
-  public function testgetSessionRef() {
+  public function testGetSessionRef() {
     for ($i = 0; $i < 100; $i++) {
       $this->assertEquals(1, count($this->sess->getSessionRef(sha1($i))));
     }
   }
 
-  public function testdelSessionRef() {
+  public function testDelSessionRef() {
     for ($i = 0; $i < 100; $i++) {
       $this->assertTrue($this->sess->delSessionRef(sha1($i)));
       $this->assertEquals(array(), $this->sess->getSessionRef(sha1($i)));
