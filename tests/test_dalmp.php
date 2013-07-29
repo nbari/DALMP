@@ -52,35 +52,69 @@ class test_dalmp extends PHPUnit_Framework_TestCase {
   }
 
   public function testGetall() {
-    $rs = $this->db->GetAll('SELECT * From City');
-    $this->assertEquals('4079', count($rs));
-    $this->assertEquals('Mexico', $rs['863'][1]);
-    $this->assertEquals('Mexico', $rs['863']['Name']);
+    $rs = $this->db->GetAll('SELECT * FROM Country WHERE Continent = "North America"');
+    $this->assertEquals(37, count($rs));
+    $this->assertEquals('Mexico', $rs['23'][1]);
+    $this->assertEquals('414972.00', $rs['23']['GNP']);
+  }
+
+  public function testPGetall() {
+    $rs = $this->db->PGetAll('SELECT * FROM Country WHERE Continent = ?', 'North America');
+    $this->assertEquals(37, count($rs));
+    $this->assertEquals('Mexico', $rs['23'][1]);
+    $this->assertEquals('414972.00', $rs['23']['GNP']);
   }
 
   public function testGetRow() {
-    $rs = $this->db->GetRow('SELECT * From City');
-    $this->assertEquals('10', count($rs));
-    $this->assertEquals(1, $rs['ID']);
-    $this->assertEquals('Kabul', $rs['Name']);
+    $rs = $this->db->GetRow("SELECT * From Country WHERE Continent = 'Europe'");
+    $this->assertEquals(30, count($rs));
+    $this->assertEquals('Europe', $rs[2]);
+    $this->assertEquals('Europe', $rs['Continent']);
+  }
+
+  public function testPGetRow() {
+    $rs = $this->db->PGetRow('SELECT * From Country WHERE Continent = ?', 'Europe');
+    $this->assertEquals(30, count($rs));
+    $this->assertEquals('Europe', $rs[2]);
+    $this->assertEquals('Europe', $rs['Continent']);
   }
 
   public function testGetCol() {
-    $rs = $this->db->GetCol('SELECT Name From City');
-    $this->assertEquals('4079', count($rs));
-    $this->assertEquals('Toluca', $rs[2533]);
+    $rs = $this->db->GetCol("SELECT * From Country WHERE Continent='Oceania' AND Population < 10000");
+    $this->assertEquals(7, count($rs));
+    $this->assertEquals(array('CCK', 'CXR', 'NFK', 'NIU', 'PCN', 'TKL', 'UMI'), $rs);
+  }
+
+  public function testPGetCol() {
+    $rs = $this->db->PGetCol('SELECT * From Country WHERE Continent=? AND Population < ?', 'Oceania', 10000);
+    $this->assertEquals(7, count($rs));
+    $this->assertEquals(array('CCK', 'CXR', 'NFK', 'NIU', 'PCN', 'TKL', 'UMI'), $rs);
   }
 
   public function testGetOne() {
     $this->assertStringMatchesFormat('%i', $this->db->GetOne('SELECT UNIX_TIMESTAMP()'));
-    $rs = $this->db->GetOne('SELECT Name From City');
+    $rs = $this->db->GetOne("SELECT * From Country WHERE Continent='Oceania' AND Population < 10000");
     $this->assertEquals(False, is_array($rs));
+    $this->assertEquals('CCK', $rs);
+  }
+
+  public function testPGetOne() {
+    $this->assertStringMatchesFormat('%i', $this->db->GetOne('SELECT UNIX_TIMESTAMP()'));
+    $rs = $this->db->PGetOne('SELECT * From Country WHERE Continent=? AND Population < ?', 'Oceania', 10000);
+    $this->assertEquals(False, is_array($rs));
+    $this->assertEquals('CCK', $rs);
   }
 
   public function testGetAssoc() {
-    $rs = $this->db->GetAssoc('SELECT Name, CountryCode From City');
-    $this->assertEquals(4001, count($rs));
-    $this->assertEquals('USA', $rs['Gainesville']);
+    $rs = $this->db->GetAssoc("SELECT Name, CountryCode From City WHERE District='Florida' AND population < 100000");
+    $this->assertEquals(3, count($rs));
+    $this->assertEquals(array('Clearwater' => 'USA', 'Miami Beach' => 'USA', 'Gainesville' => 'USA'), $rs);
+  }
+
+  public function testPGetAssoc() {
+    $rs = $this->db->PGetAssoc('SELECT Name, CountryCode From City WHERE District=? AND Population < ?', 'Florida', 100000);
+    $this->assertEquals(3, count($rs));
+    $this->assertEquals(array('Clearwater' => 'USA', 'Miami Beach' => 'USA', 'Gainesville' => 'USA'), $rs);
   }
 
   public function testExpectedResultsGetAll() {
