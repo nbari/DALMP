@@ -966,23 +966,22 @@ class Database {
 
       switch ($cache_type) {
       case 'apc':
-        self::$cache = new DAMLP\Cache\APC();
+        self::$cache = new Cache(new APC());
         break;
 
       case 'memcache':
-        self::$cache = new DAMLP\Cache\Memcache($host, $port, 1, $compress);
+        self::$cache = new Cache(new Cache\Memcache($host, $port, 1, $compress));
         break;
 
       case 'redis':
-        self::$cache = new DAMLP\Cache\Redis($host, $port, $compress);
+        self::$cache = new Cache(new Cache\Redis($host, $port, $compress));
         break;
 
       default:
-        self::$cache = new DALMP\Cache\Disk($host);
+        self::$cache = new Cache(new Cache\Disk($host));
       }
-    } else {
-      return self::$cache;
     }
+    return self::$cache;
   }
 
   /**
