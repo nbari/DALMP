@@ -13,6 +13,7 @@ class Database {
 
   /**
    * Contains database object
+   *
    * @access protected
    * @var object
    */
@@ -20,6 +21,7 @@ class Database {
 
   /**
    * Contains the database parameters DSN.
+   *
    * @access protected
    * @var array
    */
