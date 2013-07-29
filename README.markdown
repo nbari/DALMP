@@ -92,4 +92,4 @@ requirements.
 Bugs / suggestions / comments
 -----------------------------
 
-If you found a bug of have any other inquiries please use the the DALMP group at :https://groups.google.com/group/dalmp
+If you found a bug or have any other inquiries please use the the DALMP group at: https://groups.google.com/group/dalmp
