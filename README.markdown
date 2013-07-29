@@ -76,6 +76,8 @@ For testing the database load the world.sql.gz located at the examples dir:
 
     gzcat examples/world.sql.gz | mysql -uroot dalmp
 
+That will load all the world tables into the dalmp database.
+
 
 
 Bugs / suggestions / comments
