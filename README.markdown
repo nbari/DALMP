@@ -69,7 +69,12 @@ To run all the tests:
 For testing the session_handler that uses mysql you need to edit the file:
 test_sessions_mysqli.php and enter your database credentials:
 
-   $db = new DALMP\Database('utf8://user:password@host:3306/your_database');
+    DSN format: charset://username:password@host:port/database
+    $db = new DALMP\Database('utf8://user:password@host:3306/your_database');
+
+For testing the database load the world.sql.gz located at the examples dir:
+
+    gzcat examples/world.sql.gz | mysql -uroot dalmp
 
 
 
