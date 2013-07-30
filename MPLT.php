@@ -1,5 +1,4 @@
 <?php
-namespace DALMP;
 
 /**
  * MPLT - Measure Page Load Time
