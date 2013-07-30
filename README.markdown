@@ -1,7 +1,7 @@
 DALMP
 =====
 
-Database Abstraction Layer for MySQL using PHP
+Database Abstraction Layer for MySQL using PHP (version 3)
 
 0% fat and extremely easy to use, only connect to database when needed.
 
