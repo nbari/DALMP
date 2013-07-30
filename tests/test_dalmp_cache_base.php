@@ -26,7 +26,7 @@ abstract class test_dalmp_cache_base extends PHPUnit_Framework_TestCase {
     $this->assertEquals(37, count($rs));
     $this->assertEquals('Mexico', $rs['23'][1]);
     $this->assertEquals('414972.00', $rs['23']['GNP']);
-    return array($rs[0]['timestamp'], $rs[35]['rand']);
+    return $rs;
   }
 
   /**
@@ -34,7 +34,7 @@ abstract class test_dalmp_cache_base extends PHPUnit_Framework_TestCase {
    */
   public function testCacheGetAll_1($data) {
     $rs = $this->db->CacheGetAll(1, "SELECT *, UNIX_TIMESTAMP() AS timestamp,  FLOOR(0 + (RAND() * 1000)) AS rand FROM Country WHERE Continent = 'North America'");
-    $this->assertEquals($data, array($rs[0]['timestamp'], $rs[35]['rand']));
+    $this->assertEquals($data, $rs);
     return $data;
   }
 
@@ -44,7 +44,30 @@ abstract class test_dalmp_cache_base extends PHPUnit_Framework_TestCase {
   public function testCacheGetAll_2($data) {
     sleep(2);
     $rs = $this->db->CacheGetAll(2, "SELECT *, UNIX_TIMESTAMP() AS timestamp,  FLOOR(0 + (RAND() * 1000)) AS rand FROM Country WHERE Continent = 'North America'");
-    $this->assertNotEquals($data, array($rs[0]['timestamp'], $rs[35]['rand']));
+    $this->assertNotEquals($data, $rs);
+  }
+
+  public function testExpectedResultsGetAll_0() {
+    $rs = $this->db->FetchMode('ASSOC')->CacheGetALL(2, 'SELECT UNIX_TIMESTAMP() AS timestamp,  FLOOR(0 + (RAND() * 1000)) AS rand, t1.name, t1.District, t2.Capital, t2.Localname, t2.Region, t2.SurfaceArea, t2.Population FROM City t1 LEFT JOIN Country t2 ON t1.countrycode=t2.code WHERE t2.population < 10000');
+    return $rs;
+  }
+
+  /**
+   * @depends testExpectedResultsGetAll_0
+   */
+  public function testExpectedResultsGetAll_1($data) {
+    $rs = $this->db->FetchMode('ASSOC')->CacheGetALL(1, 'SELECT UNIX_TIMESTAMP() AS timestamp,  FLOOR(0 + (RAND() * 1000)) AS rand, t1.name, t1.District, t2.Capital, t2.Localname, t2.Region, t2.SurfaceArea, t2.Population FROM City t1 LEFT JOIN Country t2 ON t1.countrycode=t2.code WHERE t2.population < 10000');
+    $this->assertEquals($data, $rs);
+    return $rs;
+  }
+
+  /**
+   * @depends testExpectedResultsGetAll_1
+   */
+  public function testExpectedResultsGetAll_2($data) {
+    sleep(2);
+    $rs = $this->db->FetchMode('ASSOC')->CacheGetALL(1, 'SELECT UNIX_TIMESTAMP() AS timestamp,  FLOOR(0 + (RAND() * 1000)) AS rand, t1.name, t1.District, t2.Capital, t2.Localname, t2.Region, t2.SurfaceArea, t2.Population FROM City t1 LEFT JOIN Country t2 ON t1.countrycode=t2.code WHERE t2.population < 10000');
+    $this->assertNotEquals($data, $rs);
   }
 
 }
