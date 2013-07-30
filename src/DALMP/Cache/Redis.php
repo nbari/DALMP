@@ -26,7 +26,7 @@ class Redis implements CacheInterface {
     $args = func_get_args();
 
     if ($args) {
-      $this->host = $args[0];
+      $this->host = isset($args[0]) ? $args[0] : '127.0.0.1';
       $this->port = isset($args[1]) ? (int) $args[1] : 6379;
       $this->timeout = isset($args[2]) ? (int) $args[2] : 1;
     }

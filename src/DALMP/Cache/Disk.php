@@ -21,7 +21,7 @@ class Disk implements CacheInterface {
   public function __construct() {
     $args = func_get_args();
 
-    if (!$args) {
+    if (!$args || !isset($args[0])) {
       $cache_dir = defined('DALMP_CACHE_DIR') ? DALMP_CACHE_DIR : '/tmp/dalmp_cache';
     } else {
       $cache_dir = $args[0];
@@ -29,7 +29,7 @@ class Disk implements CacheInterface {
 
     if (!is_writable($cache_dir)) {
       if (!is_dir($cache_dir) && !mkdir($cache_dir, 0700, True)) {
-        throw new \InvalidArgumentException($cache_dir . ' not accessible');
+        throw new \InvalidArgumentException("$cache_dir  not accessible");
       }
     }
 

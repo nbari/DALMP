@@ -16,14 +16,26 @@
     <testsuite name="CacheRedis">
       <file>tests/test_cache_redis.php</file>
     </testsuite>
-    <testsuite name="SessionsRedis">
-      <file>tests/test_sessions_redis.php</file>
-    </testsuite>
     <testsuite name="SessionsMemcache">
       <file>tests/test_sessions_memcache.php</file>
     </testsuite>
+    <testsuite name="SessionsRedis">
+      <file>tests/test_sessions_redis.php</file>
+    </testsuite>
     <testsuite name="SessionsMySQL">
       <file>tests/test_sessions_mysql.php</file>
+    </testsuite>
+    <testsuite name="DALMP">
+      <file>tests/test_dalmp.php</file>
+    </testsuite>
+    <testsuite name="DALMP_Memcache">
+      <file>tests/test_dalmp_cache_memcache.php</file>
+    </testsuite>
+    <testsuite name="DALMP_Redis">
+      <file>tests/test_dalmp_cache_redis.php</file>
+    </testsuite>
+    <testsuite name="DALMP_Disk">
+      <file>tests/test_dalmp_cache_disk.php</file>
     </testsuite>
   </testsuites>
 </phpunit>
