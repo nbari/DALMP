@@ -43,7 +43,7 @@ abstract class test_dalmp_cache_base extends PHPUnit_Framework_TestCase {
    */
   public function testCacheGetAll_2($data) {
     sleep(2);
-    $rs = $this->db->CacheGetAll(2, "SELECT *, UNIX_TIMESTAMP() AS timestamp,  FLOOR(0 + (RAND() * 1000)) AS rand FROM Country WHERE Continent = 'North America'");
+    $rs = $this->db->CacheGetAll(1, "SELECT *, UNIX_TIMESTAMP() AS timestamp,  FLOOR(0 + (RAND() * 1000)) AS rand FROM Country WHERE Continent = 'North America'");
     $this->assertNotEquals($data, $rs);
   }
 
@@ -68,6 +68,30 @@ abstract class test_dalmp_cache_base extends PHPUnit_Framework_TestCase {
     sleep(2);
     $rs = $this->db->FetchMode('ASSOC')->CacheGetALL(1, 'SELECT UNIX_TIMESTAMP() AS timestamp,  FLOOR(0 + (RAND() * 1000)) AS rand, t1.name, t1.District, t2.Capital, t2.Localname, t2.Region, t2.SurfaceArea, t2.Population FROM City t1 LEFT JOIN Country t2 ON t1.countrycode=t2.code WHERE t2.population < 10000');
     $this->assertNotEquals($data, $rs);
+  }
+
+  public function testExpectedResultsPGetAll_0() {
+    $rs = $this->db->FetchMode('ASSOC')->CachePGetALL(2, 'SELECT t1.name, t1.District, t2.Capital, t2.Localname, t2.Region, t2.SurfaceArea, t2.Population FROM City t1 LEFT JOIN Country t2 ON t1.countrycode=t2.code WHERE t2.population < ?', 10000);
+    return $rs;
+  }
+
+  /**
+   * @depends testExpectedResultsPGetAll_0
+   */
+  public function testExpectedResultsPGetAll_1($data) {
+    $rs = $this->db->FetchMode('ASSOC')->CachePGetALL(1, 'SELECT t1.name, t1.District, t2.Capital, t2.Localname, t2.Region, t2.SurfaceArea, t2.Population FROM City t1 LEFT JOIN Country t2 ON t1.countrycode=t2.code WHERE t2.population < ?', 10000);
+    $this->assertEquals($data, $rs);
+    return $rs;
+  }
+
+  /**
+   * @depends testExpectedResultsPGetAll_1
+   */
+  public function testExpectedResultsPGetAll_2($data) {
+    sleep(2);
+    $rs = $this->db->FetchMode('ASSOC')->CachePGetALL(1, 'SELECT t1.name, t1.District, t2.Capital, t2.Localname, t2.Region, t2.SurfaceArea, t2.Population FROM City t1 LEFT JOIN Country t2 ON t1.countrycode=t2.code WHERE t2.population < ?', 10000);
+    $this->assertEquals($data, $rs);
+    return $rs;
   }
 
 }
