@@ -952,26 +952,15 @@ class Database {
   }
 
   /**
-   * setCache
+   * useCache
+   *
+   * helps to follow the single responsibility principle
    *
    * @param DALMP\Cache $cache
    */
-  public function setCache(Cache $cache) {
+  public function useCache(Cache $cache) {
     if ($this->debug) $this->debug->log('Cache', $cache);
     $this->cache = $cache;
-  }
-
-  /**
-   * Cache
-   *
-   * @return DALMP\Cache instance
-   */
-  public function Cache() {
-    if (is_null($this->cache)) {
-      if ($this->debug) $this->debug->log('Cache', $this->dsn['cache']);
-      throw new \Exception("DALMP\Cache does not exist", 0);
-    }
-    return $this->cache;
   }
 
   /**
@@ -1000,7 +989,7 @@ class Database {
 
     if ($this->debug) $this->debug->log('Cache - GET', "method: $fetch expire: $expire sql: [ $sql ] key: $key group: $group hkey: $hkey");
 
-    if ($cache = $this->Cache()->get($hkey)) {
+    if ($this->cache instanceof Cache && $cache = $this->cache->get($hkey)) {
       return $cache;
     } else {
       switch ($fetch) {
@@ -1022,7 +1011,11 @@ class Database {
         break;
       }
 
-      $this->setCache($hkey, $cache, $expire, $group);
+      if ($this->cache instanceof Cache) {
+        $this->_setCache($hkey, $cache, $expire, $group);
+      } else {
+        trigger_error('Cache instance not defined, use the method useCache($cache) to set a cache engine.', E_USER_WARNING);
+      }
 
       if ($this->debug) $this->debug->log('Cache - SET', "method: $fetch expire: $expire sql: [ $sql ] key: $key group: $group hkey: $hkey");
 
@@ -1075,7 +1068,7 @@ class Database {
 
     if ($this->debug) $this->debug->log('Cache - GET', "PreparedStatements method: $fetch expire: $expire, sql: $sql params: " . implode('|', $params) . " key: $key group: $group");
 
-    if ($cache = $this->Cache()->Get($hkey)) {
+    if ($this->cache instanceof Cache && $cache = $this->cache->Get($hkey)) {
       return $cache;
     } else {
       if ($this->debug) $this->debug->log('Cache', __METHOD__, 'PreparedStatements no cache returned, executing query PExecute with args: ', $args);
@@ -1091,7 +1084,11 @@ class Database {
       call_user_func_array(array($this, 'PExecute'), $nargs);
       $cache = $this->_pFetch($fetch);
 
-      $this->setCache($hkey, $cache, $expire, $group);
+      if ($this->cache instanceof Cache) {
+        $this->_setCache($hkey, $cache, $expire, $group);
+      } else {
+        trigger_error('Cache instance not defined, use the method useCache($cache) to set a cache engine.', E_USER_WARNING);
+      }
 
       if ($this->debug) $this->debug->log('Cache - SET', "method: $fetch expire: $expire sql: [ $sql ] key: $key group: $group hkey: $hkey");
 
@@ -1100,20 +1097,21 @@ class Database {
   }
 
   /**
-   * setCache - store data in cache
+   * _setCache - store data in cache
    *
+   * @access protected
    * @param string $hkey The key that will be associated with the item.
    * @param data $cache The variable to store
    * @param int $expire Expiration time of the item
    * @param string $group group:name (to group cache keys) usefull when flushing the cache
    * @return boolean
    */
-  public function setCache($hkey, $cache, $expire = 3600, $group = NULL) {
+  protected function _setCache($hkey, $cache, $expire = 3600, $group = NULL) {
     if ($group) {
       $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
       $gkey = sha1($skey . $group);
 
-      if ($gCache = $this->Cache()->Get($gkey)) {
+      if ($gCache = $this->cache->Get($gkey)) {
         foreach ($gCache as $key => $exp) {
           if ($exp < time()) {
             unset($gCache[$key]);
@@ -1125,12 +1123,12 @@ class Database {
 
       $gCache[$hkey] = time() + $expire;
 
-      if (!$this->Cache()->Set($hkey, $cache, $expire)->Set($gkey, $gCache, $expire)) {
-        trigger_error('ERROR -> ' . __METHOD__ . " setCache: Error saving data to cache.", E_USER_NOTICE);
+      if (!$this->cache->Set($hkey, $cache, $expire)->Set($gkey, $gCache, $expire)) {
+        throw new \UnexpectedValueException('Can not store data on cache');
       }
     } else {
-      if (!$this->Cache()->Set($hkey, $cache, $expire)) {
-        trigger_error('ERROR -> ' . __METHOD__ . " setCache: Error saving data to cache.", E_USER_NOTICE);
+      if (!$this->cache->Set($hkey, $cache, $expire)) {
+        throw new \UnexpectedValueException('Can not store data on cache');
       }
     }
     return True;
@@ -1143,7 +1141,7 @@ class Database {
    */
   public function CacheFlush($sql = NULL, $key = NULL) {
     if (is_null($sql)) {
-      return $this->Cache()->Flush();
+      return $this->cache->Flush();
     }
 
     if ($this->debug) $this->debug->log(__METHOD__, "flush: $sql, key: $key");
@@ -1153,14 +1151,14 @@ class Database {
 
     if (strncmp($sql, 'group:', 6) == 0) {
       $gkey = sha1($skey . $sql);
-      $group = $this->Cache()->get($gkey);
+      $group = $this->cache->get($gkey);
       $group = is_array($group) ? $group : array();
       foreach ($group as $key => $timeout) {
-        $this->Cache()->Delete($key);
+        $this->cache->Delete($key);
       }
     }
 
-    return $this->Cache()->Delete($hkey);
+    return $this->cache->Delete($hkey);
   }
 
   /**
