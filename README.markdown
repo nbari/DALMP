@@ -1,5 +1,5 @@
-DALMP
-=====
+DALMP - BETA version (3)
+========================
 
 Database Abstraction Layer for MySQL using PHP (version 3)
 
