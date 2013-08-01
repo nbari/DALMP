@@ -47,12 +47,12 @@ class Database {
   protected $_stmt = NULL;
 
   /**
-   * cache instances
+   * cache DALMP\Cache instance
    *
    * @access private
    * @var mixed
    */
-  private static $cache = NULL;
+  private $cache = NULL;
 
   /**
    * If enabled, logs all queries and executions.
@@ -952,36 +952,26 @@ class Database {
   }
 
   /**
+   * setCache
+   *
+   * @param DALMP\Cache $cache
+   */
+  public function setCache(Cache $cache) {
+    if ($this->debug) $this->debug->log('Cache', $cache);
+    $this->cache = $cache;
+  }
+
+  /**
    * Cache
    *
    * @return DALMP\Cache instance
    */
   public function Cache() {
-    if (is_null(self::$cache)) {
-      list($type, $host, $port, $compress) = @explode(':', $this->dsn['cache']) + array(NULL, NULL, NULL, NULL);
-
+    if (is_null($this->cache)) {
       if ($this->debug) $this->debug->log('Cache', $this->dsn['cache']);
-
-      $cache_type = strtolower($type);
-
-      switch ($cache_type) {
-      case 'apc':
-        self::$cache = new Cache(new APC());
-        break;
-
-      case 'memcache':
-        self::$cache = new Cache(new Cache\Memcache($host, $port, 1, $compress));
-        break;
-
-      case 'redis':
-        self::$cache = new Cache(new Cache\Redis($host, $port, $compress));
-        break;
-
-      default:
-        self::$cache = new Cache(new Cache\Disk($host));
-      }
+      throw new \Exception("DALMP\Cache does not exist", 0);
     }
-    return self::$cache;
+    return $this->cache;
   }
 
   /**
@@ -1153,7 +1143,7 @@ class Database {
    */
   public function CacheFlush($sql = NULL, $key = NULL) {
     if (is_null($sql)) {
-      return $this->Cache($type)->Flush();
+      return $this->Cache()->Flush();
     }
 
     if ($this->debug) $this->debug->log(__METHOD__, "flush: $sql, key: $key");
