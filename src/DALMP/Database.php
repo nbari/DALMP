@@ -52,7 +52,7 @@ class Database {
    * @access private
    * @var mixed
    */
-  private $cache = NULL;
+  public $cache = NULL;
 
   /**
    * If enabled, logs all queries and executions.

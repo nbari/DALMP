@@ -20,7 +20,8 @@ class test_dalmp_cache_memcache extends test_dalmp_cache_base {
     /**
      * read DSN from phpunit.xml
      */
-    $this->db = new DALMP\Database($GLOBALS['DSN_memcache']);
+    $this->db = new DALMP\Database($GLOBALS['DSN']);
+    $this->db->useCache(new DALMP\Cache(new DALMP\Cache\Memcache()));
   }
 
 }

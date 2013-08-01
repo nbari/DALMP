@@ -18,7 +18,7 @@ abstract class test_dalmp_cache_base extends PHPUnit_Framework_TestCase {
   protected $db;
 
   public function testCacheInstance() {
-    $this->assertInstanceOf('Dalmp\Cache', $this->db->Cache());
+    $this->assertInstanceOf('Dalmp\Cache', $this->db->cache);
   }
 
   public function testCacheGetAll_0() {

@@ -2,9 +2,6 @@
 <phpunit colors="true" strict="false" verbose="true">
   <php>
     <var name="DSN" value="utf8://root@localhost:3306/dalmp" />
-    <var name="DSN_memcache" value="utf8://root@localhost:3306/dalmp?memcache" />
-    <var name="DSN_redis" value="utf8://root@localhost:3306/dalmp?redis" />
-    <var name="DSN_disk" value="utf8://root@localhost:3306/dalmp?disk" />
   </php>
   <testsuites>
     <testsuite name="CacheDisk">

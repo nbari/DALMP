@@ -20,7 +20,8 @@ class test_dalmp_cache_redis extends test_dalmp_cache_base {
     /**
      * read DSN from phpunit.xml
      */
-    $this->db = new DALMP\Database($GLOBALS['DSN_redis']);
+    $this->db = new DALMP\Database($GLOBALS['DSN']);
+    $this->db->useCache(new DALMP\Cache(new DALMP\Cache\Redis()));
   }
 
 }
