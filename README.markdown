@@ -50,6 +50,34 @@ For storing PHP sessions on mysql you need to create a table with the following 
 Tests
 -----
 
+For testing the session_handler that uses mysql you need to edit phpunit.xml
+file and enter your database DSN:
+
+    cp phpunit.xml.dist phpunit.xml
+
+    ...
+    <php>
+      <var name="DSN" value="utf8://root@localhost:3306/dalmp" />
+    </php>
+    ...
+
+    DSN format: charset://username:password@host:port/database
+    $db = new DALMP\Database('utf8://user:password@host:3306/your_database');
+
+
+For testing the database load the world.sql.gz located at the examples dir:
+
+    gzcat examples/world.sql.gz | mysql -uroot dalmp
+
+You can try also with gzip, gunzip, zcat as alternative to gzcat
+
+That will load all the world tables into the dalmp database and also create the
+dalmp_sessions table.
+
+For testing purposes the same DSN (same database) is used when testing sessions
+and database, in practice you can have different DSN depending on your
+requirements.
+
 Install composer and required packages:
 
     curl -sS https://getcomposer.org/installer | php -- --install-dir=bin
@@ -65,28 +93,6 @@ For example to test only the Cache\Memcache:
 To run all the tests:
 
     ./bin/phpunit --tap -c phpunit.xml
-
-For testing the session_handler that uses mysql you need to edit phpunit.xml
-file and enter your database DSN:
-
-    DSN format: charset://username:password@host:port/database
-    $db = new DALMP\Database('utf8://user:password@host:3306/your_database');
-
-    ...
-    <php>
-      <var name="DSN" value="utf8://root@localhost:3306/dalmp" />
-    </php>
-    ...
-
-For testing the database load the world.sql.gz located at the examples dir:
-
-    gzcat examples/world.sql.gz | mysql -uroot dalmp
-
-That will load all the world tables into the dalmp database.
-
-For testing purposes the same DSN (same database) is used when testing sessions
-and database, in practice you can have different DSN depending on your
-requirements.
 
 
 Bugs / suggestions / comments
