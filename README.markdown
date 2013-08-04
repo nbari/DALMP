@@ -55,11 +55,16 @@ file and enter your database DSN:
 
     cp phpunit.xml.dist phpunit.xml
 
+Edit the DSN section
+
     ...
     <php>
       <var name="DSN" value="utf8://root@localhost:3306/dalmp" />
     </php>
     ...
+
+
+The DSN format is:
 
     DSN format: charset://username:password@host:port/database
     $db = new DALMP\Database('utf8://user:password@host:3306/your_database');
