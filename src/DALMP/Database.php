@@ -139,7 +139,7 @@ class Database {
       $this->dsn['cache'] = isset($dsn['query']) ? $dsn['query'] : NULL;
       $this->dsn['ssl'] = $ssl;
     } else {
-      die('DSN missing: charset://username:password@host:port/database');
+      throw new \InvalidArgumentException('DSN missing: charset://username:password@host:port/database');
     }
   }
 
