@@ -10,6 +10,7 @@ handbook: www.dalmp.com
 Details
 -------
 
+  * Dependecy Injector (DI) support, load once and trigger when required.
   * Redis.io support.
   * Memcache single or multiple hosts and socket support.
   * APC support (http://pecl.php.net/package/APC).
