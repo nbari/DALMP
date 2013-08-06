@@ -8,7 +8,7 @@
  * @license BSD License
  * @version 3.0
  */
-class test_dalmp_base extends PHPUnit_Framework_TestCase {
+class test_dalmp extends PHPUnit_Framework_TestCase {
 
   /**
    * DB instance
