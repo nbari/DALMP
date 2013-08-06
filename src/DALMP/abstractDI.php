@@ -9,7 +9,7 @@ namespace DALMP;
  * @license BSD License
  * @version 3.0
  */
-abstract class abstract_DI {
+abstract class abstractDI {
 
   /**
    * Container for the classes

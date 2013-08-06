@@ -9,7 +9,7 @@ namespace DALMP;
  * @license BSD License
  * @version 3.0
  */
-class DI extends abstract_DI {
+class DI extends abstractDI {
 
   public function __construct() {
 
