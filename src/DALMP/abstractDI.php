@@ -4,7 +4,7 @@ namespace DALMP;
 /**
  * Abstract Dependecy Injector
  *
- * @author Nicolas Embriz <nbari@slashquery.com>
+ * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
  * @version 3.0
