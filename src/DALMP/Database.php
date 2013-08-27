@@ -31,20 +31,20 @@ class Database {
    * For successful SELECT, SHOW, DESCRIBE or EXPLAIN queries mysqli_query()
    * will return a result object.
    *
-   * For other successful queries mysqli_query() will return True.
+   * For other successful queries mysqli_query() will return true.
    *
    * @access protected
    * @var mixed
    */
-  protected $_rs = NULL;
+  protected $_rs = null;
 
   /**
-   * prepared statement object or False if an error occurred.
+   * prepared statement object or false if an error occurred.
    *
    * @access protected
    * @var mixed
    */
-  protected $_stmt = NULL;
+  protected $_stmt = null;
 
   /**
    * cache DALMP\Cache instance
@@ -52,7 +52,7 @@ class Database {
    * @access private
    * @var mixed
    */
-  public $cache = NULL;
+  public $cache = null;
 
   /**
    * If enabled, logs all queries and executions.
@@ -60,7 +60,7 @@ class Database {
    * @access private
    * @var boolean
    */
-  private $debug = False;
+  private $debug = false;
 
   /**
    * Holds the fetchMode.
@@ -116,27 +116,27 @@ class Database {
    * @param DSN $dsn
    * @param array $ssl
    */
-  public function __construct($dsn = NULL, $ssl = NULL) {
+  public function __construct($dsn = null, $ssl = null) {
     if ($dsn) {
       $dsn = parse_url($dsn);
-      $this->dsn['charset'] = isset($dsn['scheme']) ? (($dsn['scheme'] == 'mysql') ? NULL : $dsn['scheme']) : NULL;
+      $this->dsn['charset'] = isset($dsn['scheme']) ? (($dsn['scheme'] == 'mysql') ? null : $dsn['scheme']) : null;
       if (isset($dsn['host'])) {
         $host = explode('=', $dsn['host']);
         if ($host[0] == 'unix_socket') {
-          $this->dsn['host'] = NULL;
+          $this->dsn['host'] = null;
           $this->dsn['socket'] = str_replace('\\', '/', $host[1]);
         } else {
           $this->dsn['host'] = rawurldecode($dsn['host']);
-          $this->dsn['socket'] = NULL;
+          $this->dsn['socket'] = null;
         }
       } else {
         $this->dsn['host'] = '127.0.0.1';
       }
       $this->dsn['port'] = isset($dsn['port']) ? $dsn['port'] : 3306;
-      $this->dsn['user'] = isset($dsn['user']) ? rawurldecode($dsn['user']) : NULL;
-      $this->dsn['pass'] = isset($dsn['pass']) ? rawurldecode($dsn['pass']) : NULL;
-      $this->dsn['dbName'] = isset($dsn['path']) ? rawurldecode(substr($dsn['path'], 1)) : NULL;
-      $this->dsn['cache'] = isset($dsn['query']) ? $dsn['query'] : NULL;
+      $this->dsn['user'] = isset($dsn['user']) ? rawurldecode($dsn['user']) : null;
+      $this->dsn['pass'] = isset($dsn['pass']) ? rawurldecode($dsn['pass']) : null;
+      $this->dsn['dbName'] = isset($dsn['path']) ? rawurldecode(substr($dsn['path'], 1)) : null;
+      $this->dsn['cache'] = isset($dsn['query']) ? $dsn['query'] : null;
       $this->dsn['ssl'] = $ssl;
     } else {
       throw new \InvalidArgumentException('DSN missing: charset://username:password@host:port/database');
@@ -170,7 +170,7 @@ class Database {
     }
 
     $rs = @mysqli_real_connect($this->DB, $this->dsn['host'], $this->dsn['user'], $this->dsn['pass'], $this->dsn['dbName'], $this->dsn['port'], $this->dsn['socket']);
-    if ($rs === False || mysqli_connect_errno()) {
+    if ($rs === false || mysqli_connect_errno()) {
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'mysqli connection error');
       throw new \Exception(mysqli_connect_error(), mysqli_connect_errno());
     }
@@ -186,7 +186,7 @@ class Database {
    * @param boolean $log2file
    * @param mixed $debugFile
    */
-  public function debug($log2file = False, $debugFile = False) {
+  public function debug($log2file = false, $debugFile = false) {
     $debugFile = $debugFile ?: (defined('DALMP_DEBUG_FILE') ? DALMP_DEBUG_FILE : '/tmp/dalmp.log');
     $this->debug = new Logger($log2file, $debugFile);
     $this->debug->log('DSN', $this->dsn);
@@ -261,19 +261,19 @@ class Database {
    * Get the column names
    *
    * @param $table;
-   * @return array or False if no table set
+   * @return array or false if no table set
    */
-  public function getColumnNames($table = NULL) {
-    return ($table) ? $this->getCol("DESCRIBE $table") : False;
+  public function getColumnNames($table = null) {
+    return ($table) ? $this->getCol("DESCRIBE $table") : false;
   }
 
   /**
    * Sets the Fetch Mode
    *
    * @chainable
-   * @param ASSOC = MYSQLI_ASSOC, NUM = MYSQLI_NUM, NULL = MYSQLI_BOTH.
+   * @param ASSOC = MYSQLI_ASSOC, NUM = MYSQLI_NUM, null = MYSQLI_BOTH.
    */
-  public function FetchMode($mode = NULL) {
+  public function FetchMode($mode = null) {
     switch (strtoupper($mode)) {
     case 'NUM':
       $this->fetchMode = MYSQLI_NUM;
@@ -304,16 +304,16 @@ class Database {
     switch (func_num_args()) {
     case 1:
       $param = func_get_arg(0);
-      $clean = True;
+      $clean = true;
       break;
 
     case 2:
       $key = func_get_arg(0);
       $param = func_get_arg(1);
-      if (in_array($key, array('i', 'd', 's', 'b'), True)) {
+      if (in_array($key, array('i', 'd', 's', 'b'), true)) {
         $this->stmtParams[] = array($key => $param);
       } else {
-        $clean = True;
+        $clean = true;
       }
       break;
 
@@ -355,7 +355,7 @@ class Database {
     }
 
     $params = array();
-    $types = NULL;
+    $types = null;
 
     $args = is_array(current($args)) ? current($args) : $args;
 
@@ -366,7 +366,7 @@ class Database {
       foreach ($args as $key => $param) {
         $params[] = &$args[$key];
 
-        if (!in_array($key, array('i', 'd', 's', 'b'), True)) {
+        if (!in_array($key, array('i', 'd', 's', 'b'), true)) {
 
           if (is_numeric($param)) {
             $param = !strcmp(intval($param), $param) ? (int) $param : (!strcmp(floatval($param), $param) ? (float) $param : $param);
@@ -399,7 +399,7 @@ class Database {
       $this->numOfRowsAffected = $this->_stmt->affected_rows;
       // for SELECT
       if ($this->_stmt->num_rows > 0) {
-        return True;
+        return true;
       }
 
       /**
@@ -407,17 +407,17 @@ class Database {
        * -1 indicates that the query has returned an error.
        */
       if ($this->_stmt->affected_rows == -1) {
-        return False;
+        return false;
       }
 
       /**
        * Zero indicates that no records where updated for an UPDATE/DELETE
        * statement, no rows matched the WHERE clause in the query or that no
        * query has yet been executed.
-       * if ($rs !== False) { query ok and records updated }
+       * if ($rs !== false) { query ok and records updated }
        */
       if ($this->_stmt->affected_rows > 0) {
-        return True;
+        return true;
       }
 
       return $this->_stmt->affected_rows;
@@ -430,7 +430,7 @@ class Database {
 
       throw new \ErrorException(__METHOD__ . 'ERROR -> ' . $this->DB->error . " - sql: $sql with params: " . json_encode($params));
 
-      return False;
+      return false;
     }
   }
 
@@ -458,19 +458,19 @@ class Database {
    * @access protected
    * @return array
    */
-  protected function _pFetch($get = NULL) {
+  protected function _pFetch($get = null) {
     if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__, $get);
 
     if (!$this->_stmt->num_rows) {
       $this->PClose();
-      return False;
+      return false;
     }
 
     $meta = $this->_stmt->result_metadata();
     $columns = array();
     $results = array();
 
-    while (($column = $meta->fetch_field()) !== False) {
+    while (($column = $meta->fetch_field()) !== false) {
       $columns[$column->name] = &$results[$column->name];
     }
 
@@ -496,7 +496,7 @@ class Database {
     case 'assoc':
       if ($this->numOfFields < 2) {
         if ($this->debug) { $this->debug->log('PreparedStatements', __METHOD__, 'ERROR', $get, 'num of columns < 2'); }
-          return False;
+          return false;
       }
       if ($this->numOfFields == 2) {
         while ($this->_stmt->fetch()) {
@@ -544,7 +544,7 @@ class Database {
    * _fetch
    *
    * @access protected
-   * @return an array of strings that corresponds to the fetched row or NULL
+   * @return an array of strings that corresponds to the fetched row or null
    * if there are no more rows in resultset.
    */
   protected function _fetch() {
@@ -559,12 +559,12 @@ class Database {
    * @param array $fields
    * @param string $mode
    * @param string $where
-   * @return True or False on error
+   * @return true or false on error
    */
-  public function AutoExecute($table = NULL, $fields = NULL, $mode = 'INSERT', $where = NULL) {
+  public function AutoExecute($table = null, $fields = null, $mode = 'INSERT', $where = null) {
     if (!$table || !is_array($fields)) {
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'either table or fields missing');
-      return False;
+      return false;
     }
 
     if ($this->debug) $this->debug->log(__METHOD__, 'args:', $table, $fields, $mode, $where);
@@ -573,7 +573,7 @@ class Database {
 
     if ($mode == 'UPDATE' && !$where) {
       if ($this->debug) $this->debug->log( __METHOD__, 'ERROR', 'WHERE clause missing');
-      return False;
+      return false;
     }
 
     if ($columnNames = $this->getColumnNames($table)) {
@@ -587,10 +587,10 @@ class Database {
       }
       if (empty($data)) {
         if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', "no matching fields on table: $table with fields:", $fields);
-        return False;
+        return false;
       }
     } else {
-      return False;
+      return false;
     }
     switch ($mode) {
     case 'INSERT':
@@ -613,7 +613,7 @@ class Database {
 
     default :
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'mode must be INSERT or UPDATE');
-      return False;
+      return false;
     }
   }
 
@@ -621,7 +621,7 @@ class Database {
    * Execute SQL statement
    *
    * @param strign $sql
-   * @return True or False if there was an error in executing the sql.
+   * @return true or false if there was an error in executing the sql.
    */
   public function Execute($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
@@ -636,18 +636,18 @@ class Database {
         if ($this->debug) $this->debug->log(__METHOD__, 'returned object', "#rows: $this->numOfRows #fields: $this->numOfFields");
         if (!$this->numOfRows) {
           $this->Close();
-          return False;
+          return false;
         }
       }
       $this->numOfRowsAffected = @$this->DB->affected_rows;
-      return (@$this->DB->affected_rows >= 0 || $rs) ? True : False;
+      return (@$this->DB->affected_rows >= 0 || $rs) ? true : false;
     } else {
       if (array_key_exists('error', $this->trans)) {
         $this->trans['error']++;
       }
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', "sql: $sql Errorcode: " . $this->DB->errno);
       throw new \ErrorException(__METHOD__ . ' ERROR -> ' . $this->DB->error . " - sql: $sql");
-      return False;
+      return false;
     }
   }
 
@@ -655,7 +655,7 @@ class Database {
    * Query
    *
    * @see _fetch
-   * @return array or NULL
+   * @return array or null
    */
   public function query() {
     if ($this->debug) $this->debug->log(__METHOD__);
@@ -692,7 +692,7 @@ class Database {
         $meta = $this->_stmt->result_metadata();
         $columns = array();
         $results = array();
-        while (($column = $meta->fetch_field()) !== False) {
+        while (($column = $meta->fetch_field()) !== false) {
           $columns[$column->name] = &$results[$column->name];
         }
         $fp = fopen('php://output', 'w');
@@ -716,12 +716,12 @@ class Database {
    * @see mysqli_result::fetch_object
    * @return object
    */
-  public function map($sql, $class_name=NULL, $params=array()) {
+  public function map($sql, $class_name=null, $params=array()) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
     if ($this->Execute($sql)) {
       return ($class_name) ? $this->_rs->fetch_object($class_name, $params) : $this->_rs->fetch_object();
     } else {
-      return False;
+      return false;
     }
   }
 
@@ -729,7 +729,7 @@ class Database {
    * Fetch a result row as an associative, a numeric array, or both
    *
    * @param SQL $sql
-   * @return array or False
+   * @return array or false
    */
   public function getAll($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
@@ -741,7 +741,7 @@ class Database {
       $this->Close();
       return $rows;
     } else {
-      return False;
+      return false;
     }
   }
 
@@ -749,7 +749,7 @@ class Database {
    * Get a Row
    *
    * @param SQL $sql
-   * @return the first row as an array or False.
+   * @return the first row as an array or false.
    */
   public function getRow($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
@@ -758,7 +758,7 @@ class Database {
       $this->Close();
       return $row;
     } else {
-      return False;
+      return false;
     }
   }
 
@@ -766,7 +766,7 @@ class Database {
    * Get a Column
    *
    * @param SQL $sql
-   * @return the first column as an array, or False.
+   * @return the first column as an array, or false.
    */
   public function getCol($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
@@ -778,7 +778,7 @@ class Database {
       $this->Close();
       return $col;
     } else {
-      return False;
+      return false;
     }
   }
 
@@ -786,7 +786,7 @@ class Database {
    * Get One
    *
    * @param SQL $sql
-   * @return the first field of the first row, or False.
+   * @return the first field of the first row, or false.
    */
   public function getOne($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
@@ -795,7 +795,7 @@ class Database {
       $this->Close();
       return reset($row);
     } else {
-      return False;
+      return false;
     }
   }
 
@@ -803,14 +803,14 @@ class Database {
    * Get an associative array using the first column as keys
    *
    * @param SQL $sql
-   * @return associative array, False if columns < 2, or no records found.
+   * @return associative array, false if columns < 2, or no records found.
    */
   public function getASSOC($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
     if ($this->Execute($sql)) {
       $cols = $this->numOfFields;
       if ($cols < 2) {
-        return False;
+        return false;
       }
       $this->fetchMode = MYSQLI_ASSOC;
       $assoc = array();
@@ -826,7 +826,7 @@ class Database {
       $this->Close();
       return $assoc;
     } else {
-      return False;
+      return false;
     }
   }
 
@@ -853,7 +853,7 @@ class Database {
   public function CompleteTrans() {
     if ($this->debug) $this->debug->log('transactions', __METHOD__);
     if (empty($this->trans)) {
-      return False;
+      return false;
     } else {
       if ($this->trans['error'] > 0) {
         if ($this->debug) $this->debug->log('transactions', __METHOD__, 'ERROR', 'error in level: ' . $this->trans['level']);
@@ -863,7 +863,7 @@ class Database {
         } else {
           $this->Execute('ROLLBACK');
         }
-        return False;
+        return false;
       }
       if ($this->trans['level'] == 0) {
         $this->trans = array();
@@ -879,7 +879,7 @@ class Database {
   /**
    * Rollback the transaction
    *
-   * @return False if there was an error executing the ROLLBACK.
+   * @return false if there was an error executing the ROLLBACK.
    */
   public function RollBackTrans() {
     if ($this->debug) $this->debug->log('transactions', __METHOD__);
@@ -945,9 +945,9 @@ class Database {
    */
   public function renumber($table, $row = 'id') {
     if (isset($table)) {
-      return $this->Execute('SET @var_dalmp=0') ? ($this->Execute("UPDATE $table SET $row = (@var_dalmp := @var_dalmp +1)") ? $this->Execute("ALTER TABLE $table AUTO_INCREMENT = 1") : False) : False;
+      return $this->Execute('SET @var_dalmp=0') ? ($this->Execute("UPDATE $table SET $row = (@var_dalmp := @var_dalmp +1)") ? $this->Execute("ALTER TABLE $table AUTO_INCREMENT = 1") : false) : false;
     } else {
-      return False;
+      return false;
     }
   }
 
@@ -981,7 +981,7 @@ class Database {
       $group = $key;
       $key = $fetch;
     } else {
-      $group = (isset($args[1]) and (strncmp($args[1], 'group:', 6) == 0)) ? $args[1] : NULL;
+      $group = (isset($args[1]) and (strncmp($args[1], 'group:', 6) == 0)) ? $args[1] : null;
     }
 
     $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
@@ -1047,18 +1047,18 @@ class Database {
           $group = $key;
           $key = $fetch . implode('|', array_merge(array_keys($args), $args));
         } else {
-          $group = NULL; // only key no group
+          $group = null; // only key no group
         }
       } else {
         $group = array_pop($args);
-        $group = (strncmp($group, 'group:', 6) == 0) ? $group : NULL;
+        $group = (strncmp($group, 'group:', 6) == 0) ? $group : null;
         $key = array_pop($args);
         $params = $args;
       }
     } else {
       $key = $fetch . implode('|', array_merge(array_keys($args), $args));
       $params = $args;
-      $group = NULL;
+      $group = null;
     }
 
     array_unshift($args, $sql);
@@ -1106,7 +1106,7 @@ class Database {
    * @param string $group group:name (to group cache keys) usefull when flushing the cache
    * @return boolean
    */
-  protected function _setCache($hkey, $cache, $expire = 3600, $group = NULL) {
+  protected function _setCache($hkey, $cache, $expire = 3600, $group = null) {
     if ($group) {
       $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
       $gkey = sha1($skey . $group);
@@ -1131,15 +1131,15 @@ class Database {
         throw new \UnexpectedValueException('Can not store data on cache');
       }
     }
-    return True;
+    return true;
   }
 
   /**
    * Cache flush
    *
-   * @param SQL $sql, cache group or NULL
+   * @param SQL $sql, cache group or null
    */
-  public function CacheFlush($sql = NULL, $key = NULL) {
+  public function CacheFlush($sql = null, $key = null) {
     if (is_null($sql)) {
       return $this->cache->Flush();
     }
@@ -1189,9 +1189,9 @@ class Database {
    * @param boolean $eol
    * @return boolean or PHP_EOL, <br/>
    */
-  public static function isCli($eol = NULL) {
-    ($cli = (php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR']))) && $cli = $eol ? PHP_EOL : True;
-    return $cli ?  : ($eol ? '<br/>' : False);
+  public static function isCli($eol = null) {
+    ($cli = (php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR']))) && $cli = $eol ? PHP_EOL : true;
+    return $cli ?  : ($eol ? '<br/>' : false);
   }
 
   /**
@@ -1200,7 +1200,7 @@ class Database {
    * @param int $b
    * @return UUID, if $b returns binary(16)
    */
-  public static function UUID($b=NULL) {
+  public static function UUID($b=null) {
     if (function_exists('uuid_create')) {
       $uuid = uuid_create();
     } else { // creates a UUID v4
@@ -1228,8 +1228,8 @@ class Database {
     if (defined('DALMP_SQLITE_ENC_KEY')) $sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
 
     $sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
-    $sdb->exec('CREATE TABLE IF NOT EXISTS queues (id INTEGER PRIMARY KEY, queue VARCHAR (64) NOT NULL, data TEXT, cdate DATE)');
-    $sql = "INSERT INTO queues VALUES (NULL, '$queue', '" . base64_encode($data) . "', '" . @date('Y-m-d H:i:s') . "')";
+    $sdb->exec('CREATE TABLE IF NOT EXISTS queues (id INTEGER PRIMARY KEY, queue VARCHAR (64) NOT null, data TEXT, cdate DATE)');
+    $sql = "INSERT INTO queues VALUES (null, '$queue', '" . base64_encode($data) . "', '" . @date('Y-m-d H:i:s') . "')";
 
     if (!$sdb->exec($sql)) {
       trigger_error("queue: could not save $data - $queue on $queue_db", E_USER_NOTICE);
@@ -1244,10 +1244,10 @@ class Database {
    *
    * @param string queue name
    * @param int print or return the queue
-   * @return True or array
+   * @return true or array
    */
-  public static function readQueue($queue = '*', $print = False) {
-    $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : DALMP_DIR.'/dalmp_queue.db';
+  public static function readQueue($queue = '*', $print = false) {
+    $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : DALMP_DIR . '/dalmp_queue.db';
     $sdb = new SQLite3($queue_db);
 
     if (defined('DALMP_SQLITE_ENC_KEY')) $sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
@@ -1279,15 +1279,15 @@ class Database {
     };
 
     $get = function ($m) use ($n) {
-      $method = explode($m, $n) + array(NULL, NULL);
-      return in_array($method[1], array('all', 'row', 'col', 'one', 'assoc')) ? $method[1] : False;
+      $method = explode($m, $n) + array(null, null);
+      return in_array($method[1], array('all', 'row', 'col', 'one', 'assoc')) ? $method[1] : false;
     };
 
     switch ($method($n)) {
     case 'pget':
       if ($func = $get('pget')) {
         if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__);
-        return call_user_func_array(array($this, 'PExecute'), $args) ? $this->_pFetch($func) : False;
+        return call_user_func_array(array($this, 'PExecute'), $args) ? $this->_pFetch($func) : false;
       }
       break;
 
