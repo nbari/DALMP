@@ -93,14 +93,14 @@ class test_dalmp extends PHPUnit_Framework_TestCase {
   public function testGetOne() {
     $this->assertStringMatchesFormat('%i', $this->db->GetOne('SELECT UNIX_TIMESTAMP()'));
     $rs = $this->db->GetOne("SELECT * From Country WHERE Continent='Oceania' AND Population < 10000");
-    $this->assertEquals(False, is_array($rs));
+    $this->assertEquals(false, is_array($rs));
     $this->assertEquals('CCK', $rs);
   }
 
   public function testPGetOne() {
     $this->assertStringMatchesFormat('%i', $this->db->GetOne('SELECT UNIX_TIMESTAMP()'));
     $rs = $this->db->PGetOne('SELECT * From Country WHERE Continent=? AND Population < ?', 'Oceania', 10000);
-    $this->assertEquals(False, is_array($rs));
+    $this->assertEquals(false, is_array($rs));
     $this->assertEquals('CCK', $rs);
   }
 
@@ -118,12 +118,12 @@ class test_dalmp extends PHPUnit_Framework_TestCase {
 
   public function testExpectedResultsGetAll() {
     $rs = $this->db->FetchMode('ASSOC')->GetALL('SELECT t1.name, t1.District, t2.Capital, t2.Localname, t2.Region, t2.SurfaceArea, t2.Population FROM City t1 LEFT JOIN Country t2 ON t1.countrycode=t2.code WHERE t2.population < 10000');
-    $this->assertEquals(json_decode($this->expected, True), $rs);
+    $this->assertEquals(json_decode($this->expected, true), $rs);
   }
 
   public function testExpectedResultsPGetAll() {
     $rs = $this->db->FetchMode('ASSOC')->PGetALL('SELECT t1.name, t1.District, t2.Capital, t2.Localname, t2.Region, t2.SurfaceArea, t2.Population FROM City t1 LEFT JOIN Country t2 ON t1.countrycode=t2.code WHERE t2.population < ?', 10000);
-    $this->assertEquals(json_decode($this->expected, True), $rs);
+    $this->assertEquals(json_decode($this->expected, true), $rs);
   }
 
 }

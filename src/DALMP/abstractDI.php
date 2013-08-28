@@ -26,7 +26,7 @@ abstract class abstractDI {
    */
   public function share(\Closure $callable) {
     return function () use ($callable) {
-      static $object = NULL;
+      static $object = null;
       if (is_null($object)) {
         $object = call_user_func_array($callable, func_get_args());
       }
@@ -72,7 +72,7 @@ abstract class abstractDI {
    *
    * @param string $name
    * @param object $object
-   * @return True on success exception on failure
+   * @return true on success exception on failure
    */
   public function addObject($name, $object) {
     if (isset($this->c[$name])) {

@@ -24,13 +24,13 @@ class Files implements \SessionHandlerInterface {
    *
    * @param string $dir
    */
-  public function __construct($sessions_dir = False) {
+  public function __construct($sessions_dir = false) {
     if (!$sessions_dir) {
       $sessions_dir = defined('DALMP_SESSIONS_DIR') ? DALMP_SESSIONS_DIR : '/tmp/dalmp_sessions';
     }
 
     if (!is_writable($sessions_dir)) {
-      if (!is_dir($sessions_dir) && !mkdir($sessions_dir, 0700, True)) {
+      if (!is_dir($sessions_dir) && !mkdir($sessions_dir, 0700, true)) {
         throw new \InvalidArgumentException($sessions_dir . ' not accessible');
       }
     }
@@ -39,7 +39,7 @@ class Files implements \SessionHandlerInterface {
   }
 
   public function close() {
-    return True;
+    return true;
   }
 
   public function destroy($session_id) {
@@ -50,7 +50,7 @@ class Files implements \SessionHandlerInterface {
       unlink($sess_file);
     }
 
-    return True;
+    return true;
   }
 
   public function gc($maxlifetime) {
@@ -62,17 +62,17 @@ class Files implements \SessionHandlerInterface {
       }
     }
 
-    return True;
+    return true;
   }
 
   public function open($save_path, $name) {
-    return True;
+    return true;
   }
 
   public function read($session_id) {
     $sess_path = sprintf('%s/%s/%s/%s', $this->sessions_dir, substr($session_id, 0, 2), substr($session_id, 2, 2),  substr($session_id, 4, 2));
 
-    if (!is_dir($sess_path) && !mkdir($sess_path, 0700, True)) {
+    if (!is_dir($sess_path) && !mkdir($sess_path, 0700, true)) {
       throw new \Exception("$sess_path  not accessible");
     }
 
@@ -84,13 +84,13 @@ class Files implements \SessionHandlerInterface {
   public function write($session_id, $session_data) {
     $sess_path = sprintf('%s/%s/%s/%s', $this->sessions_dir, substr($session_id, 0, 2), substr($session_id, 2, 2),  substr($session_id, 4, 2));
 
-    if (!is_dir($sess_path) && !mkdir($sess_path, 0700, True)) {
+    if (!is_dir($sess_path) && !mkdir($sess_path, 0700, true)) {
       throw new \Exception("$sess_path  not accessible");
     }
 
     $sess_file = sprintf('%s/%s', $sess_path , "{$session_id}.sess");
 
-    return file_put_contents($sess_file, $session_data) === False ? False : True;
+    return file_put_contents($sess_file, $session_data) === false ? false : true;
   }
 
   /**
@@ -99,9 +99,9 @@ class Files implements \SessionHandlerInterface {
    * @param int $expiry
    * @return array of sessions containing any reference
    */
-  public function getSessionsRefs($expired_sessions = False) {
+  public function getSessionsRefs($expired_sessions = false) {
     $refs = array();
-    return False;
+    return false;
   }
 
   /**
@@ -111,7 +111,7 @@ class Files implements \SessionHandlerInterface {
    * @return array of session containing a specific reference
    */
   public function getSessionRef($ref) {
-    return False;
+    return false;
   }
 
   /**
@@ -121,7 +121,7 @@ class Files implements \SessionHandlerInterface {
    * @return boolean
    */
   public function delSessionRef($ref) {
-    return False;
+    return false;
   }
 
   /**

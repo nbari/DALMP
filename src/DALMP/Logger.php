@@ -17,7 +17,7 @@ class Logger {
    * @access private
    * @var boolean
    */
-  private $log2file = False;
+  private $log2file = false;
 
   /**
    * file to write log
@@ -57,7 +57,7 @@ class Logger {
    * @access private
    * @var bool
    */
-  private $is_cli = False;
+  private $is_cli = false;
 
   /**
    * constructor
@@ -65,11 +65,11 @@ class Logger {
    * @param int $log2file if > 1 will create separate log files
    * @param string $logfile
    */
-  public function __construct($log2file = False, $logfile = False) {
+  public function __construct($log2file = false, $logfile = false) {
     if ($log2file) {
       if ($logfile) {
         if (!is_writable($logfile)) {
-          if (!is_dir(dirname($logfile)) && !mkdir(dirname($logfile), 0700, True)) {
+          if (!is_dir(dirname($logfile)) && !mkdir(dirname($logfile), 0700, true)) {
             throw new \Exception("Can't create log directory for: {$logfile}");
           }
         }
@@ -79,10 +79,10 @@ class Logger {
     }
 
     if (php_sapi_name() === 'cli') {
-      $this->is_cli = True;
+      $this->is_cli = true;
     }
 
-    $this->time_start = microtime(True);
+    $this->time_start = microtime(true);
   }
 
   public function log() {
@@ -90,14 +90,14 @@ class Logger {
     $key = array_shift($args);
     $method = is_array(reset($args)) ? json_encode(array_shift($args)) : array_shift($args);
     $log = empty($args) ? (empty($method) ? "[$key]" : "[$key - $method]") : "[$key - $method] -> " . json_encode($args);
-    $etime = number_format(microtime(True) - $this->time_start, $this->decimals);
+    $etime = number_format(microtime(true) - $this->time_start, $this->decimals);
     $this->log[][$etime] = $log;
   }
 
   public function getLog() {
     if ($this->log2file) {
       if ($this->log2file > 1) {
-        $this->logfile .= '-' . microtime(True);
+        $this->logfile .= '-' . microtime(true);
       }
       $fh = fopen($this->logfile, 'a+');
       $start = str_repeat('-', 80) . PHP_EOL;
@@ -128,7 +128,7 @@ class Logger {
 
     if ($this->log2file) {
       fwrite($fh, $start);
-      fwrite($fh, 'END ' . @date('c') . ' - [Memory usage: ' . memory_get_usage(True) . ', ' . memory_get_peak_usage(True) . ']' . PHP_EOL);
+      fwrite($fh, 'END ' . @date('c') . ' - [Memory usage: ' . memory_get_usage(true) . ', ' . memory_get_peak_usage(true) . ']' . PHP_EOL);
       fwrite($fh, $start);
       fclose($fh);
     } elseif ($this->is_cli) {

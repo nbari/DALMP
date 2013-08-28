@@ -57,7 +57,7 @@ class Memcache implements \SessionHandlerInterface {
   }
 
   public function close() {
-    return True;
+    return true;
   }
 
   public function destroy($session_id) {
@@ -77,11 +77,11 @@ class Memcache implements \SessionHandlerInterface {
   }
 
   public function gc($maxlifetime) {
-    return True;
+    return true;
   }
 
   public function open($save_path, $name) {
-    return True;
+    return true;
   }
 
   public function read($session_id) {
@@ -90,7 +90,7 @@ class Memcache implements \SessionHandlerInterface {
   }
 
   public function write($session_id, $session_data) {
-    $ref = (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) ? $GLOBALS[$this->dalmp_sessions_ref] : NULL;
+    $ref = (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) ? $GLOBALS[$this->dalmp_sessions_ref] : null;
     $timeout = ini_get('session.gc_maxlifetime');
     $expiry = time() + $timeout;
 
@@ -164,7 +164,7 @@ class Memcache implements \SessionHandlerInterface {
           unset($refs[$key]);
 
           if (!$this->cache->Delete($key)) {
-            return False;
+            return false;
           }
 
         }
@@ -172,7 +172,7 @@ class Memcache implements \SessionHandlerInterface {
       }
       return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3600);
     } else {
-      return False;
+      return false;
     }
   }
 

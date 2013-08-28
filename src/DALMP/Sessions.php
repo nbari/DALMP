@@ -25,7 +25,7 @@ class Sessions {
    * @param SessionHandlerInterface $session_handler
    * @param hash_algo $session_hash
    */
-  public function __construct($session_handler = False, $hash_algo = 'sha256') {
+  public function __construct($session_handler = false, $hash_algo = 'sha256') {
     if (!$session_handler) {
       $this->session_handler = new Sessions\SQLite();
     } else {
@@ -46,7 +46,7 @@ class Sessions {
     ini_set('session.name', 'DALMP');
 
     session_module_name('user');
-    session_set_save_handler($this->session_handler, True);
+    session_set_save_handler($this->session_handler, true);
     session_start();
   }
 
@@ -57,7 +57,7 @@ class Sessions {
    * @param boolean $use_IP
    * @return boolean
    */
-  public function regenerate_id($use_IP = True) {
+  public function regenerate_id($use_IP = true) {
     $fingerprint = @$_SERVER['HTTP_ACCEPT'] . @$_SERVER['HTTP_USER_AGENT'] . @$_SERVER['HTTP_ACCEPT_ENCODING'] . @$_SERVER['HTTP_ACCEPT_LANGUAGE'];
 
     if ($use_IP) {
@@ -71,11 +71,11 @@ class Sessions {
       session_destroy();
     }
 
-    if (session_regenerate_id(True)) {
+    if (session_regenerate_id(true)) {
       $_SESSION['fingerprint'] = $fingerprint;
-      return True;
+      return true;
     } else {
-      return False;
+      return false;
     }
   }
 

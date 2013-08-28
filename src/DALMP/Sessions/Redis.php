@@ -57,7 +57,7 @@ class Redis implements \SessionHandlerInterface {
   }
 
   public function close() {
-    return True;
+    return true;
   }
 
   public function destroy($session_id) {
@@ -71,9 +71,9 @@ class Redis implements \SessionHandlerInterface {
         $this->cache->X()->HDEL($this->cache_ref_key, $key);
         $this->cache->X()->EXPIRE($this->cache_ref_key, 3600);
       }
-      return True;
+      return true;
     } else {
-      return False;
+      return false;
     }
   }
 
@@ -96,11 +96,11 @@ class Redis implements \SessionHandlerInterface {
         $this->cache->X()->EXPIRE($this->cache_ref_key, 3600);
       }
     }
-    return True;
+    return true;
   }
 
   public function open($save_path, $name) {
-    return True;
+    return true;
   }
 
   public function read($session_id) {
@@ -109,7 +109,7 @@ class Redis implements \SessionHandlerInterface {
   }
 
   public function write($session_id, $session_data) {
-    $ref = (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) ? $GLOBALS[$this->dalmp_sessions_ref] : NULL;
+    $ref = (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) ? $GLOBALS[$this->dalmp_sessions_ref] : null;
     $timeout = ini_get('session.gc_maxlifetime');
     $expiry = time() + $timeout;
 
@@ -120,7 +120,7 @@ class Redis implements \SessionHandlerInterface {
      * store REF on cache
      */
     if ($rs && $ref) {
-      return (bool) ($this->cache->X()->HSET($this->cache_ref_key, $key, sprintf('%s|%s', $ref, $expiry)) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : False);
+      return (bool) ($this->cache->X()->HSET($this->cache_ref_key, $key, sprintf('%s|%s', $ref, $expiry)) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : false);
     } else {
       return $rs;
     }
@@ -189,7 +189,7 @@ class Redis implements \SessionHandlerInterface {
       array_shift($keys);
       return (bool) $this->cache->delete($keys);
     } else {
-      return False;
+      return false;
     }
   }
 

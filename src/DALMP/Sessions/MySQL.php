@@ -50,7 +50,7 @@ class MySQL implements \SessionHandlerInterface {
   }
 
   public function close() {
-    return True;
+    return true;
   }
 
   public function destroy($session_id) {
@@ -65,11 +65,11 @@ class MySQL implements \SessionHandlerInterface {
     $sql = 'OPTIMIZE TABLE ' . $this->dalmp_sessions_table;
     $this->DB->Execute($sql);
 
-    return True;
+    return true;
   }
 
   public function open($save_path, $name) {
-    return True;
+    return true;
   }
 
   public function read($session_id) {
@@ -77,7 +77,7 @@ class MySQL implements \SessionHandlerInterface {
   }
 
   public function write($session_id, $session_data) {
-    $ref = (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) ? $GLOBALS[$this->dalmp_sessions_ref] : NULL;
+    $ref = (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) ? $GLOBALS[$this->dalmp_sessions_ref] : null;
 
     $expiry = time() + ini_get('session.gc_maxlifetime');
 
@@ -94,7 +94,7 @@ class MySQL implements \SessionHandlerInterface {
   public function getSessionsRefs() {
     $refs = array();
 
-    $db_refs = $this->DB->FetchMode('ASSOC')->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE ref IS NOT NULL");
+    $db_refs = $this->DB->FetchMode('ASSOC')->GetAll("SELECT sid, ref, expiry FROM $this->dalmp_sessions_table WHERE ref IS NOT null");
 
     if ($db_refs) {
       foreach ($db_refs as $value) {
