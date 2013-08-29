@@ -4,9 +4,20 @@ require_once '../src/dalmp.php';
 
 $di = new DALMP\DI();
 
-#$ok = $di->database('utf8://root@localhost:3306/dalmp');
-#print_r($ok);
+$ok = $di->database('utf8://root@localhost:3306/dalmp');
+$ok->debug(True);
 
+$now = $ok->getOne('SELECT NOW()');
+echo $now,PHP_EOL;
+sleep(10);
+$now = $ok->getOne('SELECT NOW()');
+echo $now,PHP_EOL;
+sleep(10);
+$city = $ok->PgetAll('SELECT * FROM City WHERE name like ?', '%timor%');
+print_r($city);
+sleep(10);
+$now = $ok->getOne('SELECT NOW()');
+echo $now,PHP_EOL;
 
 class teste {
 

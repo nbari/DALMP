@@ -202,6 +202,7 @@ class Database {
    * @return boolean
    */
   public function isConnected() {
+    if ($this->debug) $this->debug->log(__METHOD__);
     return (bool) ($this->DB instanceof mysqli);
   }
 
