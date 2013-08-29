@@ -13,7 +13,7 @@ class Memcache implements CacheInterface {
   private $host = '127.0.0.1';
   private $port = 11211;
   private $timeout = 1;
-  private $compress = False;
+  private $compress = false;
   protected $cache;
 
   /**
@@ -46,10 +46,10 @@ class Memcache implements CacheInterface {
    */
   public function Set($key, $value, $expire = 0) {
     if ($this->connect()) {
-      ($this->compress === False) && $this->cache->setCompressThreshold(0);
-      return $this->cache->set($key, $value, $this->compress, $expire) ? $this : False;
+      ($this->compress === false) && $this->cache->setCompressThreshold(0);
+      return $this->cache->set($key, $value, $this->compress, $expire) ? $this : false;
     } else {
-      return False;
+      return false;
     }
   }
 
@@ -59,7 +59,7 @@ class Memcache implements CacheInterface {
    * @param string $key
    */
   public function Get($key) {
-    return $this->connect() ? $this->cache->get($key) : False;
+    return $this->connect() ? $this->cache->get($key) : false;
   }
 
   /**
@@ -68,21 +68,21 @@ class Memcache implements CacheInterface {
    * @param string $key
    */
   public function Delete($key){
-    return $this->connect() ? $this->cache->delete($key) : False;
+    return $this->connect() ? $this->cache->delete($key) : false;
   }
 
   /**
    * Flush cache
    */
   public function Flush(){
-    return $this->connect() ? $this->cache->flush() : False;
+    return $this->connect() ? $this->cache->flush() : false;
   }
 
   /**
    * Get cache stats
    */
   public function Stats(){
-    return $this->connect() ? $this->cache->getStats() : False;
+    return $this->connect() ? $this->cache->getStats() : false;
   }
 
   /**
@@ -91,7 +91,7 @@ class Memcache implements CacheInterface {
    * @return cache object
    */
   public function X(){
-    return $this->connect() ? $this->cache : False;
+    return $this->connect() ? $this->cache : false;
   }
 
   /**
@@ -99,7 +99,7 @@ class Memcache implements CacheInterface {
    */
   private function connect() {
     if ($this->cache instanceof MemCache) {
-      return True;
+      return true;
     } else {
       if (!extension_loaded('memcache')) {
         throw new \Exception(__CLASS__ . 'Memcache PECL extension not loaded! - http://pecl.php.net/package/memcache');
@@ -111,9 +111,9 @@ class Memcache implements CacheInterface {
        * if a / found try to connect via socket
        */
       if (strpos($this->host, '/') !== false) {
-        return $this->cache = $memcache->connect($this->host) ? $memcache : False;
+        return $this->cache = $memcache->connect($this->host) ? $memcache : false;
       } else {
-        return $this->cache = $memcache->connect($this->host, $this->port, $this->timeout) ? $memcache : False;
+        return $this->cache = $memcache->connect($this->host, $this->port, $this->timeout) ? $memcache : false;
       }
     }
   }

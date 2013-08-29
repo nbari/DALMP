@@ -215,7 +215,7 @@ class Database {
   }
 
   /**
-   * Closes a previously opened database connection
+   * Frees the memory associated with a result
    */
   public function Close() {
     if ($this->debug) $this->debug->log(__METHOD__);
@@ -223,6 +223,7 @@ class Database {
   }
 
   /**
+   * Frees stored result memory for the given statement handle &
    * Closes a prepared statement
    */
   public function PClose() {

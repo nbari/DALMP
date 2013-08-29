@@ -42,12 +42,12 @@ class Redis implements CacheInterface {
   public function set($key, $value, $expire = 0) {
     if ($this->connect()) {
       if ($expire == 0 || $expire == -1) {
-        return $this->cache->set($key, serialize($value)) ? $this : False;
+        return $this->cache->set($key, serialize($value)) ? $this : false;
       } else {
-        return $this->cache->setex($key, $expire, serialize($value)) ? $this : False;
+        return $this->cache->setex($key, $expire, serialize($value)) ? $this : false;
       }
     } else {
-      return False;
+      return false;
     }
   }
 
@@ -57,7 +57,7 @@ class Redis implements CacheInterface {
    * @param string $key
    */
   public function Get($key) {
-    return $this->connect() ? unserialize($this->cache->get($key)) : False;
+    return $this->connect() ? unserialize($this->cache->get($key)) : false;
   }
 
   /**
@@ -66,21 +66,21 @@ class Redis implements CacheInterface {
    * @param string $key
    */
   public function Delete($key) {
-    return $this->connect() ? $this->cache->delete($key) : False;
+    return $this->connect() ? $this->cache->delete($key) : false;
   }
 
   /**
    * Flush cache
    */
   public function Flush() {
-    return $this->connect() ? $this->cache->flushDB() : False;
+    return $this->connect() ? $this->cache->flushDB() : false;
   }
 
   /**
    * Get cache stats
    */
   public function Stats() {
-    return $this->connect() ? $this->cache->info() : False;
+    return $this->connect() ? $this->cache->info() : false;
   }
 
   /**
@@ -89,7 +89,7 @@ class Redis implements CacheInterface {
    * @return cache object
    */
   public function X() {
-    return $this->connect() ? $this->cache : False;
+    return $this->connect() ? $this->cache : false;
   }
 
   /**
@@ -97,7 +97,7 @@ class Redis implements CacheInterface {
    */
   private function connect() {
     if ($this->cache instanceof Redis) {
-      return True;
+      return true;
     } else {
       if (!extension_loaded('redis')) {
         throw new \Exception(__CLASS__ . 'redis extension not loaded! - http://github.com/nicolasff/phpredis');
@@ -109,13 +109,13 @@ class Redis implements CacheInterface {
          * if a / found try to connect via socket
          */
         if (strpos($this->host, '/') !== false) {
-          return $this->cache = $redis->connect($this->host) ? $redis : False;
+          return $this->cache = $redis->connect($this->host) ? $redis : false;
         } else {
-          return $this->cache = $redis->connect($this->host, $this->port, $this->timeout) ? $redis : False;
+          return $this->cache = $redis->connect($this->host, $this->port, $this->timeout) ? $redis : false;
         }
       } catch (\RedisException $e) {
         trigger_error('ERROR ->' . __METHOD__ . $e->getMessage(), E_USER_NOTICE);
-        return False;
+        return false;
       }
     }
   }

@@ -35,7 +35,7 @@ class APC implements CacheInterface {
    * @param int $expire time in seconds(default is 0 meaning unlimited)
    */
   public function set($key, $value, $expire = 0) {
-    return apc_store($key, $value, $expire) ? $this : False;
+    return apc_store($key, $value, $expire) ? $this : false;
   }
 
   /**

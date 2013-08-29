@@ -28,7 +28,7 @@ class Disk implements CacheInterface {
     }
 
     if (!is_writable($cache_dir)) {
-      if (!is_dir($cache_dir) && !mkdir($cache_dir, 0700, True)) {
+      if (!is_dir($cache_dir) && !mkdir($cache_dir, 0700, true)) {
         throw new \InvalidArgumentException("$cache_dir  not accessible");
       }
     }
@@ -49,7 +49,7 @@ class Disk implements CacheInterface {
     $cache_path = sprintf('%s/%s/%s/%s', $this->cache_dir, substr($key, 0, 2), substr($key, 2, 2),  substr($key, 4, 2));
 
     if (!file_exists($cache_path)) {
-      if (!mkdir($cache_path, 0750, True)) {
+      if (!mkdir($cache_path, 0750, true)) {
         throw new \Exception("Can't create cache directory tree : $cache_path");
       }
     }
@@ -65,9 +65,9 @@ class Disk implements CacheInterface {
         flock($fp, LOCK_UN);
         fclose($fp);
         $time = time() + (int) $expire;
-        return touch($cache_file, $time) ? $this : False;
+        return touch($cache_file, $time) ? $this : false;
       } else {
-        return False;
+        return false;
       }
     } else {
       throw new \Exception(__METHOD__ . ": Cannot lock/truncate the cache file: $cache_file");
@@ -89,10 +89,10 @@ class Disk implements CacheInterface {
         return unserialize(file_get_contents($cache_file));
       } else {
         unlink($cache_file);
-        return False;
+        return false;
       }
     } else {
-      return False;
+      return false;
     }
   }
 

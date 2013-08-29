@@ -14,7 +14,7 @@ class MPLT {
   private $marks = array();
 
   function __construct($decimals = 3) {
-    $this->time_start = microtime(True);
+    $this->time_start = microtime(true);
     $this->decimals = $decimals;
   }
 
@@ -22,8 +22,8 @@ class MPLT {
     $this->time_end = microtime(true);
   }
 
-  public function setMark($name = NULL) {
-    $mark = number_format(microtime(True) - $this->time_start, $this->decimals);
+  public function setMark($name = null) {
+    $mark = number_format(microtime(true) - $this->time_start, $this->decimals);
     if ($name && $name != 'total') {
       $this->marks[$name] = $mark;
     } else {
@@ -31,7 +31,7 @@ class MPLT {
     }
   }
 
-  public function getMark($name = NULL) {
+  public function getMark($name = null) {
     return $name ? $this->marks[$name] : reset($this->marks);
   }
 
@@ -39,7 +39,7 @@ class MPLT {
     return $this->marks;
   }
 
-  public function getPageLoadTime($marks = False) {
+  public function getPageLoadTime($marks = false) {
     if (empty($this->time_end)) {
       $this->Stop();
     }
@@ -54,8 +54,8 @@ class MPLT {
     }
   }
 
-  public function getMemoryUsage($convert = False) {
-    return $convert ? $this->convert(memory_get_usage(True)) : memory_get_usage(True);
+  public function getMemoryUsage($convert = false) {
+    return $convert ? $this->convert(memory_get_usage(true)) : memory_get_usage(true);
   }
 
   public function convert($size) {
