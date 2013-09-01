@@ -13,7 +13,7 @@ class MPLT {
   private $time_end;
   private $marks = array();
 
-  function __construct($decimals = 3) {
+  function __construct($decimals = 4) {
     $this->time_start = microtime(true);
     $this->decimals = $decimals;
   }
@@ -23,11 +23,15 @@ class MPLT {
   }
 
   public function setMark($name = null) {
-    $mark = number_format(microtime(true) - $this->time_start, $this->decimals);
+    $mark = microtime(true) - $this->time_start;
+    $last_mark = end($this->marks);
+    $diff = $mark - $last_mark;
+    $mark = number_format($mark, $this->decimals);
+    $diff = number_format($diff, $this->decimals);
     if ($name && $name != 'total') {
-      $this->marks[$name] = $mark;
+      $this->marks[$name] = "$mark - $diff";
     } else {
-      $this->marks[] = $mark;
+      $this->marks[] = "$mark - $diff";
     }
   }
 
