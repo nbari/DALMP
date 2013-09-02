@@ -600,8 +600,7 @@ class Database {
       $placeholder = rtrim($placeholder, ',');
       $query = array_values($data);
       $sql = "INSERT INTO $table ($fields) VALUES($placeholder)";
-      array_unshift($query, $sql);
-      return call_user_func_array(array($this,'PExecute'), $query);
+      return call_user_func_array(array($this,'PExecute'), array($sql, $query));
       break;
 
     case 'UPDATE':
@@ -609,14 +608,48 @@ class Database {
       $fields.= '=?';
       $query = array_values($data);
       $sql = "UPDATE $table SET $fields WHERE $where";
-      array_unshift($query, $sql);
-      return call_user_func_array(array($this,'PExecute'), $query);
+      return call_user_func_array(array($this, 'PExecute'), array($sql, $query));
       break;
 
     default :
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'mode must be INSERT or UPDATE');
       return false;
     }
+  }
+
+  /**
+   * multiple insert
+   *
+   * @param string $table
+   * @param array $col_name example array('col1', 'col2')
+   * @param array $multiple_values example array(array('val1', 'val2'))
+   * @return boolean
+   */
+  public function multipleInsert($table, array $col_name, array $multiple_values) {
+    $num_of_fields = count($col_name);
+    if ($num_of_fields != count(end($multiple_values))) {
+      throw new \InvalidArgumentException('number of values do not match number of columns');
+    }
+
+    $pvalues = '';
+    $values = array();
+
+    foreach ($multiple_values as $value) {
+      for ($i = 0; $i < $num_of_fields; $i++) {
+        $values[] = isset($value[$i]) ? $value[$i] : null;
+      }
+      $pvalues .= '(?,?,?),';
+    }
+
+    $pvalues = rtrim($pvalues,',');
+
+    $columns = array_map(create_function('$n', 'return "`$n`";'), $col_name);
+
+    $sql = "INSERT INTO $table (" . implode(',', $columns) . ") VALUES $pvalues";
+
+    if ($this->debug) $this->debug->log(__METHOD__, $sql, $values);
+
+    return call_user_func_array(array($this, 'PExecute'), array($sql, $values));
   }
 
   /**

@@ -44,16 +44,20 @@ class MPLT {
   }
 
   public function printMarks() {
-    $pad = $this->decimals * 2;
-    $max_length = max(array_map('strlen', array_keys($this->marks)));
+    if ($this->marks) {
+      $pad = $this->decimals * 2;
+      $max_length = max(array_map('strlen', array_keys($this->marks)));
 
-    if ($pad < $max_length) {
-      $pad = $max_length + 2;
-    }
+      if ($pad < $max_length) {
+        $pad = $max_length + 2;
+      }
 
-    echo str_pad('mark', $pad), str_pad('time', $pad), 'elapsed-time', PHP_EOL;
-    foreach ($this->marks as $mark => $values) {
-      echo str_pad($mark, $pad), str_pad($values[0], $pad), $values[1], PHP_EOL;
+      echo str_pad('mark', $pad), str_pad('time', $pad), 'elapsed-time', PHP_EOL;
+      foreach ($this->marks as $mark => $values) {
+        echo str_pad($mark, $pad), str_pad($values[0], $pad), $values[1], PHP_EOL;
+      }
+    } else {
+      echo 'no defined marks',PHP_EOL;
     }
   }
 
