@@ -53,6 +53,8 @@ $rs = $db->CachePGetAll(300,'SELECT * FROM Country WHERE Region = ?', 'Caribbean
 echo count($rs), PHP_EOL;
 $timer->setMark('300-3');
 
-print_r($timer->getMarks());
-# -----------------------------------------------------------------------------------------------------------------
-echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
+
+#------------------------------------------------------------------------------
+echo PHP_EOL, str_repeat('-', 80), PHP_EOL;
+$timer->printMarks();
+echo str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;

@@ -24,14 +24,14 @@ class MPLT {
 
   public function setMark($name = null) {
     $mark = microtime(true) - $this->time_start;
-    $last_mark = end($this->marks);
+    $last_mark = end($this->marks)[0];
     $diff = $mark - $last_mark;
     $mark = number_format($mark, $this->decimals);
     $diff = number_format($diff, $this->decimals);
     if ($name && $name != 'total') {
-      $this->marks[$name] = "$mark - $diff";
+      $this->marks[$name] = array($mark, $diff);
     } else {
-      $this->marks[] = "$mark - $diff";
+      $this->marks[] = array($mark, $diff);
     }
   }
 
@@ -41,6 +41,20 @@ class MPLT {
 
   public function getMarks() {
     return $this->marks;
+  }
+
+  public function printMarks() {
+    $pad = $this->decimals * 2;
+    $max_length = max(array_map('strlen', array_keys($this->marks)));
+
+    if ($pad < $max_length) {
+      $pad = $max_length + 2;
+    }
+
+    echo str_pad('mark', $pad), str_pad('time', $pad), 'elapsed-time', PHP_EOL;
+    foreach ($this->marks as $mark => $values) {
+      echo str_pad($mark, $pad), str_pad($values[0], $pad), $values[1], PHP_EOL;
+    }
   }
 
   public function getPageLoadTime($marks = false) {
