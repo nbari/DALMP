@@ -563,12 +563,7 @@ class Database {
    * @param string $where
    * @return true or false on error
    */
-  public function AutoExecute($table = null, $fields = null, $mode = 'INSERT', $where = null) {
-    if (!$table || !is_array($fields)) {
-      if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'either table or fields missing');
-      throw new \InvalidArgumentException(__METHOD__ . ' either table or fields missing');
-    }
-
+  public function AutoExecute($table, array $fields, $mode = 'INSERT', $where = null) {
     if ($this->debug) $this->debug->log(__METHOD__, 'args:', $table, $fields, $mode, $where);
 
     $mode = (strtoupper($mode) == 'INSERT') ? 'INSERT' : 'UPDATE';
@@ -627,10 +622,13 @@ class Database {
     $values = array();
 
     foreach ($multiple_values as $value) {
+      $placeholder ='(';
       for ($i = 0; $i < $num_of_fields; $i++) {
         $values[] = isset($value[$i]) ? $value[$i] : null;
+        $placeholder .= '?,';
       }
-      $pvalues .= '(?,?,?),';
+      $pvalues .= rtrim($placeholder, ',') . '),';
+      $placeholder = null;
     }
 
     $pvalues = rtrim($pvalues,',');

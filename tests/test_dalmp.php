@@ -126,4 +126,40 @@ class test_dalmp extends PHPUnit_Framework_TestCase {
     $this->assertEquals(json_decode($this->expected, true), $rs);
   }
 
+  public function testExecute() {
+    $rs = $this->db->Execute('DROP TABLE IF EXISTS `tests`');
+    $this->assertTrue($rs);
+    $rs = $this->db->Execute('CREATE TABLE `tests` (id INT(11) unsigned NOT NULL AUTO_INCREMENT, col1 varchar(255), col2 varchar(255), col3 varchar(255), PRIMARY KEY (id))');
+    $this->assertTrue($rs);
+  }
+
+  public function testAutoExecute() {
+    $rs = $this->db->AutoExecute('tests', array('col1' => 1, 'col2' => 2, 'col3' => 3));
+    $this->assertTrue($rs);
+    $rs = $this->db->FetchMode('ASSOC')->GetAll('SELECT * FROM tests');
+    $this->assertEquals($rs, array(array('id' => 1, 'col1' => 1, 'col2' => 2, 'col3' => 3)));
+    $rs = $this->db->AutoExecute('tests', array('col1' => 7), 'UPDATE', 'id=1');
+    $this->assertTrue($rs);
+    $rs = $this->db->FetchMode('ASSOC')->GetAll('SELECT * FROM tests');
+    $this->assertEquals($rs, array(array('id' => 1, 'col1' => 7, 'col2' => 2, 'col3' => 3)));
+  }
+
+  public function testMultipleInsert() {
+    $rs = $this->db->multipleInsert('tests', array('col1', 'col2'), array(array(1,2), array(1,2), array(1), array('date', 'table'), array('niño','coração', 'tres'), array('date', 'table')));
+    $this->assertTrue($rs);
+    $rs = $this->db->FetchMode('ASSOC')->GetAll('SELECT * FROM tests where id > 1');
+    $this->assertEquals(json_encode($rs), '[{"id":"2","col1":"1","col2":"2","col3":null},{"id":"3","col1":"1","col2":"2","col3":null},{"id":"4","col1":"1","col2":null,"col3":null},{"id":"5","col1":"date","col2":"table","col3":null},{"id":"6","col1":"ni\u00f1o","col2":"cora\u00e7\u00e3o","col3":null},{"id":"7","col1":"date","col2":"table","col3":null}]');
+  }
+
+  public function testUUID() {
+    $uuids = array();
+    for ($i = 0; $i < 10000; $i++) {
+      $uuid = $this->db->uuid();
+      $this->assertTrue((boolean) preg_match('#[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}#', $uuid));
+      $uuids[] = $uuid;
+    }
+    $uuids = array_unique($uuids);
+    $this->assertEquals(count($uuids), 10000);
+  }
+
 }
