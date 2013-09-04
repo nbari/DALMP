@@ -566,16 +566,16 @@ class Database {
   public function AutoExecute($table = null, $fields = null, $mode = 'INSERT', $where = null) {
     if (!$table || !is_array($fields)) {
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'either table or fields missing');
-      return false;
+      throw new \InvalidArgumentException(__METHOD__ . ' either table or fields missing');
     }
 
     if ($this->debug) $this->debug->log(__METHOD__, 'args:', $table, $fields, $mode, $where);
 
-    $mode = strtoupper($mode);
+    $mode = (strtoupper($mode) == 'INSERT') ? 'INSERT' : 'UPDATE';
 
     if ($mode == 'UPDATE' && !$where) {
       if ($this->debug) $this->debug->log( __METHOD__, 'ERROR', 'WHERE clause missing');
-      return false;
+      throw new \InvalidArgumentException(__METHOD__ . ' WHERE clause missing');
     }
 
     if ($columnNames = $this->getColumnNames($table)) {
@@ -594,27 +594,19 @@ class Database {
     } else {
       return false;
     }
-    switch ($mode) {
-    case 'INSERT':
+
+    if ($mode == 'INSERT') {
       $fields = implode(', ', array_keys($data));
       $placeholder = rtrim($placeholder, ',');
       $query = array_values($data);
       $sql = "INSERT INTO $table ($fields) VALUES($placeholder)";
-      return call_user_func_array(array($this,'PExecute'), array($sql, $query));
-      break;
-
-    case 'UPDATE':
+    } else {
       $fields = implode('=?, ', array_keys($data));
       $fields.= '=?';
       $query = array_values($data);
       $sql = "UPDATE $table SET $fields WHERE $where";
-      return call_user_func_array(array($this, 'PExecute'), array($sql, $query));
-      break;
-
-    default :
-      if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'mode must be INSERT or UPDATE');
-      return false;
     }
+    return call_user_func_array(array($this, 'PExecute'), array($sql, $query));
   }
 
   /**
