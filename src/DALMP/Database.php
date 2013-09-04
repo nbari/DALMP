@@ -664,8 +664,22 @@ class Database {
           return false;
         }
       }
-      $this->numOfRowsAffected = @$this->DB->affected_rows;
-      return (@$this->DB->affected_rows >= 0 || $rs) ? true : false;
+
+      $this->numOfRowsAffected = $this->DB->affected_rows;
+
+      /**
+       * An integer greater than zero indicates the number of rows affected or
+       * retrieved. Zero indicates that no records were updated for an UPDATE
+       * statement, no rows matched the WHERE clause in the query or that no query
+       * has yet been executed. -1 indicates that the query returned an error.
+       */
+      if ($this->DB->affected_rows > 0 ) {
+        return true;
+      } elseif ($this->DB->affected_rows == -1) {
+        return false;
+      } else {
+        return $this->DB->affected_rows;
+      }
     } else {
       if (array_key_exists('error', $this->trans)) {
         $this->trans['error']++;

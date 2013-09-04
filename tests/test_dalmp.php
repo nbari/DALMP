@@ -126,11 +126,24 @@ class test_dalmp extends PHPUnit_Framework_TestCase {
     $this->assertEquals(json_decode($this->expected, true), $rs);
   }
 
-  public function testExecute() {
+  public function testExecuteDropCreate() {
     $rs = $this->db->Execute('DROP TABLE IF EXISTS `tests`');
-    $this->assertTrue($rs);
+    $this->assertTrue(($rs !== false) ? true : false);
+    $this->assertEquals($rs, 0);
     $rs = $this->db->Execute('CREATE TABLE `tests` (id INT(11) unsigned NOT NULL AUTO_INCREMENT, col1 varchar(255), col2 varchar(255), col3 varchar(255), PRIMARY KEY (id))');
-    $this->assertTrue($rs);
+    $this->assertTrue(($rs !== false) ? true : false);
+    $this->assertEquals($rs, 0);
+    $this->assertEquals($this->db->getnumOfRows(), $this->db->getnumOfRowsAffected());
+  }
+
+  public function testPExecuteDropCreate() {
+    $rs = $this->db->PExecute('DROP TABLE IF EXISTS `tests`');
+    $this->assertTrue(($rs !== false) ? true : false);
+    $this->assertEquals($rs, 0);
+    $rs = $this->db->PExecute('CREATE TABLE `tests` (id INT(11) unsigned NOT NULL AUTO_INCREMENT, col1 varchar(255), col2 varchar(255), col3 varchar(255), PRIMARY KEY (id))');
+    $this->assertTrue(($rs !== false) ? true : false);
+    $this->assertEquals($rs, 0);
+    $this->assertEquals($this->db->getnumOfRows(), $this->db->getnumOfRowsAffected());
   }
 
   public function testAutoExecute() {
@@ -142,6 +155,7 @@ class test_dalmp extends PHPUnit_Framework_TestCase {
     $this->assertTrue($rs);
     $rs = $this->db->FetchMode('ASSOC')->GetAll('SELECT * FROM tests');
     $this->assertEquals($rs, array(array('id' => 1, 'col1' => 7, 'col2' => 2, 'col3' => 3)));
+    $this->assertEquals($this->db->getnumOfRows(), $this->db->getnumOfRowsAffected());
   }
 
   public function testMultipleInsert() {
@@ -160,6 +174,29 @@ class test_dalmp extends PHPUnit_Framework_TestCase {
     }
     $uuids = array_unique($uuids);
     $this->assertEquals(count($uuids), 10000);
+  }
+
+  public function testUpdate() {
+    $rs = $this->db->PExecute('UPDATE tests SET col1=? WHERE id=1', 7);
+    $this->assertEquals($rs, 0);
+    $rs = $this->db->Execute('UPDATE tests SET col1=7 WHERE id=1');
+    $this->assertEquals($rs, 0);
+    $this->assertEquals($this->db->getnumOfRows(), $this->db->getnumOfRowsAffected());
+  }
+
+  public function testExecuteQuery() {
+    $continent = $this->db->qstr('Africa');
+    $rs = $this->db->Execute("SELECT * From Country WHERE Continent = '$continent'");
+    $this->assertTrue($rs);
+    $this->assertEquals($this->db->getnumOfRows(), 58);
+    $this->assertEquals($this->db->getnumOfRowsAffected(), 58);
+  }
+
+  public function testPExecuteQuery() {
+    $rs = $this->db->PExecute('SELECT * From Country WHERE Continent = ?', 'Africa');
+    $this->assertTrue($rs);
+    $this->assertEquals($this->db->getnumOfRows(), 58);
+    $this->assertEquals($this->db->getnumOfRowsAffected(), 58);
   }
 
 }
