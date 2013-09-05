@@ -431,8 +431,6 @@ class Database {
       if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__, 'ERROR', "sql: $sql  params: ", $params, " Errorcode:" . $this->DB->errno);
 
       throw new \ErrorException(__METHOD__ . 'ERROR -> ' . $this->DB->error . " - sql: $sql with params: " . json_encode($params));
-
-      return false;
     }
   }
 
@@ -686,7 +684,6 @@ class Database {
       }
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', "sql: $sql Errorcode: " . $this->DB->errno);
       throw new \ErrorException(__METHOD__ . ' ERROR -> ' . $this->DB->error . " - sql: $sql");
-      return false;
     }
   }
 
