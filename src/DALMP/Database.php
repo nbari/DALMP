@@ -396,33 +396,31 @@ class Database {
      */
     if ($this->_stmt->execute()) {
       $this->_stmt->store_result();
-      $this->numOfRows = $this->_stmt->num_rows;
-      $this->numOfFields = $this->_stmt->field_count;
+      if (is_object($this->_stmt->result_metadata())) {
+        $this->numOfRows = $this->_stmt->num_rows;
+        $this->numOfFields = $this->_stmt->field_count;
+        if (!$this->_stmt->num_rows) {
+          return false;
+        }
+      }
+
       $this->numOfRowsAffected = $this->_stmt->affected_rows;
-      // for SELECT
-      if ($this->_stmt->num_rows > 0) {
-        return true;
-      }
 
       /**
-       * Get the number of rows affected by INSERT, UPDATE, or DELETE query.
-       * -1 indicates that the query has returned an error.
-       */
-      if ($this->_stmt->affected_rows == -1) {
-        return false;
-      }
-
-      /**
-       * Zero indicates that no records where updated for an UPDATE/DELETE
-       * statement, no rows matched the WHERE clause in the query or that no
-       * query has yet been executed.
-       * if ($rs !== false) { query ok and records updated }
+       * An integer greater than zero indicates the number of rows affected
+       * or retrieved. Zero indicates that no records where updated for an
+       * UPDATE/DELETE statement, no rows matched the WHERE clause in the query
+       * or that no query has yet been executed. -1 indicates that the query has
+       * returned an error. NULL indicates an invalid argument was supplied to the
+       * function.
        */
       if ($this->_stmt->affected_rows > 0) {
         return true;
+      } elseif ($this->_stmt->affected_rows == -1) {
+        return false;
+      } else {
+        return $this->_stmt->affected_rows;
       }
-
-      return $this->_stmt->affected_rows;
     } else {
       if (array_key_exists('error', $this->trans)) {
         $this->trans['error']++;

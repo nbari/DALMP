@@ -190,6 +190,8 @@ class test_dalmp extends PHPUnit_Framework_TestCase {
     $this->assertTrue($rs);
     $this->assertEquals($this->db->getnumOfRows(), 58);
     $this->assertEquals($this->db->getnumOfRowsAffected(), 58);
+    $rs = $this->db->Execute("SELECT * From Country WHERE Continent = 'naranjas'");
+    $this->assertFalse($rs);
   }
 
   public function testPExecuteQuery() {
@@ -197,6 +199,8 @@ class test_dalmp extends PHPUnit_Framework_TestCase {
     $this->assertTrue($rs);
     $this->assertEquals($this->db->getnumOfRows(), 58);
     $this->assertEquals($this->db->getnumOfRowsAffected(), 58);
+    $rs = $this->db->PExecute('SELECT * From Country WHERE Continent = ?', 'naranjas');
+    $this->assertFalse($rs);
   }
 
 }
