@@ -89,11 +89,11 @@ class Logger {
     $args = func_get_args();
     $key = array_shift($args);
     if (is_object($key)) {
-      $key = get_class($key);
+      $key = json_encode(array(get_class($key), get_object_vars($key), get_class_methods($key)));
     }
     $method = is_array(reset($args)) ? json_encode(array_shift($args)) : array_shift($args);
     if (is_object($method)) {
-      $method = get_class($method);
+      $method = json_encode(array(get_class($method), get_object_vars($method), get_class_methods($method)));
     }
     $log = empty($args) ? (empty($method) ? "[$key]" : "[$key - $method]") : "[$key - $method] -> " . json_encode($args);
     $etime = number_format(microtime(true) - $this->time_start, $this->decimals);

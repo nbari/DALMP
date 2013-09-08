@@ -23,7 +23,7 @@ $disk = new DALMP\Cache(new DALMP\Cache\Disk());
 /**
  * database instance
  */
-$db = new DALMP\Database('utf8://root:mysql@127.0.0.1:3306/dalmp');
+$db = new DALMP\Database('utf8://root@127.0.0.1:3306/dalmp');
 $sql = 'SELECT * FROM Country LIMIT 2';
 
 /**
@@ -40,11 +40,11 @@ echo count($rs),PHP_EOL;
 /**
  * Cache for 5 minutes with key: mykey using redis cache
  */
+$db->debug();
 $db->useCache($redis);
 $rs = $db->CacheGetAll(300, $sql, 'mykey');
 $timer->setMark('redis');
 echo count($rs),PHP_EOL;
-$db->debug();
 $rs = $db->CacheGetAll(300, $sql, 'mykey');
 $db->debug('off');
 $timer->setMark('redis2');
