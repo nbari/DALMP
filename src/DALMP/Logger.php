@@ -88,7 +88,13 @@ class Logger {
   public function log() {
     $args = func_get_args();
     $key = array_shift($args);
+    if (is_object($key)) {
+      $key = get_class($key);
+    }
     $method = is_array(reset($args)) ? json_encode(array_shift($args)) : array_shift($args);
+    if (is_object($method)) {
+      $method = get_class($method);
+    }
     $log = empty($args) ? (empty($method) ? "[$key]" : "[$key - $method]") : "[$key - $method] -> " . json_encode($args);
     $etime = number_format(microtime(true) - $this->time_start, $this->decimals);
     $this->log[][$etime] = $log;

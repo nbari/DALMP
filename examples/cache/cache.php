@@ -1,57 +1,86 @@
 <?php
 
-require_once '../mplt.php';
-$timer = new mplt();
-require_once '../dalmp.php';
-# -----------------------------------------------------------------------------------------------------------------
+require_once '../../MPLT.php';
+$timer = new MPLT();
+require_once '../../src/dalmp.php';
+# ------------------------------------------------------------------------------
 
 /**
- * define the cache on the DSN query: type:host:port:compression
- * example:
- * redis/memcache on localhost
- * ?redis
- *
- * redis server on host 192.168.1.1 on port 777
- * ?redis:192.168.1.1:777
- *
- * memcache server on host 192.168.1.1 default port and with compression
- * ?memcache:192.168.1.1::1
- *
+ * memcache cache instance
  */
-
-# DSN with memcache on host 127.0.0.1, port 11211 and compression enabled
-$db = new DALMP('utf8://root:'.rawurlencode('pass-?/:word').'@mysql2.localbox.org:3306/dalmptest?memcache:127.0.0.1:11211:1');
-$db->debug();
-$sql = 'SELECT * FROM Country';
+$memcache = new DALMP\Cache(new DALMP\Cache\Memcache());
 
 /**
- * Cache for 5 minutes with key: mykey
+ * redis cache instance
  */
+$redis = new DALMP\Cache(new DALMP\Cache\Redis());
+
+/**
+ * disk cache instance
+ */
+$disk = new DALMP\Cache(new DALMP\Cache\Disk());
+
+/**
+ * database instance
+ */
+$db = new DALMP\Database('utf8://root:mysql@127.0.0.1:3306/dalmp');
+$sql = 'SELECT * FROM Country LIMIT 2';
+
+/**
+ * Cache for 5 minutes with key: mykey using memcache cache
+ */
+$db->useCache($memcache);
 $rs = $db->CacheGetAll(300, $sql, 'mykey');
+$timer->setMark('memcache');
+echo count($rs),PHP_EOL;
+$rs = $db->CacheGetAll(300, $sql, 'mykey');
+$timer->setMark('memcache2');
 echo count($rs),PHP_EOL;
 
 /**
- * flush the query $sql with key
+ * Cache for 5 minutes with key: mykey using redis cache
+ */
+$db->useCache($redis);
+$rs = $db->CacheGetAll(300, $sql, 'mykey');
+$timer->setMark('redis');
+echo count($rs),PHP_EOL;
+$db->debug();
+$rs = $db->CacheGetAll(300, $sql, 'mykey');
+$db->debug('off');
+$timer->setMark('redis2');
+echo count($rs),PHP_EOL;
+
+/**
+ * Cache for 5 minutes with key: mykey using disk cache
+ */
+$db->useCache($disk);
+$rs = $db->CacheGetAll(300, $sql, 'mykey');
+$timer->setMark('disk');
+echo count($rs),PHP_EOL;
+$rs = $db->CacheGetAll(300, $sql, 'mykey');
+$timer->setMark('disk2');
+echo count($rs),PHP_EOL;
+
+/**
+ * flush the query $sql with key on DISK cache instance
  */
 $db->CacheFlush($sql, 'mykey');
 
 /**
- * flush all the cache
+ * flush the query $sql with key only on Redis cache instance
  */
-#$db->CacheFlush();
-
-# using REDIS
-$db->Cache('redis');
-#$db->Cache('redis')->port(777) // redis on diferent port
-
-$sql = 'SELECT * FROM Country';
+$db->useCache($redis);
+$db->CacheFlush($sql, 'mykey');
 
 /**
- * Cache for 5 minutes with key: mykey
+ * flush all the cache in all instances
  */
-$rs = $db->CacheGetAll(300, $sql);
-echo count($rs),PHP_EOL;
-$db->CacheFlush('memcache');
+foreach (array('memcache', 'redis', 'disk') as $val) {
+  $db->useCache(${$val});
+  $db->CacheFlush($sql, 'mykey');
+}
 
 # -----------------------------------------------------------------------------------------------------------------
+echo PHP_EOL, str_repeat('-', 80), PHP_EOL;
+$timer->printMarks();
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;

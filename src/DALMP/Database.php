@@ -187,11 +187,18 @@ class Database {
    * @param mixed $debugFile
    */
   public function debug($log2file = false, $debugFile = false) {
-    $debugFile = $debugFile ?: (defined('DALMP_DEBUG_FILE') ? DALMP_DEBUG_FILE : '/tmp/dalmp.log');
-    $this->debug = new Logger($log2file, $debugFile);
-    $this->debug->log('DSN', $this->dsn);
-    if ($this->isConnected()) {
-      $this->debug->log('DALMP', mysqli_get_host_info($this->DB), 'protocol version: ' . mysqli_get_proto_info($this->DB), 'character set: ' . mysqli_character_set_name($this->DB));
+    if ($log2file == 'off') {
+      if (is_object($this->debug)) {
+        $this->debug->getLog();
+        $this->debug = false;
+      }
+    } else {
+      $debugFile = $debugFile ?: (defined('DALMP_DEBUG_FILE') ? DALMP_DEBUG_FILE : '/tmp/dalmp.log');
+      $this->debug = new Logger($log2file, $debugFile);
+      $this->debug->log('DSN', $this->dsn);
+      if ($this->isConnected()) {
+        $this->debug->log('DALMP', mysqli_get_host_info($this->DB), 'protocol version: ' . mysqli_get_proto_info($this->DB), 'character set: ' . mysqli_character_set_name($this->DB));
+      }
     }
     return;
   }
@@ -669,7 +676,7 @@ class Database {
        * statement, no rows matched the WHERE clause in the query or that no query
        * has yet been executed. -1 indicates that the query returned an error.
        */
-      if ($this->DB->affected_rows > 0 ) {
+      if ($this->DB->affected_rows > 0) {
         return true;
       } elseif ($this->DB->affected_rows == -1) {
         return false;
@@ -1000,11 +1007,17 @@ class Database {
   /**
    * general method for caching
    *
-   * args: $method, $expire, $sql, $key, $group
-   * @access protected;
+   * @param string $fetch_method
+   * @param int $expire
+   * @param string $sql
+   * @param string $key
+   * @param string $group
+   * @return boolean;
    */
   protected function _Cache() {
     $args = func_get_args();
+
+    if ($this->debug) $this->debug->log(__METHOD__, 'Args', $args);
 
     $fetch = array_shift($args);
     $expire = (int) (reset($args)) ? array_shift($args) : 3600;
@@ -1021,13 +1034,12 @@ class Database {
     $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
     $hkey = sha1($skey . $sql . $key);
 
-    if ($this->debug) $this->debug->log('Cache - GET', "method: $fetch expire: $expire sql: [ $sql ] key: $key group: $group hkey: $hkey");
+    if ($this->debug) $this->debug->log(__METHOD__, 'Parsed Args', array('fetch method' => $fetch, 'expire' => $expire, 'sql' => $sql, 'key' => $key, 'group' => $group), array('Cache key' => $hkey));
 
     if ($this->cache instanceof Cache && $cache = $this->cache->get($hkey)) {
       return $cache;
     } else {
       switch ($fetch) {
-      case 'execute':
       case 'all':
         $cache = $this->getAll($sql);
         break;
@@ -1051,7 +1063,7 @@ class Database {
         trigger_error('Cache instance not defined, use the method useCache($cache) to set a cache engine.', E_USER_WARNING);
       }
 
-      if ($this->debug) $this->debug->log('Cache - SET', "method: $fetch expire: $expire sql: [ $sql ] key: $key group: $group hkey: $hkey");
+      if ($this->debug) $this->debug->log(__METHOD__, 'Set', array('key' => $hkey, 'expire' => $expire, 'group' => $group));
 
       return $cache;
     }
@@ -1060,10 +1072,17 @@ class Database {
   /**
    * method for caching prepared statements
    *
-   * @access protected
+   * @param string $fetch_method
+   * @param int $expire
+   * @param string $sql
+   * @param string $key
+   * @param string $group
+   * @return boolean;
    */
   protected function _CacheP() {
     $args = func_get_args();
+
+    if ($this->debug) $this->debug->log(__METHOD__, 'Args', $args);
 
     $fetch = array_shift($args);
     $expire = (int) (reset($args)) ? array_shift($args) : 3600;
@@ -1100,13 +1119,11 @@ class Database {
     $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
     $hkey = sha1($skey . $sql . $key);
 
-    if ($this->debug) $this->debug->log('Cache - GET', "PreparedStatements method: $fetch expire: $expire, sql: $sql params: " . implode('|', $params) . " key: $key group: $group");
+    if ($this->debug) $this->debug->log(__METHOD__, 'Parsed Args', array('fetch method' => $fetch, 'expire' => $expire, 'sql' => $sql, 'key' => $key, 'group' => $group), array('Cache key' => $hkey));
 
     if ($this->cache instanceof Cache && $cache = $this->cache->Get($hkey)) {
       return $cache;
     } else {
-      if ($this->debug) $this->debug->log('Cache', __METHOD__, 'PreparedStatements no cache returned, executing query PExecute with args: ', $args);
-
       $nargs = array();
       foreach (array_keys($args) as $akey) {
         if (!is_int($akey)) {
@@ -1124,7 +1141,7 @@ class Database {
         trigger_error('Cache instance not defined, use the method useCache($cache) to set a cache engine.', E_USER_WARNING);
       }
 
-      if ($this->debug) $this->debug->log('Cache - SET', "method: $fetch expire: $expire sql: [ $sql ] key: $key group: $group hkey: $hkey");
+      if ($this->debug) $this->debug->log(__METHOD__, 'Set', array('key' => $hkey, 'expire' => $expire, 'group' => $group));
 
       return $cache;
     }
@@ -1171,14 +1188,15 @@ class Database {
   /**
    * Cache flush
    *
-   * @param SQL $sql, cache group or null
+   * @param string $sql, SQL, cache group or null
+   * @param string $key
+   * @return boolean
    */
   public function CacheFlush($sql = null, $key = null) {
     if (is_null($sql)) {
+      if ($this->debug) $this->debug->log(__METHOD__, 'Flushing all cache');
       return $this->cache->Flush();
     }
-
-    if ($this->debug) $this->debug->log(__METHOD__, "flush: $sql, key: $key");
 
     $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
     $hkey = sha1($skey . $sql . $key);
@@ -1187,10 +1205,13 @@ class Database {
       $gkey = sha1($skey . $sql);
       $group = $this->cache->get($gkey);
       $group = is_array($group) ? $group : array();
+      if ($this->debug) $this->debug->log(__METHOD__, 'group', array('group' => $sql, 'Cache group key' => $gkey));
       foreach ($group as $key => $timeout) {
         $this->cache->Delete($key);
       }
     }
+
+    if ($this->debug) $this->debug->log(__METHOD__, 'Delete', array('sql' => $sql, 'key' => $hkey));
 
     return $this->cache->Delete($hkey);
   }
@@ -1229,7 +1250,7 @@ class Database {
   }
 
   /**
-   * Universally Unique Identifier
+   * Universally Unique Identifier v4
    *
    * @param int $b
    * @return UUID, if $b returns binary(16)
@@ -1237,7 +1258,7 @@ class Database {
   public static function UUID($b=null) {
     if (function_exists('uuid_create')) {
       $uuid = uuid_create();
-    } else { // creates a UUID v4
+    } else {
       $uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
         mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
         mt_rand(0, 0x0fff) | 0x4000,

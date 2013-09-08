@@ -1,28 +1,34 @@
 <?php
-require_once '../mplt.php';
-$timer = new mplt();
-require_once '../dalmp.php';
+require_once '../../MPLT.php';
+$timer = new MPLT();
+require_once '../../src/dalmp.php';
 # -----------------------------------------------------------------------------------------------------------------
 
-$db = new DALMP('utf8://root:'.rawurlencode('pass-?/:word').'@mysql2.localbox.org:3306/dalmptest?redis:127.0.0.1:6379');
+$password = 'mysql';
+$db = new DALMP\Database('utf8://root:'.rawurlencode($password).'@127.0.0.1:3306/dalmp');
 
 /**
  *  load zone files to mysql
  *  mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
  */
-$db->PExecute('SET time_zone=?','UTC');
+$db->PExecute('SET time_zone=?','+00:00');
 
 $db->FetchMode('ASSOC');
 
-$sql = 'SELECT Name, Continent FROM Country WHERE Population > ? AND Code LIKE ?';
-$rs = $db->PGetAll($sql, 1000000, '%P%');
+$sql = 'SELECT Name, Continent FROM Country WHERE Population > ? AND Code LIKE ? LIMIT ?';
+$rs = $db->PGetAll($sql, 10000000, '%P%', 2);
 
 print_r($rs);
+
+$rs = $db->Execute('DROP TABLE IF EXISTS `tests`');
+$rs = $db->Execute('CREATE TABLE `tests` (id INT(11) unsigned NOT NULL AUTO_INCREMENT, col1 varchar(255), col2 varchar(255), col3 varchar(255), status iNT(1), PRIMARY KEY (id))');
+$rs = $db->AutoExecute('tests', array('col1' => 'ai eu', 'col2' => 2, 'status' => false));
+
 /**
  * status value is 0 or 1 on table
  * NOTICE the use of ===
  */
-$sql = 'SELECT status FROM test WHERE id=?';
+$sql = 'SELECT status FROM tests WHERE id=?';
 $rs = $db->PgetOne($sql, 3);
 if ($rs === false) {
 	echo "no result".$db->isCli(1);
@@ -37,9 +43,9 @@ if ($rs === false) {
  * helpful in cases where searching float values stored on varchar fields
  * $db->PGetAll($sql, array('s' => 99.3, 1));
  */
-$sql = 'SELECT * FROM test WHERE id=? AND colB=?';
+$sql = 'SELECT * FROM tests WHERE id=? AND col1=?';
 $rs = $db->PGetAll($sql, array(3, 's' => 'string'));
-#print_r($rs);
+var_dump($rs);
 
 /**
  * using the Prepare method,
@@ -51,28 +57,31 @@ $rs = $db->PGetAll($sql, array(3, 's' => 'string'));
 $X = 3;
 $id = 1;
 $db->Prepare($id);
-$sql = 'SELECT * FROM test WHERE id=? ';
+$sql = 'SELECT * FROM tests WHERE id=? ';
 if ($X == 3) {
 	$db->Prepare($X);
 	$sql .= 'AND id !=? ';
 }
-$db->Prepare('s', 'colb');
-$sql .= 'AND colB=?';
+$db->Prepare('s', 'ai eu');
+$sql .= 'AND col1=?';
 
 /**
  * this will produce a query like:
- * "sql: SELECT * FROM test WHERE id=? AND id !=? AND colB=?" with params = ["iis",1,3,"colb"]
+ * "sql: SELECT * FROM tests WHERE id=? AND id !=? AND col1=?" with params = ["iis",1,3,"ai eu"]
  */
 
+echo "sql: $sql" , PHP_EOL;
+echo 'Args: ', PHP_EOL;
+print_r($db->Prepare());
+
 $rs = $db->PgetAll($sql, $db->Prepare());
-print_r($rs);
+echo 'Result: ', print_r($rs), PHP_EOL;
 
 /**
  * insert and get last_insert_id
  */
-
-$db->PExecute('INSERT INTO test (colA, colB) VALUES(?,?)', rand(), rand());
-echo $db->Insert_Id();
+$db->PExecute('INSERT INTO tests (col1, col2) VALUES(?,?)', rand(), rand());
+echo 'Last insert ID: ', $db->Insert_Id();
 
 # -----------------------------------------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;

@@ -1,10 +1,10 @@
 <?php
 
-require_once '../src/dalmp.php';
+require_once '../../src/dalmp.php';
 
 $di = new DALMP\DI();
 
-$ok = $di->database('utf8://root@localhost:3306/dalmp');
+$ok = $di->database('utf8://root:mysql@localhost:3306/dalmp');
 $ok->debug(True);
 
 $now = $ok->getOne('SELECT NOW()');

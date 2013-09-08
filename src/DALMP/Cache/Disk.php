@@ -104,7 +104,7 @@ class Disk implements CacheInterface {
   public function Delete($key){
     $key = sha1($key);
     $cache_file = sprintf('%s/%s/%s/%s/%s', $this->cache_dir, substr($key, 0, 2), substr($key, 2, 2),  substr($key, 4, 2), "dalmp_{$key}.cache");
-    return unlink($cache_file);
+    return file_exists($cache_file) ? unlink($cache_file) : true;
   }
 
   /**

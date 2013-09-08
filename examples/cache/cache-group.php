@@ -4,7 +4,8 @@ $timer = new MPLT();
 require_once '../../src/dalmp.php';
 # -----------------------------------------------------------------------------------------------------------------
 
-$db = new DALMP\Database('utf8://root@127.0.0.1/dalmp');
+$password = 'mysql';
+$db = new DALMP\Database('utf8://root:'.rawurldecode($password).'@127.0.0.1/dalmp');
 
 /**
  * use redis as cache engine

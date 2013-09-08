@@ -1,8 +1,8 @@
 <?php
 // Measure Page Load Time
-require_once '../mplt.php';
-$timer = new mplt();
-# -----------------------------------------------------------------------------------------------------------------
+require_once '../../MPLT.php';
+$timer = new MPLT();
+# ------------------------------------------------------------------------------
 
 /**
  *
@@ -10,11 +10,11 @@ $timer = new mplt();
  *
  * The DSN format is:
  *
- * charset://username:password@host:port/database?cache:host:port:compression
+ * charset://username:password@host:port/database
  *
  * or if using socket:
  *
- * charset://username:password@unix_socket=\path\of\the.socket/database?cname
+ * charset://username:password@unix_socket=\path\of\the.socket/database
  *
  * Notice that the path of the socket is using backslashes.
  *
@@ -23,26 +23,12 @@ $timer = new mplt();
  * If you want to use your system default charset, use 'mysql' as the charset.
  *
  * see bellow some examples.
- *
- * -----------------------------------------------------------------------------------------------------------------
- *
- * # optional
- * # define('DALMP_CONNECT_TIMEOUT', 10);
- * # define('DALMP_SITE_KEY','dalmp.com');
- * # define('DALMP_SESSIONS_SQLITE_DB','/home/sites/sessions.db');
- * # define('DALMP_SESSIONS_REF', 'UID');
- * # define('DALMP_SESSIONS_KEY', 'mykey');
- * # define('DALMP_QUEUE_DB', '/tmp/queue.db');
- * # define('DALMP_DEBUG_FILE', '/tmp/dalmp/debug.log');
- * # define('DALMP_CACHE_DIR', '/tmp/dalmp/cache/');
- *
- * -----------------------------------------------------------------------------------------------------------------
  */
 
 /**
  * require the DALMP class
  */
-require_once '../dalmp.php';
+require_once '../../src/dalmp.php';
 
 /**
  * example of a simple connection
@@ -54,20 +40,21 @@ require_once '../dalmp.php';
  * database: dalmptest
  *
  */
-$db = new DALMP('mysql://dalmp:password@192.168.1.40/dalmptest');
+$db = new DALMP\Database('mysql://dalmp:password@192.168.1.40/dalmptest');
 try {
   $rs = $db->getOne('SELECT now()');
-} catch (Exception $e) {
+} catch (\Exception $e) {
   print_r($e->getMessage());
 }
 
 /**
  * 1 log to single file
  * 2 log to multiple files (creates a log per request)
+ * 'off' to stop debuging
  */
 $db->debug(1);
 
-echo $db,PHP_EOL; // print connection details
+echo $db, PHP_EOL; // print connection details
 
 /**
  * example of a connection using UTF8 charset
@@ -78,27 +65,24 @@ echo $db,PHP_EOL; // print connection details
  * host: 127.0.0.1
  * port: 3306
  * database: dalmptest
- * cname = db2 (connection name/identifier - useful when connecting to multiple databases)
- *
  */
-$db = new DALMP('utf8://dalmp:password@127.0.0.1:3306/dalmptest');
+$db = new DALMP\Database('utf8://dalmp:password@127.0.0.1:3306/dalmptest');
 try {
   $db->getOne('SELECT now()');
-} catch (Exception $e) {
+} catch (\Exception $e) {
   print_r($e->getMessage());
 }
 
-echo $db,PHP_EOL; // will print: DALMP :: connected to: db2, Character set: utf8, 127.0.0.1 via TCP/IP, Server version: ...
+echo PHP_EOL, $db, PHP_EOL; // will print: DALMP :: connected to: db2, Character set: utf8, 127.0.0.1 via TCP/IP, Server version: ...
 
 /**
  * example using SSL (OpenSSL support must be enabled for this to work)
  *
  * charset: latin1
- * user: dalmp
- * password: password
+ * user: root
+ * password: mysql
  * host: 127.0.0.1
- * database: dalmptest
- * cname = db3
+ * database: dalmp
  *
  * An array containing the SSL parameters must be passed as the second argument to the database method:
  *
@@ -112,44 +96,50 @@ echo $db,PHP_EOL; // will print: DALMP :: connected to: db2, Character set: utf8
  *
  */
 $ssl = array('key' => null, 'cert' => null, 'ca' => 'mysql-ssl.ca-cert.pem', 'capath' => null, 'cipher' => null);
-$db = new DALMP('latin1://dalmp:password@127.0.0.1/dalmptest', $ssl);
+$db = new DALMP\Database('latin1://root:mysql@127.0.0.1/dalmp', $ssl);
+
 try {
-  $db->getOne('SELECT now()');
-} catch (Exception $e) {
+  $db->getOne('SELECT NOW()');
+  print_r($db->FetchMode('ASSOC')->GetRow("show variables like 'have_ssl'"));
+} catch (\Exception $e) {
   print_r($e->getMessage());
 }
 
-print_r($db->FetchMode('ASSOC')->GetRow("show variables like 'have_ssl'"));
+
 /**
  * If you have SSL will get something like:
 Array
 (
-    [Variable_name] => have_ssl
-    [Value] => YES
+  [Variable_name] => have_ssl
+  [Value] => YES
 )
- * otherwise
- *
+* otherwise
+*
 Array
 (
-    [Variable_name] => have_ssl
-    [Value] => DISABLED
+  [Variable_name] => have_ssl
+  [Value] => DISABLED
 )
  */
 
-print_r($db->GetRow("show status like 'ssl_cipher'"));
+try {
+  print_r($db->GetRow("show status like 'ssl_cipher'"));
+} catch (\Exception $e) {
+  print_r($e->getMessage());
+}
 
 /**
  * IF SSL working you should see something similar to this:
 Array
 (
-    [Variable_name] => Ssl_cipher
-    [Value] => DHE-RSA-AES256-SHA
+  [Variable_name] => Ssl_cipher
+  [Value] => DHE-RSA-AES256-SHA
 )
- * otherwise
+* otherwise
 Array
 (
-    [Variable_name] => Ssl_cipher
-    [Value] =>
+  [Variable_name] => Ssl_cipher
+  [Value] =>
 )
  */
 
@@ -157,18 +147,16 @@ Array
  * example using a socket for the connection
  *
  * charset: utf8
- * user: dalmp
- * password: password
+ * user: root
+ * password: mysql
  * socket path: /tmp/mysql.sock
- * database: dalmptest
- * cname = db4
- *
+ * database: dalmp
  */
-$db = new DALMP('utf8://dalmp:password@unix_socket=\tmp\mysql.sock/dalmptest');
+$db = new DALMP\Database('utf8://root:mysql@unix_socket=\tmp\mysql.sock/dalmp');
 $db->debug(1);
 try {
-  $db->getOne('SELECT now()');
-} catch (Exception $e) {
+  echo PHP_EOL, 'example using unix_socket: ', $db->getOne('SELECT NOW()'), PHP_EOL;
+} catch (\Exception $e) {
   print_r($e->getMessage());
 }
 

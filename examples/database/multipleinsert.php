@@ -4,7 +4,8 @@ $timer = new MPLT();
 require_once '../../src/dalmp.php';
 # -----------------------------------------------------------------------------------------------------------------
 
-$db = new DALMP\Database('utf8://root@127.0.0.1/dalmp');
+$password = 'mysql';
+$db = new DALMP\Database('utf8://root:'.$password.'@127.0.0.1/dalmp');
 $db->debug();
 
 $values = array(
@@ -15,7 +16,7 @@ $values = array(
   array(null,5,7)
 );
 
-$rs = $db->multipleInsert('test', array('col1', 'col2', 'col3'), $values);
+$rs = $db->multipleInsert('tests', array('col1', 'col2', 'col3'), $values);
 
 var_dump($rs);
 
