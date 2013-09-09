@@ -3,6 +3,8 @@
 require_once '../../MPLT.php';
 $timer = new MPLT();
 # ------------------------------------------------------------------------------
+$user = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASS') ?: '';
 
 /**
  *
@@ -147,12 +149,12 @@ Array
  * example using a socket for the connection
  *
  * charset: utf8
- * user: root
- * password: mysql
+ * user: $user
+ * password: $password
  * socket path: /tmp/mysql.sock
  * database: dalmp
  */
-$db = new DALMP\Database('utf8://root:mysql@unix_socket=\tmp\mysql.sock/dalmp');
+$db = new DALMP\Database("utf8://$user:$password".'@unix_socket=\tmp\mysql.sock/dalmp');
 $db->debug(1);
 try {
   echo PHP_EOL, 'example using unix_socket: ', $db->getOne('SELECT NOW()'), PHP_EOL;

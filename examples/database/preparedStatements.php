@@ -2,10 +2,14 @@
 require_once '../../MPLT.php';
 $timer = new MPLT();
 require_once '../../src/dalmp.php';
-# -----------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-$password = 'mysql';
-$db = new DALMP\Database('utf8://root:'.rawurlencode($password).'@127.0.0.1:3306/dalmp');
+$user = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASS') ?: '';
+$host = getenv('MYSQL_HOST') ?: '127.0.0.1';
+$port = getenv('MYSQL_HOST') ?: '3306';
+
+$db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
 
 /**
  *  load zone files to mysql
@@ -22,7 +26,7 @@ print_r($rs);
 
 $rs = $db->Execute('DROP TABLE IF EXISTS `tests`');
 $rs = $db->Execute('CREATE TABLE `tests` (id INT(11) unsigned NOT NULL AUTO_INCREMENT, col1 varchar(255), col2 varchar(255), col3 varchar(255), status iNT(1), PRIMARY KEY (id))');
-$rs = $db->AutoExecute('tests', array('col1' => 'ai eu', 'col2' => 2, 'status' => false));
+$rs = $db->AutoExecute('tests', array('col1' => 'ai eu', 'col2' => 2, 'status' => 0));
 
 /**
  * status value is 0 or 1 on table
@@ -83,5 +87,5 @@ echo 'Result: ', print_r($rs), PHP_EOL;
 $db->PExecute('INSERT INTO tests (col1, col2) VALUES(?,?)', rand(), rand());
 echo 'Last insert ID: ', $db->Insert_Id();
 
-# -----------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;

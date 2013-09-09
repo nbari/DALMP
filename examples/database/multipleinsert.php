@@ -2,10 +2,14 @@
 require_once '../../MPLT.php';
 $timer = new MPLT();
 require_once '../../src/dalmp.php';
-# -----------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-$password = 'mysql';
-$db = new DALMP\Database('utf8://root:'.$password.'@127.0.0.1/dalmp');
+$user = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASS') ?: '';
+$host = getenv('MYSQL_HOST') ?: '127.0.0.1';
+$port = getenv('MYSQL_HOST') ?: '3306';
+
+$db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
 $db->debug();
 
 $values = array(
@@ -20,5 +24,5 @@ $rs = $db->multipleInsert('tests', array('col1', 'col2', 'col3'), $values);
 
 var_dump($rs);
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 echo PHP_EOL, str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;

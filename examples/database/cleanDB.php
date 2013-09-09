@@ -1,10 +1,15 @@
 <?php
-require_once '../mplt.php';
-$timer = new mplt();
-require_once '../dalmp.php';
-# -----------------------------------------------------------------------------------------------------------------
+require_once '../../MPLT.php';
+$timer = new MPLT();
+require_once '../../src/dalmp.php';
+# ------------------------------------------------------------------------------
 
-$db = new DALMP('utf8://root:'.rawurlencode('pass-?/:word').'@mysql2.localbox.org:3306/dalmptest');
+$user = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASS') ?: '';
+$host = getenv('MYSQL_HOST') ?: '127.0.0.1';
+$port = getenv('MYSQL_HOST') ?: '3306';
+
+$db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
 
 foreach ($db->GetCol('SHOW TABLES') as $table) {
   $rs = $db->Execute("OPTIMIZE TABLE $table");
@@ -13,5 +18,5 @@ foreach ($db->GetCol('SHOW TABLES') as $table) {
   echo "repairing $table: $rs",PHP_EOL;
 }
 
-# -----------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;

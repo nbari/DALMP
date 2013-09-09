@@ -4,7 +4,12 @@ $timer = new MPLT();
 require_once '../../src/dalmp.php';
 # ------------------------------------------------------------------------------
 
-$db = new DALMP\Database('utf8://root:'.rawurlencode('mysql').'@127.0.0.1:3306/dalmp');
+$user = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASS') ?: '';
+$host = getenv('MYSQL_HOST') ?: '127.0.0.1';
+$port = getenv('MYSQL_HOST') ?: '3306';
+
+$db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
 
 /**
  * CSV - export to comma separated values.

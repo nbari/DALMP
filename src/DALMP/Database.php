@@ -876,13 +876,13 @@ class Database {
    */
   public function StartTrans() {
     if (empty($this->trans)) {
-      if ($this->debug) $this->debug->log('transactions', __METHOD__);
+      if ($this->debug) $this->debug->log('transactions', __METHOD__, $this->trans);
       $this->trans = array('level' => 0, 'error' => 0);
       return $this->Execute('BEGIN');
     } else {
       $this->trans['level']++;
-      if ($this->debug) $this->debug->log('transactions', __METHOD__, 'transaction level: ' . $this->trans['level']);
-      return $this->Execute('SAVEPOINT level' . $this->trans['level']);
+      if ($this->debug) $this->debug->log('transactions', __METHOD__, array('transaction level' => $this->trans['level']));
+      return $this->Execute(sprintf('SAVEPOINT level%d', $this->trans['level']));
     }
   }
 
@@ -892,14 +892,14 @@ class Database {
    * @return boolean
    */
   public function CompleteTrans() {
-    if ($this->debug) $this->debug->log('transactions', __METHOD__);
+    if ($this->debug) $this->debug->log('transactions', __METHOD__, $this->trans);
     if (empty($this->trans)) {
       return false;
     } else {
       if ($this->trans['error'] > 0) {
-        if ($this->debug) $this->debug->log('transactions', __METHOD__, 'ERROR', 'error in level: ' . $this->trans['level']);
+        if ($this->debug) $this->debug->log('transactions', __METHOD__, 'ERROR', array('error in level' => $this->trans['level']));
         if ($this->trans['level'] > 0) {
-          $this->Execute('ROLLBACK TO SAVEPOINT level' . $this->trans['level']);
+          $this->Execute(sprintf('ROLLBACK TO SAVEPOINT level%d', $this->trans['level']));
           $this->trans['level']--;
         } else {
           $this->Execute('ROLLBACK');
@@ -910,7 +910,7 @@ class Database {
         $this->trans = array();
         return $this->Execute('COMMIT');
       } else {
-        $rs = $this->Execute('RELEASE SAVEPOINT level' . $this->trans['level']);
+        $rs = $this->Execute(sprintf('RELEASE SAVEPOINT level%d', $this->trans['level']));
         $this->trans['level']--;
         return $rs;
       }
@@ -923,9 +923,9 @@ class Database {
    * @return false if there was an error executing the ROLLBACK.
    */
   public function RollBackTrans() {
-    if ($this->debug) $this->debug->log('transactions', __METHOD__);
+    if ($this->debug) $this->debug->log('transactions', __METHOD__, $this->trans);
     if (isset($this->trans['level']) && $this->trans['level'] > 0) {
-      $rs = $this->Execute('ROLLBACK TO SAVEPOINT level' . $this->trans['level']);
+      $rs = $this->Execute(sprintf('ROLLBACK TO SAVEPOINT level%d', $this->trans['level']));
       $this->trans['level']--;
       return $rs;
     } else {

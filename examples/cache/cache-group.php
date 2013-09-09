@@ -2,10 +2,14 @@
 require_once '../../MPLT.php';
 $timer = new MPLT();
 require_once '../../src/dalmp.php';
-# -----------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-$password = 'mysql';
-$db = new DALMP\Database('utf8://root:'.rawurldecode($password).'@127.0.0.1/dalmp');
+$user = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASS') ?: '';
+$host = getenv('MYSQL_HOST') ?: '127.0.0.1';
+$port = getenv('MYSQL_HOST') ?: '3306';
+
+$db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
 
 /**
  * use redis as cache engine
@@ -55,7 +59,7 @@ echo count($rs), PHP_EOL;
 $timer->setMark('300-3');
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 echo PHP_EOL, str_repeat('-', 80), PHP_EOL;
 $timer->printMarks();
 echo str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;

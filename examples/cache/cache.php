@@ -23,7 +23,12 @@ $disk = new DALMP\Cache(new DALMP\Cache\Disk());
 /**
  * database instance
  */
-$db = new DALMP\Database('utf8://root@127.0.0.1:3306/dalmp');
+$user = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASS') ?: '';
+$host = getenv('MYSQL_HOST') ?: '127.0.0.1';
+$port = getenv('MYSQL_HOST') ?: '3306';
+$db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
+
 $sql = 'SELECT * FROM Country LIMIT 2';
 
 /**
@@ -80,7 +85,7 @@ foreach (array('memcache', 'redis', 'disk') as $val) {
   $db->CacheFlush($sql, 'mykey');
 }
 
-# -----------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 echo PHP_EOL, str_repeat('-', 80), PHP_EOL;
 $timer->printMarks();
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;

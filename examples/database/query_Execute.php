@@ -6,8 +6,12 @@ require_once '../../src/dalmp.php';
 
 $timer->setMark('start');
 
-$password = 'mysql';
-$db = new DALMP\Database('utf8://root:'.rawurlencode($password).'@127.0.0.1:3306/dalmp');
+$user = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASS') ?: '';
+$host = getenv('MYSQL_HOST') ?: '127.0.0.1';
+$port = getenv('MYSQL_HOST') ?: '3306';
+
+$db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
 
 $db->FetchMode('NUM');
 
