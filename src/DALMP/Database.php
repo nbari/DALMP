@@ -227,7 +227,9 @@ class Database {
    */
   public function closeConnection() {
     if ($this->debug) $this->debug->log(__METHOD__);
-    return ($this->isConnected()) && @$this->DB->close();
+    if ($this->isConnected()) $this->DB->close();
+    $this->DB = null;
+    return true;
   }
 
   /**
