@@ -21,6 +21,11 @@ abstract class test_dalmp_cache_base extends PHPUnit_Framework_TestCase {
     $this->assertInstanceOf('Dalmp\Cache', $this->db->cache);
   }
 
+  public function testCacheFlush() {
+    $rs = $this->db->CacheFlush();
+    $this->assertTrue($rs);
+  }
+
   public function testCacheGetAll_0() {
     $rs = $this->db->CacheGetAll(2, "SELECT *, UNIX_TIMESTAMP() AS timestamp,  FLOOR(0 + (RAND() * 1000)) AS rand FROM Country WHERE Continent = 'North America'");
     $this->assertEquals(37, count($rs));
@@ -223,7 +228,7 @@ abstract class test_dalmp_cache_base extends PHPUnit_Framework_TestCase {
     $this->assertNotEquals($rs2, $rs);
   }
 
-  public function testCacheFlush() {
+  public function testCacheFlushEnd() {
     $rs = $this->db->CacheFlush();
     $this->assertTrue($rs);
   }
