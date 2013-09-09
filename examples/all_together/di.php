@@ -4,8 +4,15 @@ require_once '../../src/dalmp.php';
 
 $di = new DALMP\DI();
 
-$ok = $di->database('utf8://root:mysql@localhost:3306/dalmp');
-$ok->debug(True);
+
+$user = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASS') ?: '';
+$host = getenv('MYSQL_HOST') ?: '127.0.0.1';
+$port = getenv('MYSQL_HOST') ?: '3306';
+
+$ok = $di->database("utf8://$user:$password@$host:$port/dalmp");
+echo $ok;
+$ok->debug();
 
 $now = $ok->getOne('SELECT NOW()');
 echo $now,PHP_EOL;

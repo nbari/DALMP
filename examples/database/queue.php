@@ -1,8 +1,13 @@
 <?php
-require_once '../mplt.php';
-$timer = new mplt();
-require_once '../dalmp.php';
-# -----------------------------------------------------------------------------------------------------------------
+error_reporting(-1);
+require_once '../../MPLT.php';
+$timer = new MPLT();
+require_once '../../src/dalmp.php';
+# ------------------------------------------------------------------------------
+$user = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASS') ?: '';
+$host = getenv('MYSQL_HOST') ?: '127.0.0.1';
+$port = getenv('MYSQL_HOST') ?: '3306';
 
 /**
  * path of the queue
@@ -12,7 +17,7 @@ define('DALMP_QUEUE_DB','/tmp/queue.db');
 # optional if you want to encrypt the sqlite db
 #define('DALMP_SQLITE_ENC_KEY', 'na1ujhrjhqev{5#nyxx~oaV9aqrf3kll');
 
-$db = new DALMP('utf8://root@localbox/dalmptest');
+$db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
 
 /**
  * In case something goes wrong, the database is unavailable, fields missing,  etc, you can save 'sql query' and later process it again.
@@ -20,7 +25,7 @@ $db = new DALMP('utf8://root@localbox/dalmptest');
 $sql = "INSERT INTO testX SET colA=(NOW())";
 try {
   $rs = $db->Execute($sql);
-} catch (Exception $e) {
+} catch (\Exception $e) {
   $db->queue($sql, 'my-queue');
 }
 

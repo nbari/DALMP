@@ -148,7 +148,7 @@ class Database {
    * @access protected
    */
   protected function connect() {
-    if ($this->DB instanceof mysqli) {
+    if ($this->isConnected()) {
       if ($this->debug) $this->debug->log(__METHOD__, 'still connected');
       return;
     }
@@ -158,19 +158,29 @@ class Database {
     }
 
     $this->DB = mysqli_init();
-    mysqli_options($this->DB, MYSQLI_OPT_CONNECT_TIMEOUT, defined('DALMP_CONNECT_TIMEOUT') ? DALMP_CONNECT_TIMEOUT : 5);
+
+    if (!$this->DB) {
+      die('mysqli_init failed');
+    }
+
+    if (!$this->DB->options(MYSQLI_OPT_CONNECT_TIMEOUT, defined('DALMP_CONNECT_TIMEOUT') ? DALMP_CONNECT_TIMEOUT : 5)) {
+      throw new \Exception('Setting MYSQLI_OPT_CONNECT_TIMEOUT failed');
+    }
 
     if (defined('DALMP_MYSQLI_INIT_COMMAND')) {
-      mysqli_options($this->DB, MYSQLI_INIT_COMMAND, DALMP_MYSQLI_INIT_COMMAND);
+      if (!$this->DB->options(MYSQLI_INIT_COMMAND, DALMP_MYSQLI_INIT_COMMAND)) {
+        throw new \Exception('Setting MYSQLI_INIT_COMMAND failed');
+      }
     }
 
     if (is_array($this->dsn['ssl'])) {
-      if ($this->debug) $this->debug->log('DSN - SSL', $this->dsn['ssl']);
-      mysqli_ssl_set($this->DB, $this->dsn['ssl']['key'], $this->dsn['ssl']['cert'], $this->dsn['ssl']['ca'], $this->dsn['ssl']['capath'], $this->dsn['ssl']['cipher']);
+      if ($this->debug) $this->debug->log('DSN', 'SSL', $this->dsn['ssl']);
+      $this->DB->ssl_set($this->dsn['ssl']['key'], $this->dsn['ssl']['cert'], $this->dsn['ssl']['ca'], $this->dsn['ssl']['capath'], $this->dsn['ssl']['cipher']);
     }
 
-    $rs = @mysqli_real_connect($this->DB, $this->dsn['host'], $this->dsn['user'], $this->dsn['pass'], $this->dsn['dbName'], $this->dsn['port'], $this->dsn['socket']);
-    if ($rs === false || mysqli_connect_errno()) {
+    if ($this->debug) $this->debug->log(__METHOD__, 'connecting');
+
+    if (!$this->DB->real_connect($this->dsn['host'], $this->dsn['user'], $this->dsn['pass'], $this->dsn['dbName'], $this->dsn['port'], $this->dsn['socket'])) {
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'mysqli connection error');
       throw new \Exception(mysqli_connect_error(), mysqli_connect_errno());
     }
@@ -209,8 +219,7 @@ class Database {
    * @return boolean
    */
   public function isConnected() {
-    if ($this->debug) $this->debug->log(__METHOD__);
-    return (bool) ($this->DB instanceof mysqli);
+    return $this->DB instanceof \mysqli;
   }
 
   /**
@@ -218,7 +227,7 @@ class Database {
    */
   public function closeConnection() {
     if ($this->debug) $this->debug->log(__METHOD__);
-    return ($this->isConnected()) && $this->DB->close();
+    return ($this->isConnected()) && @$this->DB->close();
   }
 
   /**
@@ -226,7 +235,7 @@ class Database {
    */
   public function Close() {
     if ($this->debug) $this->debug->log(__METHOD__);
-    return $this->_rs->close();
+    return ($this->isConnected()) && $this->_rs->close();
   }
 
   /**
@@ -235,8 +244,12 @@ class Database {
    */
   public function PClose() {
     if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__);
-    $this->_stmt->free_result();
-    return $this->_stmt->close();
+    if ($this->isConnected()) {
+      $this->_stmt->free_result();
+      return $this->_stmt->close();
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -1277,7 +1290,7 @@ class Database {
    */
   public static function Queue($data, $queue = 'default') {
     $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : DALMP_DIR.'/dalmp_queue.db';
-    $sdb = new SQLite3($queue_db);
+    $sdb = new \SQLite3($queue_db);
     $sdb->busyTimeout(2000);
 
     if (defined('DALMP_SQLITE_ENC_KEY')) $sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
@@ -1303,7 +1316,7 @@ class Database {
    */
   public static function readQueue($queue = '*', $print = false) {
     $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : DALMP_DIR . '/dalmp_queue.db';
-    $sdb = new SQLite3($queue_db);
+    $sdb = new \SQLite3($queue_db);
 
     if (defined('DALMP_SQLITE_ENC_KEY')) $sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
 
@@ -1312,7 +1325,7 @@ class Database {
     if ($rs) {
       if ($print) {
         while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
-          echo $row['id'] , '|' , $row['queue'] , '|' , base64_decode($row['data']) , '|' , $row['cdate'] , DALMP::isCli(1);
+          echo $row['id'] , '|' , $row['queue'] , '|' , base64_decode($row['data']) , '|' , $row['cdate'] , self::isCli(1);
         }
       } else {
         return $rs;
