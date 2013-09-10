@@ -24,5 +24,7 @@ $rs = $db->multipleInsert('tests', array('col1', 'col2', 'col3'), $values);
 
 var_dump($rs);
 
+print_r($db->FetchMode('ASSOC')->GetALL('SELECT * FROM tests'));
+
 # ------------------------------------------------------------------------------
 echo PHP_EOL, str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;

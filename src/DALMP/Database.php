@@ -119,7 +119,7 @@ class Database {
   public function __construct($dsn = null, $ssl = null) {
     if ($dsn) {
       $dsn = parse_url($dsn);
-      $this->dsn['charset'] = isset($dsn['scheme']) ? (($dsn['scheme'] == 'mysql') ? null : $dsn['scheme']) : null;
+      $this->dsn['charset'] = isset($dsn['scheme']) ? (($dsn['scheme'] == 'mysql') ? null : $dsn['scheme']) : 'utf8';
       if (isset($dsn['host'])) {
         $host = explode('=', $dsn['host']);
         if ($host[0] == 'unix_socket') {
@@ -145,9 +145,8 @@ class Database {
 
   /**
    * Opens a connection to a mysql server
-   * @access protected
    */
-  protected function connect() {
+  public function connect() {
     if ($this->isConnected()) {
       if ($this->debug) $this->debug->log(__METHOD__, 'still connected');
       return;
@@ -157,37 +156,42 @@ class Database {
       die('The Mysqli extension is required');
     }
 
-    $this->DB = mysqli_init();
+    $mysqli = mysqli_init();
 
-    if (!$this->DB) {
+    if (!$mysqli) {
       die('mysqli_init failed');
     }
 
-    if (!$this->DB->options(MYSQLI_OPT_CONNECT_TIMEOUT, defined('DALMP_CONNECT_TIMEOUT') ? DALMP_CONNECT_TIMEOUT : 5)) {
+    if (!$mysqli->options(MYSQLI_OPT_CONNECT_TIMEOUT, defined('DALMP_CONNECT_TIMEOUT') ? DALMP_CONNECT_TIMEOUT : 5)) {
       throw new \Exception('Setting MYSQLI_OPT_CONNECT_TIMEOUT failed');
     }
 
     if (defined('DALMP_MYSQLI_INIT_COMMAND')) {
-      if (!$this->DB->options(MYSQLI_INIT_COMMAND, DALMP_MYSQLI_INIT_COMMAND)) {
+      if (!$mysqli->options(MYSQLI_INIT_COMMAND, DALMP_MYSQLI_INIT_COMMAND)) {
         throw new \Exception('Setting MYSQLI_INIT_COMMAND failed');
       }
     }
 
     if (is_array($this->dsn['ssl'])) {
       if ($this->debug) $this->debug->log('DSN', 'SSL', $this->dsn['ssl']);
-      $this->DB->ssl_set($this->dsn['ssl']['key'], $this->dsn['ssl']['cert'], $this->dsn['ssl']['ca'], $this->dsn['ssl']['capath'], $this->dsn['ssl']['cipher']);
+      $mysqli->ssl_set($this->dsn['ssl']['key'], $this->dsn['ssl']['cert'], $this->dsn['ssl']['ca'], $this->dsn['ssl']['capath'], $this->dsn['ssl']['cipher']);
     }
 
     if ($this->debug) $this->debug->log(__METHOD__, 'connecting');
 
-    if (!@$this->DB->real_connect($this->dsn['host'], $this->dsn['user'], $this->dsn['pass'], $this->dsn['dbName'], $this->dsn['port'], $this->dsn['socket'])) {
+    $rs = @$mysqli->real_connect($this->dsn['host'], $this->dsn['user'], $this->dsn['pass'], $this->dsn['dbName'], $this->dsn['port'], $this->dsn['socket']);
+    if ($mysqli->connect_errno || $rs === false) {
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'mysqli connection error');
       throw new \Exception(mysqli_connect_error(), mysqli_connect_errno());
     }
 
     if ($this->dsn['charset']) {
-      mysqli_set_charset($this->DB, $this->dsn['charset']);
+      if (!$mysqli->set_charset($this->dsn['charset'])) {
+        throw new \Exception("Error loading character set {$this->dsn['charset']}", $mysqli->errno);
+      }
     }
+
+    $this->DB = $mysqli;
   }
 
   /**
@@ -227,9 +231,8 @@ class Database {
    */
   public function closeConnection() {
     if ($this->debug) $this->debug->log(__METHOD__);
-    if ($this->isConnected()) $this->DB->close();
+    $this->isConnected() && $this->DB->close();
     $this->DB = null;
-    return true;
   }
 
   /**
@@ -368,7 +371,7 @@ class Database {
     $args = func_get_args();
     if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__, $args);
 
-    (!$this->isConnected()) && $this->connect();
+    !$this->isConnected() && $this->connect();
 
     $sql = array_shift($args);
     $this->_stmt = $this->DB->prepare($sql);
@@ -669,7 +672,7 @@ class Database {
   public function Execute($sql) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
 
-    (!$this->isConnected()) && $this->connect();
+    !$this->isConnected() && $this->connect();
 
     if ($rs = $this->DB->query($sql)) {
       if (is_object($rs)) {
@@ -986,7 +989,7 @@ class Database {
     if (is_int($value) || is_float($value)) {
       $rs = $value;
     } else {
-      (!$this->isConnected()) && $this->connect();
+      !$this->isConnected() && $this->connect();
       $rs = $this->DB->real_escape_string($value);
     }
     if ($this->debug) $this->debug->log(__METHOD__, "returned: $rs");
@@ -1402,6 +1405,16 @@ class Database {
     if ($this->debug) $this->debug->log(__METHOD__, $status);
 
     return $status;
+  }
+
+  /**
+   * X
+   *
+   * @return mysqli object or false if not connected
+   */
+  public function X() {
+    !$this->isConnected() && $this->connect();
+    return $this->DB;
   }
 
   /**

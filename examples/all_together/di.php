@@ -26,6 +26,11 @@ sleep(10);
 $now = $ok->getOne('SELECT NOW()');
 echo $now,PHP_EOL;
 
+echo 'ping: ';
+var_dump($ok->X()->ping());
+
+sleep(5);
+
 class teste {
 
   public function __construct() {
