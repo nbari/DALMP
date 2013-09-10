@@ -1264,7 +1264,7 @@ class Database {
    */
   public function isCli($eol = null) {
     ($cli = (php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR']))) && $cli = $eol ? PHP_EOL : true;
-    return $cli ?  : ($eol ? '<br/>' : false);
+    return $cli ?: ($eol ? '<br/>' : false);
   }
 
   /**
