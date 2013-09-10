@@ -1052,6 +1052,7 @@ class Database {
     if ($this->debug) $this->debug->log(__METHOD__, 'Parsed Args', array('fetch method' => $fetch, 'expire' => $expire, 'sql' => $sql, 'key' => $key, 'group' => $group), array('Cache key' => $hkey));
 
     if ($this->cache instanceof Cache && $cache = $this->cache->get($hkey)) {
+      if ($this->debug) $this->debug->log(__METHOD__, 'serving from cache');
       return $cache;
     } else {
       switch ($fetch) {
@@ -1137,6 +1138,7 @@ class Database {
     if ($this->debug) $this->debug->log(__METHOD__, 'Parsed Args', array('fetch method' => $fetch, 'expire' => $expire, 'sql' => $sql, 'key' => $key, 'group' => $group), array('Cache key' => $hkey));
 
     if ($this->cache instanceof Cache && $cache = $this->cache->Get($hkey)) {
+      if ($this->debug) $this->debug->log(__METHOD__, 'serving from cache');
       return $cache;
     } else {
       $nargs = array();

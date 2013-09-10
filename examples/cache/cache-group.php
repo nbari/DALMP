@@ -39,12 +39,19 @@ $rs = $db->CachePGetAll('SELECT * FROM Country WHERE Population <= ?', 100000, '
 echo count($rs), PHP_EOL;
 $timer->setMark('default');
 
+
+/**
+ * lazy connection test query DB only when needed
+ */
+$db->debug();
+$db->closeConnection();
+
 /**
  * Cache for 5 minutes, group A
  */
-$rs = $db->CachePGetAll(300,'SELECT * FROM Country WHERE Region = ?', 'Caribbean', 'group:A');
+$rs = $db->CachePGetAll('SELECT * FROM Country WHERE Region = ?', 'Caribbean');
 echo count($rs), PHP_EOL;
-$timer->setMark('300-2');
+$timer->setMark('lazy');
 
 /**
  * flush only group A
@@ -56,8 +63,7 @@ $db->CacheFlush('group:A');
  */
 $rs = $db->CachePGetAll(300,'SELECT * FROM Country WHERE Region = ?', 'Caribbean', 'group:A');
 echo count($rs), PHP_EOL;
-$timer->setMark('300-3');
-
+$timer->setMark('connect');
 
 # ------------------------------------------------------------------------------
 echo PHP_EOL, str_repeat('-', 80), PHP_EOL;
