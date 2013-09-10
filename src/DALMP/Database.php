@@ -773,7 +773,7 @@ class Database {
    * @param string class_name of the class to instantiate
    * @param array optional array of parameters to pass to the constructor for class_name objects.
    * @see mysqli_result::fetch_object
-   * @return object
+   * @return object or false
    */
   public function map($sql, $class_name=null, $params=array()) {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
@@ -1012,8 +1012,6 @@ class Database {
 
   /**
    * useCache
-   *
-   * helps to follow the single responsibility principle
    *
    * @param DALMP\Cache $cache
    */
@@ -1264,7 +1262,7 @@ class Database {
    * @param boolean $eol
    * @return boolean or PHP_EOL, <br/>
    */
-  public static function isCli($eol = null) {
+  public function isCli($eol = null) {
     ($cli = (php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR']))) && $cli = $eol ? PHP_EOL : true;
     return $cli ?  : ($eol ? '<br/>' : false);
   }
@@ -1275,7 +1273,7 @@ class Database {
    * @param int $b
    * @return UUID, if $b returns binary(16)
    */
-  public static function UUID($b=null) {
+  public function UUID($b=null) {
     if (function_exists('uuid_create')) {
       $uuid = uuid_create();
     } else {
@@ -1295,7 +1293,7 @@ class Database {
    * @param SQL $data
    * @param string $queue
    */
-  public static function Queue($data, $queue = 'default') {
+  public function Queue($data, $queue = 'default') {
     $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : DALMP_DIR.'/dalmp_queue.db';
     $sdb = new \SQLite3($queue_db);
     $sdb->busyTimeout(2000);
@@ -1307,7 +1305,7 @@ class Database {
     $sql = "INSERT INTO queues VALUES (null, '$queue', '" . base64_encode($data) . "', '" . @date('Y-m-d H:i:s') . "')";
 
     if (!$sdb->exec($sql)) {
-      trigger_error("queue: could not save $data - $queue on $queue_db", E_USER_NOTICE);
+      throw new \ErrorException(__METHOD__ . " could not save $data - $queue on $queue_db");
     }
 
     $sdb->busyTimeout(0);
@@ -1321,7 +1319,7 @@ class Database {
    * @param int print or return the queue
    * @return true or array
    */
-  public static function readQueue($queue = '*', $print = false) {
+  public function readQueue($queue = '*', $print = false) {
     $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : DALMP_DIR . '/dalmp_queue.db';
     $sdb = new \SQLite3($queue_db);
 
@@ -1332,7 +1330,7 @@ class Database {
     if ($rs) {
       if ($print) {
         while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
-          echo $row['id'] , '|' , $row['queue'] , '|' , base64_decode($row['data']) , '|' , $row['cdate'] , self::isCli(1);
+          echo $row['id'] , '|' , $row['queue'] , '|' , base64_decode($row['data']) , '|' , $row['cdate'] , $this->isCli(1);
         }
       } else {
         return $rs;
@@ -1340,6 +1338,16 @@ class Database {
     } else {
       return array();
     }
+  }
+
+  /**
+   * X
+   *
+   * @return mysqli object or false if not connected
+   */
+  public function X() {
+    !$this->isConnected() && $this->connect();
+    return $this->DB;
   }
 
   /**
@@ -1405,16 +1413,6 @@ class Database {
     if ($this->debug) $this->debug->log(__METHOD__, $status);
 
     return $status;
-  }
-
-  /**
-   * X
-   *
-   * @return mysqli object or false if not connected
-   */
-  public function X() {
-    !$this->isConnected() && $this->connect();
-    return $this->DB;
   }
 
   /**
