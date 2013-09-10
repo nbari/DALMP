@@ -180,7 +180,7 @@ class Database {
 
     if ($this->debug) $this->debug->log(__METHOD__, 'connecting');
 
-    if (!$this->DB->real_connect($this->dsn['host'], $this->dsn['user'], $this->dsn['pass'], $this->dsn['dbName'], $this->dsn['port'], $this->dsn['socket'])) {
+    if (!@$this->DB->real_connect($this->dsn['host'], $this->dsn['user'], $this->dsn['pass'], $this->dsn['dbName'], $this->dsn['port'], $this->dsn['socket'])) {
       if ($this->debug) $this->debug->log(__METHOD__, 'ERROR', 'mysqli connection error');
       throw new \Exception(mysqli_connect_error(), mysqli_connect_errno());
     }

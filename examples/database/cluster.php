@@ -1,14 +1,20 @@
 <?php
+error_reporting(-1);
 require_once '../../MPLT.php';
 $timer = new MPLT();
 require_once '../../src/dalmp.php';
 # -----------------------------------------------------------------------------------------------------------------
 
+$user = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASS') ?: '';
+$host = getenv('MYSQL_HOST') ?: '127.0.0.1';
+$port = getenv('MYSQL_HOST') ?: '3306';
+
 $dsns = array(
   'utf8://root:mysql@127.0.0.1/dalmp3',
   'utf8://root:mysql@127.0.0.1/dalmp4',
   'utf8://root:mysql@127.0.0.1/dalmp5',
-  'utf8://root:mysql@127.0.0.1/dalmp');
+  "utf8://$user:$password@$host:$port/dalmp");
 
 $cdb = new DALMP\Database($dsns[0]);
 
@@ -16,7 +22,7 @@ $result = false;
 while (!$result) {
   try {
     $result = $cdb->FetchMode('ASSOC')->PgetAll('SELECT NOW()');
-  } catch (Exception $e) {
+  } catch (\Exception $e) {
     array_shift($dsns);
     $cdb = new DALMP\Database($dsns[0]);
     if ($dsns) {

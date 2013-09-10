@@ -177,21 +177,22 @@ class test_dalmp extends PHPUnit_Framework_TestCase {
   }
 
   public function testUpdate() {
-    $rs = $this->db->PExecute('UPDATE tests SET col1=? WHERE id=1', 7);
-    $this->assertEquals($rs, 0);
-    $rs = $this->db->Execute('UPDATE tests SET col1=7 WHERE id=1');
-    $this->assertEquals($rs, 0);
+    $this->assertEquals(0, $this->db->PExecute('UPDATE tests SET col1=? WHERE id=1', 7));
     $this->assertEquals($this->db->getnumOfRows(), $this->db->getnumOfRowsAffected());
+    $this->assertEquals(0, $this->db->Execute('UPDATE tests SET col1=7 WHERE id=1'));
+    $this->assertEquals($this->db->getnumOfRows(), $this->db->getnumOfRowsAffected());
+    $this->assertTrue($this->db->Execute('UPDATE tests SET col1=8 WHERE id=1'));
+    $this->assertNotEquals($this->db->getnumOfRows(), $this->db->getnumOfRowsAffected());
+    $this->assertTrue($this->db->PExecute('UPDATE tests SET col1=? WHERE id=1', 7));
+    $this->assertNotEquals($this->db->getnumOfRows(), $this->db->getnumOfRowsAffected());
   }
 
   public function testExecuteQuery() {
     $continent = $this->db->qstr('Africa');
-    $rs = $this->db->Execute("SELECT * From Country WHERE Continent = '$continent'");
-    $this->assertTrue($rs);
+    $this->assertTrue($this->db->Execute("SELECT * From Country WHERE Continent = '$continent'"));
     $this->assertEquals($this->db->getnumOfRows(), 58);
     $this->assertEquals($this->db->getnumOfRowsAffected(), 58);
-    $rs = $this->db->Execute("SELECT * From Country WHERE Continent = 'naranjas'");
-    $this->assertFalse($rs);
+    $this->assertFalse($this->db->Execute("SELECT * From Country WHERE Continent = 'naranjas'"));
   }
 
   public function testPExecuteQuery() {
@@ -199,8 +200,28 @@ class test_dalmp extends PHPUnit_Framework_TestCase {
     $this->assertTrue($rs);
     $this->assertEquals($this->db->getnumOfRows(), 58);
     $this->assertEquals($this->db->getnumOfRowsAffected(), 58);
-    $rs = $this->db->PExecute('SELECT * From Country WHERE Continent = ?', 'naranjas');
-    $this->assertFalse($rs);
+    $this->assertFalse($this->db->PExecute('SELECT * From Country WHERE Continent = ?', 'naranjas'));
+  }
+
+  public function testTransactions() {
+    $this->assertEquals(0, $this->db->Execute('CREATE TABLE IF NOT EXISTS t_test (id INT NOT NULL PRIMARY KEY) ENGINE=InnoDB'));
+    $this->assertEquals(0, $this->db->Execute('TRUNCATE TABLE t_test'));
+    $this->assertEquals(0, $this->db->StartTrans());
+    $this->assertTrue($this->db->Execute('INSERT INTO t_test VALUES(1)'));
+    $this->assertEquals(0, $this->db->StartTrans());
+    $this->assertTrue($this->db->Execute('INSERT INTO t_test VALUES(2)'));
+    $this->assertEquals(array(array('id' => 1), array('id' => 2)), $this->db->FetchMode('ASSOC')->GetAll('SELECT * FROM t_test'));
+    $this->assertEquals(0, $this->db->StartTrans());
+    $this->assertTrue($this->db->Execute('INSERT INTO t_test VALUES(3)'));
+    $this->assertEquals(array(array('id' => 1), array('id' => 2), array('id' => 3)), $this->db->FetchMode('ASSOC')->GetAll('SELECT * FROM t_test'));
+    $this->assertEquals(0, $this->db->StartTrans());
+    $this->assertTrue($this->db->Execute('INSERT INTO t_test VALUES(7)'));
+    $this->assertEquals(array(array('id' => 1), array('id' => 2), array('id' => 3), array('id' => 7)), $this->db->FetchMode('ASSOC')->GetAll('SELECT * FROM t_test'));
+    $this->assertEquals(0, $this->db->RollBackTrans());
+    $this->assertEquals(0, $this->db->CompleteTrans());
+    $this->assertEquals(0, $this->db->CompleteTrans());
+    $this->assertEquals(0, $this->db->CompleteTrans());
+    $this->assertEquals(array(array('id' => 1), array('id' => 2), array('id' => 3)), $this->db->FetchMode('ASSOC')->GetAll('SELECT * FROM t_test'));
   }
 
 }
