@@ -1343,7 +1343,7 @@ class Database {
   /**
    * X
    *
-   * @return mysqli object or false if not connected
+   * @return mysqli object
    */
   public function X() {
     !$this->isConnected() && $this->connect();
