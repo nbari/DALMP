@@ -21,7 +21,7 @@ $rs = $db->Execute($sql);
 if ($rs) {
   while (($rows = $db->query()) != false) {
 	  list($r1,$r2,$r3) = $rows;
-	  echo "w1: $r1, w2: $r2, w3: $r3", $db->isCli(1);
+	  echo "w1: $r1, w2: $r2, w3: $r3", $timer->isCli(1);
   }
 }
 
@@ -35,7 +35,7 @@ $timer->setMark('while');
 $rs2 = $db->GetAll($sql);
 foreach ($rs2 as $value) {
   list($r1,$r2,$r3) = $value;
-  echo "f1: $r1, f2: $r2, f3: $r3", $db->isCli(1);
+  echo "f1: $r1, f2: $r2, f3: $r3", $timer->isCli(1);
 }
 
 $timer->setMark('foreach');
@@ -61,7 +61,7 @@ echo $db->getNumOfRowsAffected(), PHP_EOL;
 
 $timer->setMark('stmt');
 
-echo $db->isCli(1);
+echo $timer->isCli(1);
 
 # ------------------------------------------------------------------------------
 echo PHP_EOL, str_repeat('-', 80), PHP_EOL;

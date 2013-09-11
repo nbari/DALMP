@@ -35,11 +35,11 @@ $rs = $db->AutoExecute('tests', array('col1' => 'ai eu', 'col2' => 2, 'status' =
 $sql = 'SELECT status FROM tests WHERE id=?';
 $rs = $db->PgetOne($sql, 3);
 if ($rs === false) {
-	echo "no result".$db->isCli(1);
+	echo "no result".$timer->isCli(1);
 } elseif ($rs == 0) {
-	echo "$rs = 0".$db->isCli(1);
+	echo "$rs = 0".$timer->isCli(1);
 } else {
-	echo "$rs > 0".$db->isCli(1);
+	echo "$rs > 0".$timer->isCli(1);
 }
 
 /**

@@ -28,10 +28,7 @@ class Database {
   protected $dsn = array();
 
   /**
-   * For successful SELECT, SHOW, DESCRIBE or EXPLAIN queries mysqli_query()
-   * will return a result object.
-   *
-   * For other successful queries mysqli_query() will return true.
+   * query result
    *
    * @access protected
    * @var mixed
@@ -1257,23 +1254,13 @@ class Database {
   }
 
   /**
-   * isCli()
-   *
-   * @param boolean $eol
-   * @return boolean or PHP_EOL, <br/>
-   */
-  public function isCli($eol = null) {
-    ($cli = (php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR']))) && $cli = $eol ? PHP_EOL : true;
-    return $cli ?: ($eol ? '<br/>' : false);
-  }
-
-  /**
    * Universally Unique Identifier v4
    *
    * @param int $b
    * @return UUID, if $b returns binary(16)
    */
   public function UUID($b=null) {
+    if ($this->debug) $this->debug->log(__METHOD__);
     if (function_exists('uuid_create')) {
       $uuid = uuid_create();
     } else {
@@ -1288,64 +1275,12 @@ class Database {
   }
 
   /**
-   * sqlite3 Queue
-   *
-   * @param SQL $data
-   * @param string $queue
-   */
-  public function Queue($data, $queue = 'default') {
-    $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : DALMP_DIR.'/dalmp_queue.db';
-    $sdb = new \SQLite3($queue_db);
-    $sdb->busyTimeout(2000);
-
-    if (defined('DALMP_SQLITE_ENC_KEY')) $sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
-
-    $sdb->exec('PRAGMA synchronous=OFF; PRAGMA temp_store=MEMORY; PRAGMA journal_mode=MEMORY');
-    $sdb->exec('CREATE TABLE IF NOT EXISTS queues (id INTEGER PRIMARY KEY, queue VARCHAR (64) NOT null, data TEXT, cdate DATE)');
-    $sql = "INSERT INTO queues VALUES (null, '$queue', '" . base64_encode($data) . "', '" . @date('Y-m-d H:i:s') . "')";
-
-    if (!$sdb->exec($sql)) {
-      throw new \ErrorException(__METHOD__ . " could not save $data - $queue on $queue_db");
-    }
-
-    $sdb->busyTimeout(0);
-    $sdb->close();
-  }
-
-  /**
-   * read the sqlite3 queue
-   *
-   * @param string queue name
-   * @param int print or return the queue
-   * @return true or array
-   */
-  public function readQueue($queue = '*', $print = false) {
-    $queue_db = defined('DALMP_QUEUE_DB') ? DALMP_QUEUE_DB : DALMP_DIR . '/dalmp_queue.db';
-    $sdb = new \SQLite3($queue_db);
-
-    if (defined('DALMP_SQLITE_ENC_KEY')) $sdb->exec("PRAGMA key='" . DALMP_SQLITE_ENC_KEY . "'");
-
-    $rs = ($queue === '*') ? @$sdb->query('SELECT * FROM queues') : @$sdb->query("SELECT * FROM queues WHERE queue='$queue'");
-
-    if ($rs) {
-      if ($print) {
-        while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
-          echo $row['id'] , '|' , $row['queue'] , '|' , base64_decode($row['data']) , '|' , $row['cdate'] , $this->isCli(1);
-        }
-      } else {
-        return $rs;
-      }
-    } else {
-      return array();
-    }
-  }
-
-  /**
-   * X
+   * X execute/call custom methods
    *
    * @return mysqli object
    */
   public function X() {
+    if ($this->debug) $this->debug->log(__METHOD__);
     !$this->isConnected() && $this->connect();
     return $this->DB;
   }
@@ -1396,7 +1331,7 @@ class Database {
   /**
    * usage: echo $db;
    *
-   * @return DALMP stats
+   * @return database stats
    */
   public function __toString() {
     if ($this->isConnected()) {
@@ -1409,14 +1344,11 @@ class Database {
     } else {
       $status = 'no connections available';
     }
-
-    if ($this->debug) $this->debug->log(__METHOD__, $status);
-
     return $status;
   }
 
   /**
-   * DALMP destructor
+   * destructor
    */
   public function __destruct() {
     if ($this->debug) $this->debug->getLog();

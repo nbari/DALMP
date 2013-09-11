@@ -42,7 +42,7 @@ foreach ($db->readQueue() as $key => $value) {
   $queue = $value['queue'];
   $data = base64_decode($value['data']);
   $cdate = $value['cdate'];
-  echo "$queue - $data - $cdate".$db->isCli(1);
+  echo "$queue - $data - $cdate".$timer->isCli(1);
   /**
    * try to re-execute the query
    */
@@ -52,10 +52,10 @@ foreach ($db->readQueue() as $key => $value) {
 /**
  * helpful on CLI
  */
-echo $db->isCli(1);
+echo $timer->isCli(1);
 // read all queues
 $db->readQueue('*', 1);
-echo $db->isCli(1);
+echo $timer->isCli(1);
 // read only json queue
 $db->readQueue('json', 1);
 

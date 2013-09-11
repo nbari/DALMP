@@ -22,9 +22,9 @@ echo 'client_version: ', var_dump($db->X()->client_version);
 echo 'server_info: ', var_dump($db->X()->server_info);
 echo 'server_version: ', var_dump($db->X()->server_version);
 
-echo $db->isCli(1), $db, $db->isCli(1);
+echo $timer->isCli(1), $db, $timer->isCli(1);
 
-echo $db->isCli(1), $db->GetOne('SELECT NOW()'), $db->isCli(1);
+echo $timer->isCli(1), $db->GetOne('SELECT NOW()'), $timer->isCli(1);
 
 $db->closeConnection();
 
@@ -32,7 +32,7 @@ echo 'is connected: ', var_dump($db->isConnected());
 sleep(3);
 
 echo 'ping: ', var_dump($db->X()->ping());
-echo $db->isCli(1), $db->GetOne('SELECT NOW()'), $db->isCli(1);
+echo $timer->isCli(1), $db->GetOne('SELECT NOW()'), $timer->isCli(1);
 sleep(3);
 
 # ------------------------------------------------------------------------------
