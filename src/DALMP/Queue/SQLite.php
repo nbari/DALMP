@@ -113,6 +113,9 @@ class SQLite implements QueueInterface {
     }
   }
 
+  public function delete($value) {
+  }
+
   /**
    *
    * X execute/call custom methods
