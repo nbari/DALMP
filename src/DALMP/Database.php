@@ -187,7 +187,7 @@ class Database {
 
     if ($this->dsn['charset']) {
       if (!$mysqli->set_charset($this->dsn['charset'])) {
-        throw new \Exception("Error loading character set {$this->dsn['charset']}", $mysqli->errno);
+        trigger_error("Error loading character set {$this->dsn['charset']}", E_USER_NOTICE);
       }
     }
 
