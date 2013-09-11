@@ -27,6 +27,15 @@ interface QueueInterface {
    */
   public function dequeue($limit = null);
 
+
+  /**
+   * delete element from queue
+   *
+   * @param string $value
+   * @return boolean
+   */
+  public function delete($value);
+
   /**
    * X execute/call custom methods
    *

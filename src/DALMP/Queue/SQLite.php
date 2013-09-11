@@ -113,4 +113,12 @@ class SQLite implements QueueInterface {
     }
   }
 
+  /**
+   *
+   * X execute/call custom methods
+   *
+   * @return queue object
+   */
+  public function X() {}
+
 }
