@@ -33,7 +33,6 @@ class SQLite implements QueueInterface {
    */
   private $enc_key = false;
 
-
   /**
    * Constructor
    *
@@ -47,6 +46,7 @@ class SQLite implements QueueInterface {
     $sdb->busyTimeout(2000);
 
     $this->filename = $filename;
+    $this->queue_name = $queue_name;
 
     if ($enc_key) {
       if ($this->sdb->exec(sprintf("PRAGMA key='%s'", $enc_key))) {
@@ -70,13 +70,16 @@ class SQLite implements QueueInterface {
     $sdb = new \SQLite3($this->filename);
     $sdb->busyTimeout(2000);
     if ($this->enc_key) {
-      $this->sdb->exec(sprintf("PRAGMA key='%s'", $enc_key));
+      $sdb->exec(sprintf("PRAGMA key='%s'", $enc_key));
     }
 
-    $sql = sprintf("INSERT INTO queues VALUES (null, '%s', '%s', '%s')", $this->queue_name, base64_encode($value), @date('Y-m-d H:i:s'));
+    $stmt = $sdb->prepare('INSERT INTO queues VALUES (null, ?, ?, ?)');
+    $stmt->bindValue(1, $this->queue_name, SQLITE3_TEXT);
+    $stmt->bindValue(2, base64_encode($value), SQLITE3_TEXT);
+    $stmt->bindValue(3, @date('Y-m-d H:i:s'), SQLITE3_BLOB);
 
-    if ($this->sdb->exec($sql)) {
-      throw new \ErrorException("could not save {$value} - {$this->queue_name} on {$this->filename}");
+    if (!$stmt->execute()) {
+      throw new \ErrorException(sprintf('Could not save: [ %s ] on queue [ %s ] in [ %s ]', $value, $this->queue_name, $this->filename));
     }
 
     $sdb->busyTimeout(0);
@@ -89,31 +92,52 @@ class SQLite implements QueueInterface {
    *
    * @param string $key
    */
-  public function dequeue($limit = null) {
+  public function dequeue($limit = false) {
     $sdb = new \SQLite3($this->filename);
     $sdb->busyTimeout(2000);
     if ($this->enc_key) {
       $this->sdb->exec(sprintf("PRAGMA key='%s'", $enc_key));
     }
 
-    $sql = sprintf("SELECT * FROM queues WHERE queue='%s'", $this->queue_name);
+    if ($limit) {
+      $stmt = $sdb->prepare('SELECT * FROM queues WHERE queue = ? LIMIT ?');
+      $stmt->bindValue(1, $this->queue_name, SQLITE3_TEXT);
+      $stmt->bindValue(2, $limit, SQLITE3_INTEGER);
+    } else {
+      $stmt = $sdb->prepare('SELECT * FROM queues WHERE queue = ?');
+      $stmt->bindValue(1, $this->queue_name, SQLITE3_TEXT);
+    }
 
-    $rs = $sdb->query($sql);
+    $rs = $stmt->execute();
+
+    $rows = array();
 
     if ($rs) {
-      if ($print) {
-        while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
-          echo $row['id'] , '|' , $row['queue'] , '|' , base64_decode($row['data']) , '|' , $row['cdate'] , $this->isCli(1);
-        }
-      } else {
-        return $rs;
+      while ($row = $rs->fetchArray(SQLITE3_ASSOC)) {
+        $rows[$row['id']] = array('id' => $row['id'], 'queue' => $row['queue'], 'data' => $row['data'], 'cdate' => $row['cdate']);
       }
-    } else {
-      return array();
     }
+
+    return $rows;
   }
 
-  public function delete($value) {
+  /**
+   * delete element from queue
+   *
+   * @param string $value
+   */
+  public function delete($key) {
+    $sdb = new \SQLite3($this->filename);
+    $sdb->busyTimeout(2000);
+    if ($this->enc_key) {
+      $this->sdb->exec(sprintf("PRAGMA key='%s'", $enc_key));
+    }
+
+    $stmt = $sdb->prepare('DELETE FROM queues WHERE queue = ? AND id = ?');
+    $stmt->bindValue(1, $this->queue_name, SQLITE3_TEXT);
+    $stmt->bindValue(2, $key, SQLITE3_INTEGER);
+
+    return (bool) $stmt->execute();
   }
 
   /**

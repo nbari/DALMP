@@ -22,19 +22,18 @@ interface QueueInterface {
   /**
    * dequeue
    *
-   * @param int $limit returns {$limit} entries on the queue
+   * @param int $limit returns {$limit} entries on the queue in ASC order
    * @return array
    */
-  public function dequeue($limit = null);
-
+  public function dequeue($limit = false);
 
   /**
    * delete element from queue
    *
-   * @param string $value
+   * @param string $key
    * @return boolean
    */
-  public function delete($value);
+  public function delete($key);
 
   /**
    * X execute/call custom methods
