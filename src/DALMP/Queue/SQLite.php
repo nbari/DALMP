@@ -96,7 +96,7 @@ class SQLite implements QueueInterface {
     $sdb = new \SQLite3($this->filename);
     $sdb->busyTimeout(2000);
     if ($this->enc_key) {
-      $this->sdb->exec(sprintf("PRAGMA key='%s'", $enc_key));
+      $sdb->exec(sprintf("PRAGMA key='%s'", $enc_key));
     }
 
     if ($limit) {
@@ -130,12 +130,14 @@ class SQLite implements QueueInterface {
     $sdb = new \SQLite3($this->filename);
     $sdb->busyTimeout(2000);
     if ($this->enc_key) {
-      $this->sdb->exec(sprintf("PRAGMA key='%s'", $enc_key));
+      $sdb->exec(sprintf("PRAGMA key='%s'", $enc_key));
     }
 
     $stmt = $sdb->prepare('DELETE FROM queues WHERE queue = ? AND id = ?');
     $stmt->bindValue(1, $this->queue_name, SQLITE3_TEXT);
     $stmt->bindValue(2, $key, SQLITE3_INTEGER);
+
+    $sdb->busyTimeout(0);
 
     return (bool) $stmt->execute();
   }
