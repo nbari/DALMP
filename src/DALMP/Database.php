@@ -923,11 +923,11 @@ class Database {
       }
       if ($this->trans['level'] == 0) {
         $this->trans = array();
-        return $this->Execute('COMMIT');
+        return ($this->Execute('COMMIT') === false) ? false : true;
       } else {
         $rs = $this->Execute(sprintf('RELEASE SAVEPOINT level%d', $this->trans['level']));
         $this->trans['level']--;
-        return $rs;
+        return ($rs === false) ? false : true;
       }
     }
   }
