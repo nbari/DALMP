@@ -1018,6 +1018,37 @@ class Database {
   }
 
   /**
+   * DALMP\Cache fabric method
+   *
+   * @return DAMLP\Cache instance
+   */
+  public function Cache() {
+    if ($this->debug) $this->debug->log(__METHOD__, 'Creating cache using DSN');
+    if ($this->cache instanceof Cache) {
+      return $this->cache;
+    } else {
+      list($type, $host, $port, $compress) = @explode(':', $this->dsn['cache']) + array(null, null, null, null);
+      $type = strtolower($type);
+      switch($type) {
+      case 'memcache':
+        $cache = new DALMP\Cache\Memcache($host, $port, 1, $compress);
+        break;
+
+      case 'redis':
+        $cache = new DALMP\Cache\Redis($host, $port, $compress);
+        break;
+
+      case 'disk':
+      default:
+        $cache = new DALMP\Cache\Disk($host);
+        break;
+      }
+      $this->cache = new DALMP\Cache($cache);
+    }
+    return $this->cache;
+  }
+
+  /**
    * general method for caching
    *
    * @param string $fetch_method
@@ -1048,6 +1079,8 @@ class Database {
     $hkey = sha1($skey . $sql . $key);
 
     if ($this->debug) $this->debug->log(__METHOD__, 'Parsed Args', array('fetch method' => $fetch, 'expire' => $expire, 'sql' => $sql, 'key' => $key, 'group' => $group), array('Cache key' => $hkey));
+
+    is_null($this->cache) && $this->Cache();
 
     if ($this->cache instanceof Cache && $cache = $this->cache->get($hkey)) {
       if ($this->debug) $this->debug->log(__METHOD__, 'serving from cache');
@@ -1135,6 +1168,8 @@ class Database {
 
     if ($this->debug) $this->debug->log(__METHOD__, 'Parsed Args', array('fetch method' => $fetch, 'expire' => $expire, 'sql' => $sql, 'key' => $key, 'group' => $group), array('Cache key' => $hkey));
 
+    is_null($this->cache) && $this->Cache();
+
     if ($this->cache instanceof Cache && $cache = $this->cache->Get($hkey)) {
       if ($this->debug) $this->debug->log(__METHOD__, 'serving from cache');
       return $cache;
@@ -1208,6 +1243,8 @@ class Database {
    * @return boolean
    */
   public function CacheFlush($sql = null, $key = null) {
+    is_null($this->cache) && $this->Cache();
+
     if (is_null($sql)) {
       if ($this->debug) $this->debug->log(__METHOD__, 'Flushing all cache');
       return $this->cache->Flush();
