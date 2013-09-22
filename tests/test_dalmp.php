@@ -218,9 +218,9 @@ class test_dalmp extends PHPUnit_Framework_TestCase {
     $this->assertTrue($this->db->Execute('INSERT INTO t_test VALUES(7)'));
     $this->assertEquals(array(array('id' => 1), array('id' => 2), array('id' => 3), array('id' => 7)), $this->db->FetchMode('ASSOC')->GetAll('SELECT * FROM t_test'));
     $this->assertEquals(0, $this->db->RollBackTrans());
-    $this->assertEquals(0, $this->db->CompleteTrans());
-    $this->assertEquals(0, $this->db->CompleteTrans());
-    $this->assertEquals(0, $this->db->CompleteTrans());
+    $this->assertTrue($this->db->CompleteTrans());
+    $this->assertTrue($this->db->CompleteTrans());
+    $this->assertTrue($this->db->CompleteTrans());
     $this->assertEquals(array(array('id' => 1), array('id' => 2), array('id' => 3)), $this->db->FetchMode('ASSOC')->GetAll('SELECT * FROM t_test'));
   }
 
