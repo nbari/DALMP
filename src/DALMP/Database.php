@@ -1226,7 +1226,7 @@ class Database {
 
       $gCache[$hkey] = time() + $expire;
 
-      if (!($this->cache->Set($hkey, $cache, $expire) && $this->cache->Set($gkey, $gCache, 86400))) {
+      if (!($this->cache->Set($hkey, $cache, $expire) && $this->cache->Set($gkey, $gCache, 0))) {
         throw new \UnexpectedValueException('Can not store data on cache');
       }
     } else {
