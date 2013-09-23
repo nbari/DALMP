@@ -45,6 +45,7 @@ class Disk implements CacheInterface {
    */
   public function set($key, $value, $expire = 2592000) {
     $key = sha1($key);
+    $expire = ($expire == 0) ? 2592000 : $expire;
 
     $cache_path = sprintf('%s/%s/%s/%s', $this->cache_dir, substr($key, 0, 2), substr($key, 2, 2),  substr($key, 4, 2));
 
