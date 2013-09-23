@@ -42,9 +42,9 @@ class Redis implements CacheInterface {
   public function set($key, $value, $expire = 0) {
     if ($this->connect()) {
       if ($expire == 0 || $expire == -1) {
-        return $this->cache->set($key, serialize($value)) ? $this : false;
+        return (bool) $this->cache->set($key, serialize($value));
       } else {
-        return $this->cache->setex($key, $expire, serialize($value)) ? $this : false;
+        return (bool) $this->cache->setex($key, $expire, serialize($value));
       }
     } else {
       return false;
@@ -66,14 +66,14 @@ class Redis implements CacheInterface {
    * @param string $key
    */
   public function Delete($key) {
-    return $this->connect() ? $this->cache->delete($key) : false;
+    return $this->connect() ? (bool) $this->cache->delete($key) : false;
   }
 
   /**
    * Flush cache
    */
   public function Flush() {
-    return $this->connect() ? $this->cache->flushDB() : false;
+    return $this->connect() ? (bool) $this->cache->flushDB() : false;
   }
 
   /**

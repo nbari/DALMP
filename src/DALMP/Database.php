@@ -1013,7 +1013,7 @@ class Database {
    * @param DALMP\Cache $cache
    */
   public function useCache(Cache $cache) {
-    if ($this->debug) $this->debug->log('Cache', $cache);
+    if ($this->debug) $this->debug->log(__METHOD__, $cache);
     $this->cache = $cache;
   }
 
@@ -1029,21 +1029,21 @@ class Database {
     } else {
       list($type, $host, $port, $compress) = @explode(':', $this->dsn['cache']) + array(null, null, null, null);
       $type = strtolower($type);
-      switch($type) {
+      switch ($type) {
       case 'memcache':
-        $cache = new DALMP\Cache\Memcache($host, $port, 1, $compress);
+        $cache = new Cache\Memcache($host, $port, 1, $compress);
         break;
 
       case 'redis':
-        $cache = new DALMP\Cache\Redis($host, $port, $compress);
+        $cache = new Cache\Redis($host, $port, $compress);
         break;
 
       case 'disk':
       default:
-        $cache = new DALMP\Cache\Disk($host);
+        $cache = new Cache\Disk($host);
         break;
       }
-      $this->cache = new DALMP\Cache($cache);
+      $this->cache = new Cache($cache);
     }
     return $this->cache;
   }
@@ -1208,6 +1208,8 @@ class Database {
    * @return boolean
    */
   protected function _setCache($hkey, $cache, $expire = 3600, $group = null) {
+    is_null($this->cache) && $this->Cache();
+
     if ($group) {
       $skey = defined('DALMP_SITE_KEY') ? DALMP_SITE_KEY : 'DALMP';
       $gkey = sha1($skey . $group);
@@ -1224,7 +1226,7 @@ class Database {
 
       $gCache[$hkey] = time() + $expire;
 
-      if (!$this->cache->Set($hkey, $cache, $expire)->Set($gkey, $gCache, $expire)) {
+      if (!($this->cache->Set($hkey, $cache, $expire) && $this->cache->Set($gkey, $gCache, 86400))) {
         throw new \UnexpectedValueException('Can not store data on cache');
       }
     } else {
@@ -1255,11 +1257,11 @@ class Database {
 
     if (strncmp($sql, 'group:', 6) == 0) {
       $gkey = sha1($skey . $sql);
-      $group = $this->cache->get($gkey);
-      $group = is_array($group) ? $group : array();
-      if ($this->debug) $this->debug->log(__METHOD__, 'group', array('group' => $sql, 'Cache group key' => $gkey));
-      foreach ($group as $key => $timeout) {
-        $this->cache->Delete($key);
+      if ($group = $this->cache->get($gkey)) {
+        if ($this->debug) $this->debug->log(__METHOD__, 'group', array('group' => $sql, 'Cache group key' => $gkey));
+        foreach ($group as $key => $timeout) {
+          $this->cache->Delete($key);
+        }
       }
     }
 

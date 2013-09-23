@@ -65,7 +65,7 @@ class Disk implements CacheInterface {
         flock($fp, LOCK_UN);
         fclose($fp);
         $time = time() + (int) $expire;
-        return touch($cache_file, $time) ? $this : false;
+        return touch($cache_file, $time);
       } else {
         return false;
       }

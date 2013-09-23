@@ -47,7 +47,7 @@ class Memcache implements CacheInterface {
   public function Set($key, $value, $expire = 0) {
     if ($this->connect()) {
       ($this->compress === false) && $this->cache->setCompressThreshold(0);
-      return $this->cache->set($key, $value, $this->compress, $expire) ? $this : false;
+      return $this->cache->set($key, $value, $this->compress, $expire);
     } else {
       return false;
     }
