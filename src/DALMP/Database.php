@@ -1008,12 +1008,12 @@ class Database {
   }
 
   /**
-   * truncate - force truncate of a table
+   * forceTruncate - force truncate of a table
    *
    * @param string $table
    * @return boolean
    */
-  public function truncate($table) {
+  public function forceTruncate($table) {
     return (false !== $this->Execute('SET FOREIGN_KEY_CHECKS = 0') && false !== $this->Execute(sprintf('TRUNCATE %s', $table)));
   }
 
