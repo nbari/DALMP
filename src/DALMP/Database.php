@@ -1014,7 +1014,7 @@ class Database {
    * @return boolean
    */
   public function truncate($table) {
-    return ($this->Execute('SET FOREIGN_KEY_CHECKS = 0') && $this->Execute(sprintf('TRUNCATE %s', $table)));
+    return (false !== $this->Execute('SET FOREIGN_KEY_CHECKS = 0') && false !== $this->Execute(sprintf('TRUNCATE %s', $table)));
   }
 
   /**
