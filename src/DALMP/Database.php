@@ -557,19 +557,18 @@ class Database {
     }
 
     $this->PClose();
-    return $rs;
+    return empty($rs) ? false : $rs;
   }
 
   /**
    * _fetch
    *
    * @access protected
-   * @return an array of strings that corresponds to the fetched row or null
-   * if there are no more rows in resultset.
+   * @return array of strings that corresponds to the fetched row or false
    */
   protected function _fetch() {
     if ($this->debug) $this->debug->log(__METHOD__);
-    return $this->_rs->fetch_array($this->fetchMode);
+    return $this->_rs->fetch_array($this->fetchMode) ?: false;
   }
 
   /**
@@ -998,6 +997,7 @@ class Database {
    *
    * @param string $table
    * @param int $id
+   * @return boolean
    */
   public function renumber($table, $row = 'id') {
     if (isset($table)) {
@@ -1005,6 +1005,16 @@ class Database {
     } else {
       return false;
     }
+  }
+
+  /**
+   * truncate - force truncate of a table
+   *
+   * @param string $table
+   * @return boolean
+   */
+  public function truncate($table) {
+    return ($this->Execute('SET FOREIGN_KEY_CHECKS = 0') && $this->Execute(sprintf('TRUNCATE %s', $table)));
   }
 
   /**
