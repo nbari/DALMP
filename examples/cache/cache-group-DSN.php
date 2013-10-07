@@ -37,7 +37,6 @@ $rs = $db->CachePGetAll('SELECT * FROM Country WHERE Population <= ?', 100000, '
 echo count($rs), PHP_EOL;
 $timer->setMark('default');
 
-
 /**
  * lazy connection test query DB only when needed
  */

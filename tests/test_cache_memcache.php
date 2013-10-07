@@ -10,8 +10,8 @@ require_once 'test_cache_base.php';
  * @license BSD License
  * @version 3.0
  */
-class test_cache_memcache extends test_cache_base {
-
+class test_cache_memcache extends test_cache_base
+{
   /**
    * Cache instance
    *
@@ -19,14 +19,16 @@ class test_cache_memcache extends test_cache_base {
    */
   protected $cache;
 
-  public function setUp() {
+  public function setUp()
+  {
     if (!extension_loaded('memcache')) {
       $this->markTestSkipped('The memcache extension is not available.');
     }
     $this->cache = new DALMP\Cache\Memcache;
   }
 
-  public function testAttributes() {
+  public function testAttributes()
+  {
     $this->assertClassHasAttribute('host', 'DALMP\Cache\Memcache');
     $this->assertClassHasAttribute('port', 'DALMP\Cache\Memcache');
     $this->assertClassHasAttribute('timeout', 'DALMP\Cache\Memcache');
@@ -34,7 +36,8 @@ class test_cache_memcache extends test_cache_base {
     $this->assertClassHasAttribute('cache', 'DALMP\Cache\Memcache');
   }
 
-  public function testX() {
+  public function testX()
+  {
     $this->assertContainsOnlyInstancesOf('DALMP\Cache\Memcache', array($this->cache));
   }
 

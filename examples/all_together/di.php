@@ -4,7 +4,6 @@ require_once '../../src/dalmp.php';
 
 $di = new DALMP\DI();
 
-
 $user = getenv('MYSQL_USER') ?: 'root';
 $password = getenv('MYSQL_PASS') ?: '';
 $host = getenv('MYSQL_HOST') ?: '127.0.0.1';
@@ -31,13 +30,15 @@ var_dump($ok->X()->ping());
 
 sleep(5);
 
-class teste {
-
-  public function __construct() {
+class teste
+{
+  public function __construct()
+  {
     print_r(func_get_args());
   }
 
-  public function foo() {
+  public function foo()
+  {
     echo __CLASS__ . __METHOD__;
   }
 

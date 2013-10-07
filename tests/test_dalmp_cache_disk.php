@@ -10,9 +10,10 @@ require_once 'test_dalmp_cache_base.php';
  * @license BSD License
  * @version 3.0
  */
-class test_dalmp_cache_disk extends test_dalmp_cache_base {
-
-  public function setUp() {
+class test_dalmp_cache_disk extends test_dalmp_cache_base
+{
+  public function setUp()
+  {
     if (!extension_loaded('mysqli')) {
       $this->markTestSkipped('The mysqli extension is not available.');
     }

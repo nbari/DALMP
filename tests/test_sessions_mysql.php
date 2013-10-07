@@ -10,8 +10,8 @@ require_once 'test_sessions_base.php';
  * @license BSD License
  * @version 3.0
  */
-class test_sessions_mysql extends test_sessions_base {
-
+class test_sessions_mysql extends test_sessions_base
+{
   /**
    * SessionHandler instance
    *
@@ -19,7 +19,8 @@ class test_sessions_mysql extends test_sessions_base {
    */
   protected $sess;
 
-  public function setUp() {
+  public function setUp()
+  {
     if (!extension_loaded('mysqli')) {
       $this->markTestSkipped('The mysqli extension is not available.');
     }
@@ -31,7 +32,8 @@ class test_sessions_mysql extends test_sessions_base {
     $this->sess = new DALMP\Sessions\MySQL($db);
   }
 
-  public function testAttributes() {
+  public function testAttributes()
+  {
     $this->assertClassHasAttribute('DB', 'DALMP\Sessions\MySQL');
     $this->assertClassHasAttribute('dalmp_sessions_ref', 'DALMP\Sessions\MySQL');
     $this->assertClassHasAttribute('dalmp_sessions_table', 'DALMP\Sessions\MySQL');

@@ -10,8 +10,8 @@ require_once 'test_cache_base.php';
  * @license BSD License
  * @version 3.0
  */
-class test_cache_redis extends test_cache_base {
-
+class test_cache_redis extends test_cache_base
+{
   /**
    * Cache instance
    *
@@ -19,25 +19,29 @@ class test_cache_redis extends test_cache_base {
    */
   protected $cache;
 
-  public function setUp() {
+  public function setUp()
+  {
     if (!extension_loaded('redis')) {
       $this->markTestSkipped('The redis extension is not available.');
     }
     $this->cache = new DALMP\Cache\Redis;
   }
 
-  public function testAttributes() {
+  public function testAttributes()
+  {
     $this->assertClassHasAttribute('host', 'DALMP\Cache\Redis');
     $this->assertClassHasAttribute('port', 'DALMP\Cache\Redis');
     $this->assertClassHasAttribute('timeout', 'DALMP\Cache\Redis');
     $this->assertClassHasAttribute('cache', 'DALMP\Cache\Redis');
   }
 
-  public function testX() {
+  public function testX()
+  {
     $this->assertContainsOnlyInstancesOf('DALMP\Cache\Redis', array($this->cache));
   }
 
-  public function testPing() {
+  public function testPing()
+  {
     $this->assertEquals('+PONG', $this->cache->X()->ping());
 
     $count = 1000;

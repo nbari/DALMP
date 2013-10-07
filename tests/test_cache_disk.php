@@ -10,8 +10,8 @@ require_once 'test_cache_base.php';
  * @license BSD License
  * @version 3.0
  */
-class test_cache_disk extends test_cache_base {
-
+class test_cache_disk extends test_cache_base
+{
   /**
    * Cache instance
    *
@@ -19,15 +19,18 @@ class test_cache_disk extends test_cache_base {
    */
   protected $cache;
 
-  public function setUp() {
+  public function setUp()
+  {
     $this->cache = new DALMP\Cache\Disk('/tmp/test_dalmp_disk');
   }
 
-  public function testAttributes() {
+  public function testAttributes()
+  {
     $this->assertClassHasAttribute('cache_dir', 'DALMP\Cache\Disk');
   }
 
-  public function testX() {
+  public function testX()
+  {
     $this->assertContainsOnlyInstancesOf('DALMP\Cache\Disk', array($this->cache));
   }
 

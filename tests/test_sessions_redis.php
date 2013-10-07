@@ -10,8 +10,8 @@ require_once 'test_sessions_base.php';
  * @license BSD License
  * @version 3.0
  */
-class test_sessions_redis extends test_sessions_base {
-
+class test_sessions_redis extends test_sessions_base
+{
   /**
    * SessionHandler instance
    *
@@ -19,14 +19,16 @@ class test_sessions_redis extends test_sessions_base {
    */
   protected $sess;
 
-  public function setUp() {
+  public function setUp()
+  {
     if (!extension_loaded('redis')) {
       $this->markTestSkipped('The redis extension is not available.');
     }
     $this->sess = new DALMP\Sessions\Redis(new DALMP\Cache\Redis);
   }
 
-  public function testAttributes() {
+  public function testAttributes()
+  {
     $this->assertClassHasAttribute('cache', 'DALMP\Sessions\Redis');
     $this->assertClassHasAttribute('cache_ref_key', 'DALMP\Sessions\Redis');
     $this->assertClassHasAttribute('dalmp_sessions_ref', 'DALMP\Sessions\Redis');

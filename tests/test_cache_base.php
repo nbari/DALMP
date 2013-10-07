@@ -8,11 +8,12 @@
  * @license BSD License
  * @version 3.0
  */
-abstract class test_cache_base extends PHPUnit_Framework_TestCase {
-
+abstract class test_cache_base extends PHPUnit_Framework_TestCase
+{
   abstract public function testAttributes();
 
-  public function testSet() {
+  public function testSet()
+  {
     $tmp_string = '';
     foreach (range(1,100) as $id) {
       $this->assertTrue($this->cache->set("test_dalmp_key_{$id}", "val_{$id}"));
@@ -29,7 +30,8 @@ abstract class test_cache_base extends PHPUnit_Framework_TestCase {
   /**
    * @medium
    */
-  public function testGet() {
+  public function testGet()
+  {
     /**
      * wait 2 seconds to let keys expire
      */
@@ -44,7 +46,8 @@ abstract class test_cache_base extends PHPUnit_Framework_TestCase {
     $this->assertEquals($tmp_string, $this->cache->get("test_dalmp_key_tmp_string"));
   }
 
-  public function testDelete() {
+  public function testDelete()
+  {
     foreach (range(1,100) as $id) {
       $this->assertEquals(true, $this->cache->delete("test_dalmp_key_{$id}"));
     }
@@ -52,7 +55,8 @@ abstract class test_cache_base extends PHPUnit_Framework_TestCase {
     $this->assertEquals(true, $this->cache->delete("test_dalmp_key_tmp_string"));
   }
 
-  public function testFlush() {
+  public function testFlush()
+  {
     $this->cache->set('x', 'y');
     $this->asserttrue($this->cache->Flush());
     $this->assertEquals(false, $this->cache->get('x'));

@@ -20,8 +20,8 @@ $rs = $db->Execute($sql);
 
 if ($rs) {
   while (($rows = $db->query()) != false) {
-	  list($r1,$r2,$r3) = $rows;
-	  echo "w1: $r1, w2: $r2, w3: $r3", $timer->isCli(1);
+      list($r1,$r2,$r3) = $rows;
+      echo "w1: $r1, w2: $r2, w3: $r3", $timer->isCli(1);
   }
 }
 
@@ -47,7 +47,7 @@ $timer->setMark('foreach');
 $rs = $db->PExecute('SELECT * FROM Country WHERE Continent = ?', 'Europe');
 $out = array();
 while ($rows = $db->Pquery($out)) {
-	print_r($out);
+    print_r($out);
 }
 
 $rs = $db->PExecute('UPDATE Country SET code=? WHERE Code="PRT"', 'PRT');

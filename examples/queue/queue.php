@@ -17,6 +17,5 @@ echo 'dequeue only 3: ', print_r($queue->dequeue(3), true), $timer->isCli(1);
 
 echo 'delete from queue: ', var_dump($queue->delete(63)), $timer->isCli(1);
 
-
 # ------------------------------------------------------------------------------
 echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;

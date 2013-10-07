@@ -16,7 +16,6 @@ if ((mt_rand() % 10) == 0) {
 
 $_SESSION['test'] = 1 + @$_SESSION['test'];
 
-
 echo $_SESSION['test'];
 
 echo session_id();

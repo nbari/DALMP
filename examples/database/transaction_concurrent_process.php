@@ -9,7 +9,6 @@ $password = getenv('MYSQL_PASS') ?: '';
 $host = getenv('MYSQL_HOST') ?: '127.0.0.1';
 $port = getenv('MYSQL_HOST') ?: '3306';
 
-
 $db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
 
 $db->Execute('CREATE TABLE IF NOT EXISTS t_test2 (id INT NOT NULL PRIMARY KEY, credit DECIMAL(9,2)) ENGINE=InnoDB');

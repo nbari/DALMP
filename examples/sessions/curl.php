@@ -7,7 +7,8 @@ $url = 'http://dalmp.localbox.org/sessions.php';
 require_once '../mplt.php';
 $timer = new mplt();
 
-function checkSite($url,$page=null) {
+function checkSite($url,$page=null)
+{
   $cookie = '/tmp/cookie.txt';
   $agent = '-( DALMP )-';
   $ch=curl_init();

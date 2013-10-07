@@ -107,7 +107,6 @@ try {
   print_r($e->getMessage());
 }
 
-
 /**
  * If you have SSL will get something like:
 Array

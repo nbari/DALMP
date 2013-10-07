@@ -10,8 +10,8 @@ require_once 'test_sessions_base.php';
  * @license BSD License
  * @version 3.0
  */
-class test_sessions_memcache extends test_sessions_base {
-
+class test_sessions_memcache extends test_sessions_base
+{
   /**
    * SessionHandler instance
    *
@@ -19,14 +19,16 @@ class test_sessions_memcache extends test_sessions_base {
    */
   protected $sess;
 
-  public function setUp() {
+  public function setUp()
+  {
     if (!extension_loaded('memcache')) {
       $this->markTestSkipped('The memcache extension is not available.');
     }
     $this->sess = new DALMP\Sessions\Memcache(new DALMP\Cache\Memcache);
   }
 
-  public function testAttributes() {
+  public function testAttributes()
+  {
     $this->assertClassHasAttribute('cache', 'DALMP\Sessions\Memcache');
     $this->assertClassHasAttribute('cache_ref_key', 'DALMP\Sessions\Memcache');
     $this->assertClassHasAttribute('dalmp_sessions_ref', 'DALMP\Sessions\Memcache');
