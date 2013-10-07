@@ -54,7 +54,7 @@ class MPLT
     /**
      * getMark
      *
-     * @param string $name
+     * @param  string $name
      * @return array
      */
     public function getMark($name = null)
@@ -141,7 +141,7 @@ class MPLT
     /**
      * isCli()
      *
-     * @param boolean $eol
+     * @param  boolean $eol
      * @return boolean or PHP_EOL, <br/>
      */
     public function isCli($eol = null)
