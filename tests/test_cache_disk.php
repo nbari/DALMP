@@ -12,26 +12,26 @@ require_once 'test_cache_base.php';
  */
 class test_cache_disk extends test_cache_base
 {
-  /**
-   * Cache instance
-   *
-   * @var Cache
-   */
-  protected $cache;
+    /**
+     * Cache instance
+     *
+     * @var Cache
+     */
+    protected $cache;
 
-  public function setUp()
-  {
-    $this->cache = new DALMP\Cache\Disk('/tmp/test_dalmp_disk');
-  }
+    public function setUp()
+    {
+        $this->cache = new DALMP\Cache\Disk('/tmp/test_dalmp_disk');
+    }
 
-  public function testAttributes()
-  {
-    $this->assertClassHasAttribute('cache_dir', 'DALMP\Cache\Disk');
-  }
+    public function testAttributes()
+    {
+        $this->assertClassHasAttribute('cache_dir', 'DALMP\Cache\Disk');
+    }
 
-  public function testX()
-  {
-    $this->assertContainsOnlyInstancesOf('DALMP\Cache\Disk', array($this->cache));
-  }
+    public function testX()
+    {
+        $this->assertContainsOnlyInstancesOf('DALMP\Cache\Disk', array($this->cache));
+    }
 
 }

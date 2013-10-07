@@ -12,31 +12,31 @@ require_once 'test_sessions_base.php';
  */
 class test_sessions_mysql extends test_sessions_base
 {
-  /**
-   * SessionHandler instance
-   *
-   * @var sess
-   */
-  protected $sess;
+    /**
+     * SessionHandler instance
+     *
+     * @var sess
+     */
+    protected $sess;
 
-  public function setUp()
-  {
-    if (!extension_loaded('mysqli')) {
-      $this->markTestSkipped('The mysqli extension is not available.');
+    public function setUp()
+    {
+        if (!extension_loaded('mysqli')) {
+            $this->markTestSkipped('The mysqli extension is not available.');
+        }
+
+        /**
+         * read DSN from phpunit.xml
+         */
+        $db = new DALMP\Database($GLOBALS['DSN']);
+        $this->sess = new DALMP\Sessions\MySQL($db);
     }
 
-    /**
-     * read DSN from phpunit.xml
-     */
-    $db = new DALMP\Database($GLOBALS['DSN']);
-    $this->sess = new DALMP\Sessions\MySQL($db);
-  }
-
-  public function testAttributes()
-  {
-    $this->assertClassHasAttribute('DB', 'DALMP\Sessions\MySQL');
-    $this->assertClassHasAttribute('dalmp_sessions_ref', 'DALMP\Sessions\MySQL');
-    $this->assertClassHasAttribute('dalmp_sessions_table', 'DALMP\Sessions\MySQL');
-  }
+    public function testAttributes()
+    {
+        $this->assertClassHasAttribute('DB', 'DALMP\Sessions\MySQL');
+        $this->assertClassHasAttribute('dalmp_sessions_ref', 'DALMP\Sessions\MySQL');
+        $this->assertClassHasAttribute('dalmp_sessions_table', 'DALMP\Sessions\MySQL');
+    }
 
 }

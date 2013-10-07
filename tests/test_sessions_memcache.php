@@ -12,27 +12,27 @@ require_once 'test_sessions_base.php';
  */
 class test_sessions_memcache extends test_sessions_base
 {
-  /**
-   * SessionHandler instance
-   *
-   * @var sess
-   */
-  protected $sess;
+    /**
+     * SessionHandler instance
+     *
+     * @var sess
+     */
+    protected $sess;
 
-  public function setUp()
-  {
-    if (!extension_loaded('memcache')) {
-      $this->markTestSkipped('The memcache extension is not available.');
+    public function setUp()
+    {
+        if (!extension_loaded('memcache')) {
+            $this->markTestSkipped('The memcache extension is not available.');
+        }
+        $this->sess = new DALMP\Sessions\Memcache(new DALMP\Cache\Memcache);
     }
-    $this->sess = new DALMP\Sessions\Memcache(new DALMP\Cache\Memcache);
-  }
 
-  public function testAttributes()
-  {
-    $this->assertClassHasAttribute('cache', 'DALMP\Sessions\Memcache');
-    $this->assertClassHasAttribute('cache_ref_key', 'DALMP\Sessions\Memcache');
-    $this->assertClassHasAttribute('dalmp_sessions_ref', 'DALMP\Sessions\Memcache');
-    $this->assertClassHasAttribute('dalmp_sessions_key', 'DALMP\Sessions\Memcache');
-  }
+    public function testAttributes()
+    {
+        $this->assertClassHasAttribute('cache', 'DALMP\Sessions\Memcache');
+        $this->assertClassHasAttribute('cache_ref_key', 'DALMP\Sessions\Memcache');
+        $this->assertClassHasAttribute('dalmp_sessions_ref', 'DALMP\Sessions\Memcache');
+        $this->assertClassHasAttribute('dalmp_sessions_key', 'DALMP\Sessions\Memcache');
+    }
 
 }

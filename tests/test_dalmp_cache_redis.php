@@ -12,17 +12,17 @@ require_once 'test_dalmp_cache_base.php';
  */
 class test_dalmp_cache_redis extends test_dalmp_cache_base
 {
-  public function setUp()
-  {
-    if (!extension_loaded('mysqli')) {
-      $this->markTestSkipped('The mysqli extension is not available.');
-    }
+    public function setUp()
+    {
+        if (!extension_loaded('mysqli')) {
+            $this->markTestSkipped('The mysqli extension is not available.');
+        }
 
-    /**
-     * read DSN from phpunit.xml
-     */
-    $this->db = new DALMP\Database($GLOBALS['DSN']);
-    $this->db->useCache(new DALMP\Cache(new DALMP\Cache\Redis()));
-  }
+        /**
+         * read DSN from phpunit.xml
+         */
+        $this->db = new DALMP\Database($GLOBALS['DSN']);
+        $this->db->useCache(new DALMP\Cache(new DALMP\Cache\Redis()));
+    }
 
 }
