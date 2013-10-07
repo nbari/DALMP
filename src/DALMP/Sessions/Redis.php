@@ -9,7 +9,8 @@ namespace DALMP\Sessions;
  * @license BSD License
  * @version 3.0
  */
-class Redis implements \SessionHandlerInterface {
+class Redis implements \SessionHandlerInterface
+{
   /**
    * DALMP\Cache\Redis instance
    *
@@ -49,18 +50,21 @@ class Redis implements \SessionHandlerInterface {
    * @param DALMP\Cache\Redis $cache instance
    * @param string $sessions_ref global variable to be stored as reference
    */
-  public function __construct(\DALMP\Cache\Redis $cache, $sessions_ref = 'UID') {
+  public function __construct(\DALMP\Cache\Redis $cache, $sessions_ref = 'UID')
+  {
     $this->cache = $cache;
     $this->dalmp_sessions_ref = defined('DALMP_SESSIONS_REF') ? DALMP_SESSIONS_REF : $sessions_ref;
     $this->dalmp_sessions_key = defined('DALMP_SESSIONS_KEY') ? DALMP_SESSIONS_KEY : __FILE__;
     $this->cache_ref_key = sprintf('DALMP_REF_%s', sha1($this->dalmp_sessions_ref . $this->dalmp_sessions_key));
   }
 
-  public function close() {
+  public function close()
+  {
     return true;
   }
 
-  public function destroy($session_id) {
+  public function destroy($session_id)
+  {
     $key = sprintf('DALMP_%s', sha1($this->dalmp_sessions_ref . $session_id));
     if ($rs = $this->cache->Delete($key)) {
 
@@ -71,13 +75,15 @@ class Redis implements \SessionHandlerInterface {
         $this->cache->X()->HDEL($this->cache_ref_key, $key);
         $this->cache->X()->EXPIRE($this->cache_ref_key, 3600);
       }
+
       return true;
     } else {
       return false;
     }
   }
 
-  public function gc($maxlifetime) {
+  public function gc($maxlifetime)
+  {
     $refs = $this->cache->X()->HGETALL($this->cache_ref_key);
 
     $keys = array($this->cache_ref_key);
@@ -96,19 +102,24 @@ class Redis implements \SessionHandlerInterface {
         $this->cache->X()->EXPIRE($this->cache_ref_key, 3600);
       }
     }
+
     return true;
   }
 
-  public function open($save_path, $name) {
+  public function open($save_path, $name)
+  {
     return true;
   }
 
-  public function read($session_id) {
+  public function read($session_id)
+  {
     $key = sprintf('DALMP_%s', sha1($this->dalmp_sessions_ref . $session_id));
+
     return $this->cache->Get($key);
   }
 
-  public function write($session_id, $session_data) {
+  public function write($session_id, $session_data)
+  {
     $ref = (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) ? $GLOBALS[$this->dalmp_sessions_ref] : null;
     $timeout = ini_get('session.gc_maxlifetime');
     $expiry = time() + $timeout;
@@ -131,7 +142,8 @@ class Redis implements \SessionHandlerInterface {
    *
    * @return array of sessions containing any reference
    */
-  public function getSessionsRefs() {
+  public function getSessionsRefs()
+  {
     $refs = $this->cache->X()->HGetALL($this->cache_ref_key);
     $rs = array();
 
@@ -149,7 +161,8 @@ class Redis implements \SessionHandlerInterface {
    * @param string $ref
    * @return array of session containing a specific reference
    */
-  public function getSessionRef($ref) {
+  public function getSessionRef($ref)
+  {
     $refs = $this->cache->X()->HGetALL($this->cache_ref_key);
     $rs = array();
 
@@ -169,7 +182,8 @@ class Redis implements \SessionHandlerInterface {
    * @param string $ref
    * @return boolean
    */
-  public function delSessionRef($ref) {
+  public function delSessionRef($ref)
+  {
     $refs = $this->cache->X()->HGETALL($this->cache_ref_key);
 
     $keys = array($this->cache_ref_key);
@@ -187,6 +201,7 @@ class Redis implements \SessionHandlerInterface {
       $redis = $this->cache->X();
       call_user_func_array(array($redis, 'HDEL'), $keys);
       array_shift($keys);
+
       return (bool) $this->cache->delete($keys);
     } else {
       return false;

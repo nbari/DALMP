@@ -9,8 +9,8 @@ namespace DALMP;
  * @license BSD License
  * @version 3.0
  */
-class Database {
-
+class Database
+{
   /**
    * Contains database object
    *
@@ -113,7 +113,8 @@ class Database {
    * @param DSN $dsn
    * @param array $ssl
    */
-  public function __construct($dsn = null, $ssl = null) {
+  public function __construct($dsn = null, $ssl = null)
+  {
     if ($dsn) {
       $dsn = parse_url($dsn);
       $this->dsn['charset'] = isset($dsn['scheme']) ? (($dsn['scheme'] == 'mysql') ? null : $dsn['scheme']) : 'utf8';
@@ -143,7 +144,8 @@ class Database {
   /**
    * Opens a connection to a mysql server
    */
-  public function connect() {
+  public function connect()
+  {
     if ($this->isConnected()) {
       if ($this->debug) $this->debug->log(__METHOD__, 'still connected');
       return;
@@ -197,7 +199,8 @@ class Database {
    * @param boolean $log2file
    * @param mixed $debugFile
    */
-  public function debug($log2file = false, $debugFile = false) {
+  public function debug($log2file = false, $debugFile = false)
+  {
     if ($log2file == 'off') {
       if (is_object($this->debug)) {
         $this->debug->getLog();
@@ -211,6 +214,7 @@ class Database {
         $this->debug->log('DALMP', mysqli_get_host_info($this->DB), 'protocol version: ' . mysqli_get_proto_info($this->DB), 'character set: ' . mysqli_character_set_name($this->DB));
       }
     }
+
     return;
   }
 
@@ -219,14 +223,16 @@ class Database {
    *
    * @return boolean
    */
-  public function isConnected() {
+  public function isConnected()
+  {
     return $this->DB instanceof \mysqli;
   }
 
   /**
    * Closes a previously opened database connection
    */
-  public function closeConnection() {
+  public function closeConnection()
+  {
     if ($this->debug) $this->debug->log(__METHOD__);
     $this->isConnected() && $this->DB->close();
     $this->DB = null;
@@ -235,7 +241,8 @@ class Database {
   /**
    * Frees the memory associated with a result
    */
-  public function Close() {
+  public function Close()
+  {
     if ($this->debug) $this->debug->log(__METHOD__);
     return ($this->isConnected()) && $this->_rs->close();
   }
@@ -244,10 +251,12 @@ class Database {
    * Frees stored result memory for the given statement handle &
    * Closes a prepared statement
    */
-  public function PClose() {
+  public function PClose()
+  {
     if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__);
     if ($this->isConnected()) {
       $this->_stmt->free_result();
+
       return $this->_stmt->close();
     } else {
       return false;
@@ -259,7 +268,8 @@ class Database {
    *
    * @return int num of rows
    */
-  public function getNumOfRows() {
+  public function getNumOfRows()
+  {
     return $this->numOfRows;
   }
 
@@ -268,7 +278,8 @@ class Database {
    *
    * @return int num of rows affected
    */
-  public function getNumOfRowsAffected() {
+  public function getNumOfRowsAffected()
+  {
     return $this->numOfRowsAffected;
   }
 
@@ -277,7 +288,8 @@ class Database {
    *
    * @return int num of fields
    */
-  public function getNumOfFields() {
+  public function getNumOfFields()
+  {
     return $this->numOfFields;
   }
 
@@ -287,7 +299,8 @@ class Database {
    * @param $table;
    * @return array or false if no table set
    */
-  public function getColumnNames($table = null) {
+  public function getColumnNames($table = null)
+  {
     return ($table) ? $this->getCol("DESCRIBE $table") : false;
   }
 
@@ -297,7 +310,8 @@ class Database {
    * @chainable
    * @param ASSOC = MYSQLI_ASSOC, NUM = MYSQLI_NUM, null = MYSQLI_BOTH.
    */
-  public function FetchMode($mode = null) {
+  public function FetchMode($mode = null)
+  {
     switch (strtoupper($mode)) {
     case 'NUM':
       $this->fetchMode = MYSQLI_NUM;
@@ -312,7 +326,6 @@ class Database {
     }
 
     if ($this->debug) $this->debug->log(__METHOD__, $mode, $this->fetchMode);
-
     return $this;
   }
 
@@ -322,7 +335,8 @@ class Database {
    * @param string $args
    * @return array with arguments;
    */
-  public function Prepare() {
+  public function Prepare()
+  {
     if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__, func_get_args());
 
     switch (func_num_args()) {
@@ -350,6 +364,7 @@ class Database {
         $param = !strcmp(intval($param), $param) ? (int) $param : (!strcmp(floatval($param), $param) ? (float) $param : $param);
       }
       $key = is_int($param) ? 'i' : (is_float($param) ? 'd' : (is_string($param) ? 's' : 'b'));
+
       return $this->stmtParams[] = array($key => $param);
     }
   }
@@ -364,7 +379,8 @@ class Database {
    * @param SQL $sql
    * @param string $params
    */
-  public function PExecute() {
+  public function PExecute()
+  {
     $args = func_get_args();
     if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__, $args);
 
@@ -459,7 +475,8 @@ class Database {
    *
    * @param array $row
    */
-  public function Pquery(&$row) {
+  public function Pquery(&$row)
+  {
     if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__);
     $meta = $this->_stmt->result_metadata();
     $columns = array();
@@ -478,11 +495,13 @@ class Database {
    * @access protected
    * @return array
    */
-  protected function _pFetch($get = null) {
+  protected function _pFetch($get = null)
+  {
     if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__, $get);
 
     if (!$this->_stmt->num_rows) {
       $this->PClose();
+
       return false;
     }
 
@@ -516,6 +535,7 @@ class Database {
     case 'assoc':
       if ($this->numOfFields < 2) {
         if ($this->debug) { $this->debug->log('PreparedStatements', __METHOD__, 'ERROR', $get, 'num of columns < 2'); }
+
           return false;
       }
       if ($this->numOfFields == 2) {
@@ -557,6 +577,7 @@ class Database {
     }
 
     $this->PClose();
+
     return empty($rs) ? false : $rs;
   }
 
@@ -566,7 +587,8 @@ class Database {
    * @access protected
    * @return array of strings that corresponds to the fetched row or false
    */
-  protected function _fetch() {
+  protected function _fetch()
+  {
     if ($this->debug) $this->debug->log(__METHOD__);
     return $this->_rs->fetch_array($this->fetchMode) ?: false;
   }
@@ -580,7 +602,8 @@ class Database {
    * @param string $where
    * @return true or false on error
    */
-  public function AutoExecute($table, array $fields, $mode = 'INSERT', $where = null) {
+  public function AutoExecute($table, array $fields, $mode = 'INSERT', $where = null)
+  {
     if ($this->debug) $this->debug->log(__METHOD__, 'args:', $table, $fields, $mode, $where);
 
     $mode = (strtoupper($mode) == 'INSERT') ? 'INSERT' : 'UPDATE';
@@ -618,6 +641,7 @@ class Database {
       $query = array_values($data);
       $sql = "UPDATE $table SET $fields WHERE $where";
     }
+
     return call_user_func_array(array($this, 'PExecute'), array($sql, $query));
   }
 
@@ -629,7 +653,8 @@ class Database {
    * @param array $multiple_values example array(array('val1', 'val2'))
    * @return boolean
    */
-  public function multipleInsert($table, array $col_name, array $multiple_values) {
+  public function multipleInsert($table, array $col_name, array $multiple_values)
+  {
     $num_of_fields = count($col_name);
     if ($num_of_fields != count(end($multiple_values))) {
       throw new \InvalidArgumentException('number of values do not match number of columns');
@@ -655,7 +680,6 @@ class Database {
     $sql = "INSERT INTO $table (" . implode(',', $columns) . ") VALUES $pvalues";
 
     if ($this->debug) $this->debug->log(__METHOD__, $sql, $values);
-
     return call_user_func_array(array($this, 'PExecute'), array($sql, $values));
   }
 
@@ -665,7 +689,8 @@ class Database {
    * @param strign $sql
    * @return true or false if there was an error in executing the sql.
    */
-  public function Execute($sql) {
+  public function Execute($sql)
+  {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
 
     !$this->isConnected() && $this->connect();
@@ -678,6 +703,7 @@ class Database {
         if ($this->debug) $this->debug->log(__METHOD__, 'returned object', "#rows: $this->numOfRows #fields: $this->numOfFields");
         if (!$this->numOfRows) {
           $this->Close();
+
           return false;
         }
       }
@@ -712,7 +738,8 @@ class Database {
    * @see _fetch
    * @return array or null
    */
-  public function query() {
+  public function query()
+  {
     if ($this->debug) $this->debug->log(__METHOD__);
     return $this->_fetch();
   }
@@ -723,7 +750,8 @@ class Database {
    * @param string $sql
    * @return csv
    */
-  public function csv() {
+  public function csv()
+  {
     $args = func_get_args();
     if ($this->debug) $this->debug->log(__METHOD__, $args);
 
@@ -771,7 +799,8 @@ class Database {
    * @see mysqli_result::fetch_object
    * @return object or false
    */
-  public function map($sql, $class_name=null, $params=array()) {
+  public function map($sql, $class_name=null, $params=array())
+  {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
     if ($this->Execute($sql)) {
       return ($class_name) ? $this->_rs->fetch_object($class_name, $params) : $this->_rs->fetch_object();
@@ -786,7 +815,8 @@ class Database {
    * @param SQL $sql
    * @return array or false
    */
-  public function getAll($sql) {
+  public function getAll($sql)
+  {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
     if ($this->Execute($sql)) {
       $rows = array();
@@ -794,6 +824,7 @@ class Database {
         $rows[] = $row;
       }
       $this->Close();
+
       return $rows;
     } else {
       return false;
@@ -806,11 +837,13 @@ class Database {
    * @param SQL $sql
    * @return the first row as an array or false.
    */
-  public function getRow($sql) {
+  public function getRow($sql)
+  {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
     if ($this->Execute($sql)) {
       $row = $this->_fetch();
       $this->Close();
+
       return $row;
     } else {
       return false;
@@ -823,7 +856,8 @@ class Database {
    * @param SQL $sql
    * @return the first column as an array, or false.
    */
-  public function getCol($sql) {
+  public function getCol($sql)
+  {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
     if ($this->Execute($sql)) {
       $col = array();
@@ -831,6 +865,7 @@ class Database {
         $col[] = reset($row);
       }
       $this->Close();
+
       return $col;
     } else {
       return false;
@@ -843,11 +878,13 @@ class Database {
    * @param SQL $sql
    * @return the first field of the first row, or false.
    */
-  public function getOne($sql) {
+  public function getOne($sql)
+  {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
     if ($this->Execute($sql)) {
       $row = $this->_rs->fetch_row();
       $this->Close();
+
       return reset($row);
     } else {
       return false;
@@ -860,7 +897,8 @@ class Database {
    * @param SQL $sql
    * @return associative array, false if columns < 2, or no records found.
    */
-  public function getASSOC($sql) {
+  public function getASSOC($sql)
+  {
     if ($this->debug) $this->debug->log(__METHOD__, "sql: $sql");
     if ($this->Execute($sql)) {
       $cols = $this->numOfFields;
@@ -879,6 +917,7 @@ class Database {
         }
       }
       $this->Close();
+
       return $assoc;
     } else {
       return false;
@@ -888,10 +927,12 @@ class Database {
   /**
    * Start the transaction
    */
-  public function StartTrans() {
+  public function StartTrans()
+  {
     if (empty($this->trans)) {
       if ($this->debug) $this->debug->log('transactions', __METHOD__, $this->trans);
       $this->trans = array('level' => 0, 'error' => 0);
+
       return $this->Execute('BEGIN');
     } else {
       $this->trans['level']++;
@@ -905,7 +946,8 @@ class Database {
    *
    * @return boolean
    */
-  public function CompleteTrans() {
+  public function CompleteTrans()
+  {
     if ($this->debug) $this->debug->log('transactions', __METHOD__, $this->trans);
     if (empty($this->trans)) {
       return false;
@@ -918,14 +960,17 @@ class Database {
         } else {
           $this->Execute('ROLLBACK');
         }
+
         return false;
       }
       if ($this->trans['level'] == 0) {
         $this->trans = array();
+
         return ($this->Execute('COMMIT') === false) ? false : true;
       } else {
         $rs = $this->Execute(sprintf('RELEASE SAVEPOINT level%d', $this->trans['level']));
         $this->trans['level']--;
+
         return ($rs === false) ? false : true;
       }
     }
@@ -936,11 +981,13 @@ class Database {
    *
    * @return false if there was an error executing the ROLLBACK.
    */
-  public function RollBackTrans() {
+  public function RollBackTrans()
+  {
     if ($this->debug) $this->debug->log('transactions', __METHOD__, $this->trans);
     if (isset($this->trans['level']) && $this->trans['level'] > 0) {
       $rs = $this->Execute(sprintf('ROLLBACK TO SAVEPOINT level%d', $this->trans['level']));
       $this->trans['level']--;
+
       return $rs;
     } else {
       return $this->Execute('ROLLBACK');
@@ -952,7 +999,8 @@ class Database {
    *
    * @return int the auto generated id used in the last query
    */
-  public function Insert_Id() {
+  public function Insert_Id()
+  {
     if ($this->debug) $this->debug->log(__METHOD__);
     return $this->DB->insert_id;
   }
@@ -962,7 +1010,8 @@ class Database {
    *
    * @return string description of the last error
    */
-  public function ErrorMsg() {
+  public function ErrorMsg()
+  {
     return $this->DB->error;
   }
 
@@ -971,7 +1020,8 @@ class Database {
    *
    * @return int error code
    */
-  public function ErrorNum() {
+  public function ErrorNum()
+  {
     return $this->DB->errno;
   }
 
@@ -980,7 +1030,8 @@ class Database {
    *
    * @param string $value
    */
-  public function qstr($value) {
+  public function qstr($value)
+  {
     if ($this->debug) $this->debug->log(__METHOD__, func_get_args());
     if (is_int($value) || is_float($value)) {
       $rs = $value;
@@ -999,7 +1050,8 @@ class Database {
    * @param int $id
    * @return boolean
    */
-  public function renumber($table, $row = 'id') {
+  public function renumber($table, $row = 'id')
+  {
     if (isset($table)) {
       return $this->Execute('SET @var_dalmp=0') ? ($this->Execute("UPDATE $table SET $row = (@var_dalmp := @var_dalmp +1)") ? $this->Execute("ALTER TABLE $table AUTO_INCREMENT = 1") : false) : false;
     } else {
@@ -1013,7 +1065,8 @@ class Database {
    * @param string $table
    * @return boolean
    */
-  public function forceTruncate($table) {
+  public function forceTruncate($table)
+  {
     return (false !== $this->Execute('SET FOREIGN_KEY_CHECKS = 0') && false !== $this->Execute(sprintf('TRUNCATE %s', $table)));
   }
 
@@ -1022,7 +1075,8 @@ class Database {
    *
    * @param DALMP\Cache $cache
    */
-  public function useCache(Cache $cache) {
+  public function useCache(Cache $cache)
+  {
     if ($this->debug) $this->debug->log(__METHOD__, $cache);
     $this->cache = $cache;
   }
@@ -1032,7 +1086,8 @@ class Database {
    *
    * @return DAMLP\Cache instance
    */
-  public function Cache() {
+  public function Cache()
+  {
     if ($this->debug) $this->debug->log(__METHOD__, 'Creating cache using DSN');
     if ($this->cache instanceof Cache) {
       return $this->cache;
@@ -1055,6 +1110,7 @@ class Database {
       }
       $this->cache = new Cache($cache);
     }
+
     return $this->cache;
   }
 
@@ -1068,7 +1124,8 @@ class Database {
    * @param string $group
    * @return boolean;
    */
-  protected function _Cache() {
+  protected function _Cache()
+  {
     $args = func_get_args();
 
     if ($this->debug) $this->debug->log(__METHOD__, 'Args', $args);
@@ -1121,7 +1178,6 @@ class Database {
       }
 
       if ($this->debug) $this->debug->log(__METHOD__, 'Set', array('key' => $hkey, 'expire' => $expire, 'group' => $group));
-
       return $cache;
     }
   }
@@ -1136,7 +1192,8 @@ class Database {
    * @param string $group
    * @return boolean;
    */
-  protected function _CacheP() {
+  protected function _CacheP()
+  {
     $args = func_get_args();
 
     if ($this->debug) $this->debug->log(__METHOD__, 'Args', $args);
@@ -1202,7 +1259,6 @@ class Database {
       }
 
       if ($this->debug) $this->debug->log(__METHOD__, 'Set', array('key' => $hkey, 'expire' => $expire, 'group' => $group));
-
       return $cache;
     }
   }
@@ -1217,7 +1273,8 @@ class Database {
    * @param string $group group:name (to group cache keys) usefull when flushing the cache
    * @return boolean
    */
-  protected function _setCache($hkey, $cache, $expire = 3600, $group = null) {
+  protected function _setCache($hkey, $cache, $expire = 3600, $group = null)
+  {
     is_null($this->cache) && $this->Cache();
 
     if ($group) {
@@ -1244,6 +1301,7 @@ class Database {
         throw new \UnexpectedValueException('Can not store data on cache');
       }
     }
+
     return true;
   }
 
@@ -1254,7 +1312,8 @@ class Database {
    * @param string $key
    * @return boolean
    */
-  public function CacheFlush($sql = null, $key = null) {
+  public function CacheFlush($sql = null, $key = null)
+  {
     is_null($this->cache) && $this->Cache();
 
     if (is_null($sql)) {
@@ -1276,29 +1335,32 @@ class Database {
     }
 
     if ($this->debug) $this->debug->log(__METHOD__, 'Delete', array('sql' => $sql, 'key' => $hkey));
-
     return $this->cache->Delete($hkey);
   }
 
   /**
    * @return string server Version
    */
-  public function getServerVersion() {
+  public function getServerVersion()
+  {
     $version = $this->DB->server_version;
     $major = (int) ($version / 10000);
     $minor = (int) ($version % 10000 / 100);
     $revision = (int) ($version % 100);
+
     return $major . '.' . $minor . '.' . $revision;
   }
 
   /**
    * @return string Client Version
    */
-  public function getClientVersion() {
+  public function getClientVersion()
+  {
     $version = $this->DB->client_version;
     $major = (int) ($version / 10000);
     $minor = (int) ($version % 10000 / 100);
     $revision = (int) ($version % 100);
+
     return $major . '.' . $minor . '.' . $revision;
   }
 
@@ -1308,7 +1370,8 @@ class Database {
    * @param int $b
    * @return UUID, if $b returns binary(16)
    */
-  public function UUID($b=null) {
+  public function UUID($b=null)
+  {
     if ($this->debug) $this->debug->log(__METHOD__);
     if (function_exists('uuid_create')) {
       $uuid = uuid_create();
@@ -1320,6 +1383,7 @@ class Database {
         mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
       );
     }
+
     return $b ? pack('H*', str_replace('-', '', $uuid)) : $uuid;
   }
 
@@ -1328,25 +1392,30 @@ class Database {
    *
    * @return mysqli object
    */
-  public function X() {
+  public function X()
+  {
     if ($this->debug) $this->debug->log(__METHOD__);
     !$this->isConnected() && $this->connect();
+
     return $this->DB;
   }
 
   /**
    * magic method for Pget, Cacheget, and CachePge(all, row, col, one, assoc)
    */
-  public function __call($name, $args) {
+  public function __call($name, $args)
+  {
     $n = strtolower($name);
 
     $method = function ($subject) {
       ($m = preg_match('/^(pget|cacheget|cachepget)/i', $subject, $matches)) && $m = $matches[0];
+
       return $m;
     };
 
     $get = function ($m) use ($n) {
       $method = explode($m, $n) + array(null, null);
+
       return in_array($method[1], array('all', 'row', 'col', 'one', 'assoc')) ? $method[1] : false;
     };
 
@@ -1362,6 +1431,7 @@ class Database {
       if ($func = $get('cacheget')) {
         if ($this->debug) $this->debug->log('Cache', __METHOD__);
         array_unshift($args, $func);
+
         return call_user_func_array(array($this, '_Cache'), $args);
       }
       break;
@@ -1370,6 +1440,7 @@ class Database {
       if ($func = $get('cachepget')) {
         if ($this->debug) $this->debug->log('CacheP', __METHOD__);
         array_unshift($args, $func);
+
         return call_user_func_array(array($this, '_CacheP'), $args);
       }
       break;
@@ -1382,7 +1453,8 @@ class Database {
    *
    * @return database stats
    */
-  public function __toString() {
+  public function __toString()
+  {
     if ($this->isConnected()) {
       $status = 'DALMP :: ';
       $status .= 'Character set: ' . $this->DB->character_set_name();
@@ -1393,13 +1465,15 @@ class Database {
     } else {
       $status = 'no connections available';
     }
+
     return $status;
   }
 
   /**
    * destructor
    */
-  public function __destruct() {
+  public function __destruct()
+  {
     if ($this->debug) $this->debug->getLog();
     return $this->closeConnection();
   }

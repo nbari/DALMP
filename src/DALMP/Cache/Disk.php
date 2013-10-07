@@ -9,8 +9,8 @@ namespace DALMP\Cache;
  * @license BSD License
  * @version 3.0
  */
-class Disk implements CacheInterface {
-
+class Disk implements CacheInterface
+{
   public $cache_dir;
 
   /**
@@ -18,7 +18,8 @@ class Disk implements CacheInterface {
    *
    * @param string $dir
    */
-  public function __construct() {
+  public function __construct()
+  {
     $args = func_get_args();
 
     if (!$args || !isset($args[0])) {
@@ -43,7 +44,8 @@ class Disk implements CacheInterface {
    * @param string $value
    * @param int $expire time in seconds(default is 2592000 '30 days')
    */
-  public function set($key, $value, $expire = 2592000) {
+  public function set($key, $value, $expire = 2592000)
+  {
     $key = sha1($key);
     $expire = ($expire == 0) ? 2592000 : $expire;
 
@@ -66,6 +68,7 @@ class Disk implements CacheInterface {
         flock($fp, LOCK_UN);
         fclose($fp);
         $time = time() + (int) $expire;
+
         return touch($cache_file, $time);
       } else {
         return false;
@@ -80,7 +83,8 @@ class Disk implements CacheInterface {
    *
    * @param string $key
    */
-  public function Get($key){
+  public function Get($key)
+  {
     $key = sha1($key);
 
     $cache_file = sprintf('%s/%s/%s/%s/%s', $this->cache_dir, substr($key, 0, 2), substr($key, 2, 2),  substr($key, 4, 2), "dalmp_{$key}.cache");
@@ -90,6 +94,7 @@ class Disk implements CacheInterface {
         return unserialize(file_get_contents($cache_file));
       } else {
         unlink($cache_file);
+
         return false;
       }
     } else {
@@ -102,16 +107,19 @@ class Disk implements CacheInterface {
    *
    * @param string $key
    */
-  public function Delete($key){
+  public function Delete($key)
+  {
     $key = sha1($key);
     $cache_file = sprintf('%s/%s/%s/%s/%s', $this->cache_dir, substr($key, 0, 2), substr($key, 2, 2),  substr($key, 4, 2), "dalmp_{$key}.cache");
+
     return file_exists($cache_file) ? unlink($cache_file) : true;
   }
 
   /**
    * Flush cache
    */
-  public function Flush(){
+  public function Flush()
+  {
     $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->cache_dir, \RecursiveDirectoryIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
 
     foreach ($files as $fileinfo) {
@@ -128,7 +136,8 @@ class Disk implements CacheInterface {
   /**
    * Get cache stats
    */
-  public function Stats(){
+  public function Stats()
+  {
     $total_bytes = 0;
     $total_files = 0;
 
@@ -147,7 +156,8 @@ class Disk implements CacheInterface {
    *
    * @return cache object
    */
-  public function X(){
+  public function X()
+  {
     return $this;
   }
 

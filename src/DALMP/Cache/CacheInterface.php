@@ -9,8 +9,8 @@ namespace DALMP\Cache;
  * @license BSD License
  * @version 3.0
  */
-interface CacheInterface {
-
+interface CacheInterface
+{
   /**
    * Store data at the server
    *

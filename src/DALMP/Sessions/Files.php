@@ -9,8 +9,8 @@ namespace DALMP\Sessions;
  * @license BSD License
  * @version 3.0
  */
-class Files implements \SessionHandlerInterface {
-
+class Files implements \SessionHandlerInterface
+{
   /**
    * path to store sessions
    *
@@ -24,7 +24,8 @@ class Files implements \SessionHandlerInterface {
    *
    * @param string $dir
    */
-  public function __construct($sessions_dir = false) {
+  public function __construct($sessions_dir = false)
+  {
     if (!$sessions_dir) {
       $sessions_dir = defined('DALMP_SESSIONS_DIR') ? DALMP_SESSIONS_DIR : '/tmp/dalmp_sessions';
     }
@@ -38,11 +39,13 @@ class Files implements \SessionHandlerInterface {
     $this->sessions_dir = $dir;
   }
 
-  public function close() {
+  public function close()
+  {
     return true;
   }
 
-  public function destroy($session_id) {
+  public function destroy($session_id)
+  {
     $sess_path = sprintf('%s/%s/%s/%s', $this->sessions_dir, substr($session_id, 0, 2), substr($session_id, 2, 2),  substr($session_id, 4, 2));
     $sess_file = sprintf('%s/%s', $sess_path , "{$session_id}.sess");
 
@@ -53,7 +56,8 @@ class Files implements \SessionHandlerInterface {
     return true;
   }
 
-  public function gc($maxlifetime) {
+  public function gc($maxlifetime)
+  {
     $session_files = $this->rsearch($this->sessions_dir, '#^.*\.sess$#');
 
     foreach ($session_files as $file) {
@@ -65,11 +69,13 @@ class Files implements \SessionHandlerInterface {
     return true;
   }
 
-  public function open($save_path, $name) {
+  public function open($save_path, $name)
+  {
     return true;
   }
 
-  public function read($session_id) {
+  public function read($session_id)
+  {
     $sess_path = sprintf('%s/%s/%s/%s', $this->sessions_dir, substr($session_id, 0, 2), substr($session_id, 2, 2),  substr($session_id, 4, 2));
 
     if (!is_dir($sess_path) && !mkdir($sess_path, 0700, true)) {
@@ -81,7 +87,8 @@ class Files implements \SessionHandlerInterface {
     return (string) @file_get_contents($sess_file);
   }
 
-  public function write($session_id, $session_data) {
+  public function write($session_id, $session_data)
+  {
     $sess_path = sprintf('%s/%s/%s/%s', $this->sessions_dir, substr($session_id, 0, 2), substr($session_id, 2, 2),  substr($session_id, 4, 2));
 
     if (!is_dir($sess_path) && !mkdir($sess_path, 0700, true)) {
@@ -99,8 +106,10 @@ class Files implements \SessionHandlerInterface {
    * @param int $expiry
    * @return array of sessions containing any reference
    */
-  public function getSessionsRefs($expired_sessions = false) {
+  public function getSessionsRefs($expired_sessions = false)
+  {
     $refs = array();
+
     return false;
   }
 
@@ -110,7 +119,8 @@ class Files implements \SessionHandlerInterface {
    * @param string $ref
    * @return array of session containing a specific reference
    */
-  public function getSessionRef($ref) {
+  public function getSessionRef($ref)
+  {
     return false;
   }
 
@@ -120,7 +130,8 @@ class Files implements \SessionHandlerInterface {
    * @param string $ref
    * @return boolean
    */
-  public function delSessionRef($ref) {
+  public function delSessionRef($ref)
+  {
     return false;
   }
 
@@ -130,7 +141,8 @@ class Files implements \SessionHandlerInterface {
    * @param string $folder
    * @param string $pattern example: '#^.*\.sess$#'
    */
-  public function rsearch($folder, $pattern) {
+  public function rsearch($folder, $pattern)
+  {
     $dir = new RecursiveDirectoryIterator($folder);
     $ite = new RecursiveIteratorIterator($dir);
     $files = new RegexIterator($ite, $pattern, RegexIterator::GET_MATCH);
@@ -138,6 +150,7 @@ class Files implements \SessionHandlerInterface {
     foreach ($files as $file) {
       $fileList = array_merge($fileList, $file);
     }
+
     return $fileList;
   }
 

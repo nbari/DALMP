@@ -9,8 +9,8 @@ namespace DALMP;
  * @license BSD License
  * @version 3.0
  */
-class Logger {
-
+class Logger
+{
   /**
    * write log to file
    *
@@ -65,7 +65,8 @@ class Logger {
    * @param int $log2file if > 1 will create separate log files
    * @param string $logfile
    */
-  public function __construct($log2file = false, $logfile = false) {
+  public function __construct($log2file = false, $logfile = false)
+  {
     if ($log2file) {
       if ($logfile) {
         if (!is_writable($logfile)) {
@@ -85,7 +86,8 @@ class Logger {
     $this->time_start = microtime(true);
   }
 
-  public function log() {
+  public function log()
+  {
     $args = func_get_args();
     $key = array_shift($args);
     if (is_object($key)) {
@@ -100,7 +102,8 @@ class Logger {
     $this->log[][$etime] = $log;
   }
 
-  public function getLog() {
+  public function getLog()
+  {
     if ($this->log2file) {
       if ($this->log2file > 1) {
         $this->logfile .= '-' . microtime(true);

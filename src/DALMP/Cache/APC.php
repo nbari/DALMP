@@ -9,8 +9,8 @@ namespace DALMP\Cache;
  * @license BSD License
  * @version 3.0
  */
-class APC implements CacheInterface {
-
+class APC implements CacheInterface
+{
   protected $cache;
 
   /**
@@ -21,7 +21,8 @@ class APC implements CacheInterface {
    * @param int $timeout
    * @param int $compress
    */
-  public function __construct() {
+  public function __construct()
+  {
     if (!extension_loaded('apc') && !ini_get('apc.enabled')) {
       throw new \Exception(__CLASS__ . ': APC PECL extension not loaded or enabled!');
     }
@@ -34,7 +35,8 @@ class APC implements CacheInterface {
    * @param string $value
    * @param int $expire time in seconds(default is 0 meaning unlimited)
    */
-  public function set($key, $value, $expire = 0) {
+  public function set($key, $value, $expire = 0)
+  {
     return apc_store($key, $value, $expire);
   }
 
@@ -43,7 +45,8 @@ class APC implements CacheInterface {
    *
    * @param string $key
    */
-  public function Get($key) {
+  public function Get($key)
+  {
     return apc_fetch($key);
   }
 
@@ -52,21 +55,24 @@ class APC implements CacheInterface {
    *
    * @param string $key
    */
-  public function Delete($key){
+  public function Delete($key)
+  {
     return apc_delete($key);
   }
 
   /**
    * Flush cache
    */
-  public function Flush(){
+  public function Flush()
+  {
     return apc_clear_cache('user');
   }
 
   /**
    * Get cache stats
    */
-  public function Stats(){
+  public function Stats()
+  {
     return apc_cache_info();
   }
 
@@ -75,7 +81,8 @@ class APC implements CacheInterface {
    *
    * @return cache object
    */
-  public function X(){
+  public function X()
+  {
     return $this;
   }
 

@@ -9,8 +9,8 @@ namespace DALMP\Queue;
  * @license BSD License
  * @version 3.0
  */
-class Gearman implements QueueInterface {
-
+class Gearman implements QueueInterface
+{
   /**
    * queue name
    *
@@ -38,7 +38,8 @@ class Gearman implements QueueInterface {
    * @param string $queue
    * @param string $enc_key
    */
-  public function __construct($queue_name = 'dalmp_queue', $host = '127.0.0.1', $port = 4730) {
+  public function __construct($queue_name = 'dalmp_queue', $host = '127.0.0.1', $port = 4730)
+  {
     $this->host = $host;
     $this->port = $port;
     $this->queue_name = $queue_name;
@@ -50,13 +51,15 @@ class Gearman implements QueueInterface {
    * @param string $value
    * @return boolean
    */
-  public function enqueue($value) {
+  public function enqueue($value)
+  {
     $gm = new \GearmanClient();
     $gm->addServer($this->host, $this->port);
     $gm->queue_name = $this->queue_name;
 
     if ($gm->ping('ping')) {
       $job_handle = $gmclient->doBackground($this->queue_name, json_encode($value), md5($value));
+
       return ($this->gmclient->returnCode() != GEARMAN_SUCCESS) ? false : true;
     } else {
       return false;
@@ -68,7 +71,8 @@ class Gearman implements QueueInterface {
    *
    * @param string $key
    */
-  public function dequeue($limit = false) {
+  public function dequeue($limit = false)
+  {
     $gm= new \GermanWorker();
     $gm->addServer($this->host, $this->port);
     $gm->addFunction($this->queue_name, XXX)
@@ -79,7 +83,8 @@ class Gearman implements QueueInterface {
    *
    * @param string $value
    */
-  public function delete($key) {
+  public function delete($key)
+  {
   }
 
   /**
@@ -88,7 +93,8 @@ class Gearman implements QueueInterface {
    *
    * @return queue object
    */
-  public function X() {
+  public function X()
+  {
     return $this->gmclient;
   }
 

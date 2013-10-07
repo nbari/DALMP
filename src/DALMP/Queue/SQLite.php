@@ -9,8 +9,8 @@ namespace DALMP\Queue;
  * @license BSD License
  * @version 3.0
  */
-class SQLite implements QueueInterface {
-
+class SQLite implements QueueInterface
+{
   /**
    * filename - Path to the SQLite database, or :memory: to use in-memory
    * database.
@@ -40,8 +40,8 @@ class SQLite implements QueueInterface {
    * @param string $queue
    * @param string $enc_key
    */
-  public function __construct($filename, $queue_name = 'default', $enc_key = null) {
-
+  public function __construct($filename, $queue_name = 'default', $enc_key = null)
+  {
     $sdb = new \SQLite3($filename);
     $sdb->busyTimeout(2000);
 
@@ -66,7 +66,8 @@ class SQLite implements QueueInterface {
    * @param string $value
    * @return boolean
    */
-  public function enqueue($value) {
+  public function enqueue($value)
+  {
     $sdb = new \SQLite3($this->filename);
     $sdb->busyTimeout(2000);
     if ($this->enc_key) {
@@ -84,6 +85,7 @@ class SQLite implements QueueInterface {
 
     $sdb->busyTimeout(0);
     $sdb->close();
+
     return true;
   }
 
@@ -92,7 +94,8 @@ class SQLite implements QueueInterface {
    *
    * @param string $key
    */
-  public function dequeue($limit = false) {
+  public function dequeue($limit = false)
+  {
     $sdb = new \SQLite3($this->filename);
     $sdb->busyTimeout(2000);
     if ($this->enc_key) {
@@ -126,7 +129,8 @@ class SQLite implements QueueInterface {
    *
    * @param string $value
    */
-  public function delete($key) {
+  public function delete($key)
+  {
     $sdb = new \SQLite3($this->filename);
     $sdb->busyTimeout(2000);
     if ($this->enc_key) {

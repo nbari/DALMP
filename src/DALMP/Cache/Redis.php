@@ -9,7 +9,8 @@ namespace DALMP\Cache;
  * @license BSD License
  * @version 3.0
  */
-class Redis implements CacheInterface {
+class Redis implements CacheInterface
+{
   private $host = '127.0.0.1';
   private $port = 6379;
   private $timeout = 1;
@@ -22,7 +23,8 @@ class Redis implements CacheInterface {
    * @param int $port
    * @param int $timeout
    */
-  public function __construct() {
+  public function __construct()
+  {
     $args = func_get_args();
 
     if ($args) {
@@ -39,7 +41,8 @@ class Redis implements CacheInterface {
    * @param string $value
    * @param int $expire time in seconds(default is 0 meaning unlimited)
    */
-  public function set($key, $value, $expire = 0) {
+  public function set($key, $value, $expire = 0)
+  {
     if ($this->connect()) {
       if ($expire == 0 || $expire == -1) {
         return (bool) $this->cache->set($key, serialize($value));
@@ -56,7 +59,8 @@ class Redis implements CacheInterface {
    *
    * @param string $key
    */
-  public function Get($key) {
+  public function Get($key)
+  {
     return $this->connect() ? unserialize($this->cache->get($key)) : false;
   }
 
@@ -65,21 +69,24 @@ class Redis implements CacheInterface {
    *
    * @param string $key
    */
-  public function Delete($key) {
+  public function Delete($key)
+  {
     return $this->connect() ? (bool) $this->cache->delete($key) : false;
   }
 
   /**
    * Flush cache
    */
-  public function Flush() {
+  public function Flush()
+  {
     return $this->connect() ? (bool) $this->cache->flushDB() : false;
   }
 
   /**
    * Get cache stats
    */
-  public function Stats() {
+  public function Stats()
+  {
     return $this->connect() ? $this->cache->info() : false;
   }
 
@@ -88,14 +95,16 @@ class Redis implements CacheInterface {
    *
    * @return cache object
    */
-  public function X() {
+  public function X()
+  {
     return $this->connect() ? $this->cache : false;
   }
 
   /**
    * try to establish a connection
    */
-  private function connect() {
+  private function connect()
+  {
     if ($this->cache instanceof Redis) {
       return true;
     } else {
@@ -115,6 +124,7 @@ class Redis implements CacheInterface {
         }
       } catch (\RedisException $e) {
         trigger_error('ERROR ->' . __METHOD__ . $e->getMessage(), E_USER_NOTICE);
+
         return false;
       }
     }

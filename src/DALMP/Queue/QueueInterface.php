@@ -9,8 +9,8 @@ namespace DALMP\Queue;
  * @license BSD License
  * @version 3.0
  */
-interface QueueInterface {
-
+interface QueueInterface
+{
   /**
    * enqueue
    *

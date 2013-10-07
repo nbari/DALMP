@@ -9,7 +9,8 @@ namespace DALMP\Cache;
  * @license BSD License
  * @version 3.0
  */
-class Memcache implements CacheInterface {
+class Memcache implements CacheInterface
+{
   private $host = '127.0.0.1';
   private $port = 11211;
   private $timeout = 1;
@@ -24,7 +25,8 @@ class Memcache implements CacheInterface {
    * @param int $timeout
    * @param int $compress
    */
-  public function __construct() {
+  public function __construct()
+  {
     $args = func_get_args();
 
     if ($args) {
@@ -44,9 +46,11 @@ class Memcache implements CacheInterface {
    * @param string $value
    * @param int $expire time in seconds(default is 0 meaning unlimited)
    */
-  public function Set($key, $value, $expire = 0) {
+  public function Set($key, $value, $expire = 0)
+  {
     if ($this->connect()) {
       ($this->compress === false) && $this->cache->setCompressThreshold(0);
+
       return $this->cache->set($key, $value, $this->compress, $expire);
     } else {
       return false;
@@ -58,7 +62,8 @@ class Memcache implements CacheInterface {
    *
    * @param string $key
    */
-  public function Get($key) {
+  public function Get($key)
+  {
     return $this->connect() ? $this->cache->get($key) : false;
   }
 
@@ -67,21 +72,24 @@ class Memcache implements CacheInterface {
    *
    * @param string $key
    */
-  public function Delete($key){
+  public function Delete($key)
+  {
     return $this->connect() ? $this->cache->delete($key) : false;
   }
 
   /**
    * Flush cache
    */
-  public function Flush(){
+  public function Flush()
+  {
     return $this->connect() ? $this->cache->flush() : false;
   }
 
   /**
    * Get cache stats
    */
-  public function Stats(){
+  public function Stats()
+  {
     return $this->connect() ? $this->cache->getStats() : false;
   }
 
@@ -90,14 +98,16 @@ class Memcache implements CacheInterface {
    *
    * @return cache object
    */
-  public function X(){
+  public function X()
+  {
     return $this->connect() ? $this->cache : false;
   }
 
   /**
    * try to establish a connection
    */
-  private function connect() {
+  private function connect()
+  {
     if ($this->cache instanceof MemCache) {
       return true;
     } else {

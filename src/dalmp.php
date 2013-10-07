@@ -11,9 +11,9 @@ namespace DALMP;
  */
 
 if (defined('DALMP_DIR')) {
-  return;
+    return;
 } else {
-  define('DALMP_DIR', dirname(__FILE__));
+    define('DALMP_DIR', dirname(__FILE__));
 }
 
 require_once DALMP_DIR . '/DALMP/Loader.php';
