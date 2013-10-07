@@ -12,18 +12,24 @@ namespace DALMP\Queue;
 class Gearman implements QueueInterface {
 
   /**
-   * GearmanClient instance
-   *
-   * @var GearmanClient
-   */
-  private $gmclient;
-
-  /**
    * queue name
    *
    * @var string
    */
   private $queue_name;
+
+  /**
+   * gearman host
+   * @var string
+   */
+  private $host;
+
+  /**
+   * gearman port
+   *
+   * @var int
+   */
+  private $port;
 
   /**
    * Constructor
@@ -33,8 +39,8 @@ class Gearman implements QueueInterface {
    * @param string $enc_key
    */
   public function __construct($queue_name = 'dalmp_queue', $host = '127.0.0.1', $port = 4730) {
-    $this->gmclient = new \GearmanClient();
-    $this->gmclient->addServer($host, $port);
+    $this->host = $host;
+    $this->port = $port;
     $this->queue_name = $queue_name;
   }
 
@@ -45,7 +51,11 @@ class Gearman implements QueueInterface {
    * @return boolean
    */
   public function enqueue($value) {
-    if ($this->gmclient->ping('ping')) {
+    $gm = new \GearmanClient();
+    $gm->addServer($this->host, $this->port);
+    $gm->queue_name = $this->queue_name;
+
+    if ($gm->ping('ping')) {
       $job_handle = $gmclient->doBackground($this->queue_name, json_encode($value), md5($value));
       return ($this->gmclient->returnCode() != GEARMAN_SUCCESS) ? false : true;
     } else {
@@ -59,9 +69,9 @@ class Gearman implements QueueInterface {
    * @param string $key
    */
   public function dequeue($limit = false) {
-    $worker = new \GermanWorker();
-    $worker->addServer($this->host, $this->port);
-    $worker->addFunction($this->queue_name, ?????)
+    $gm= new \GermanWorker();
+    $gm->addServer($this->host, $this->port);
+    $gm->addFunction($this->queue_name, XXX)
   }
 
   /**
