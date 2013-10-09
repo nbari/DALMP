@@ -110,7 +110,7 @@ class Database
     /**
      * Constructor
      *
-     * @param DSN $dsn
+     * @param DSN   $dsn
      * @param array $ssl
      */
     public function __construct($dsn = null, $ssl = null)
@@ -197,7 +197,7 @@ class Database
      * debuger
      *
      * @param boolean $log2file
-     * @param mixed $debugFile
+     * @param mixed   $debugFile
      */
     public function debug($log2file = false, $debugFile = false)
     {
@@ -332,8 +332,8 @@ class Database
     /**
      * Prepare arguments
      *
-     * @param string $args
-     * @return array with arguments;
+     * @param  string $args
+     * @return array  with arguments;
      */
     public function Prepare()
     {
@@ -376,7 +376,7 @@ class Database
      * user also can define  the corresponding type of the bind variables (i, d, s, b): http://pt.php.net/manual/en/mysqli-stmt.bind-param.php
      * example: PGetAll('SELECT * FROM table WHERE name=? AND id=?', array('s'=>'99.3', 7)); or use the Prepare() method
      *
-     * @param SQL $sql
+     * @param SQL    $sql
      * @param string $params
      */
     public function PExecute()
@@ -596,11 +596,11 @@ class Database
     /**
      * Auto Execute
      *
-     * @param string $table
-     * @param array $fields
-     * @param string $mode
-     * @param string $where
-     * @return true or false on error
+     * @param  string $table
+     * @param  array  $fields
+     * @param  string $mode
+     * @param  string $where
+     * @return true   or false on error
      */
     public function AutoExecute($table, array $fields, $mode = 'INSERT', $where = null)
     {
@@ -648,9 +648,9 @@ class Database
     /**
      * multiple insert
      *
-     * @param string $table
-     * @param array $col_name example array('col1', 'col2')
-     * @param array $multiple_values example array(array('val1', 'val2'))
+     * @param  string  $table
+     * @param  array   $col_name        example array('col1', 'col2')
+     * @param  array   $multiple_values example array(array('val1', 'val2'))
      * @return boolean
      */
     public function multipleInsert($table, array $col_name, array $multiple_values)
@@ -686,8 +686,8 @@ class Database
     /**
      * Execute SQL statement
      *
-     * @param strign $sql
-     * @return true or false if there was an error in executing the sql.
+     * @param  strign $sql
+     * @return true   or false if there was an error in executing the sql.
      */
     public function Execute($sql)
     {
@@ -747,7 +747,7 @@ class Database
     /**
      * Export to CSV
      *
-     * @param string $sql
+     * @param  string $sql
      * @return csv
      */
     public function csv()
@@ -812,7 +812,7 @@ class Database
     /**
      * Fetch a result row as an associative, a numeric array, or both
      *
-     * @param SQL $sql
+     * @param  SQL   $sql
      * @return array or false
      */
     public function getAll($sql)
@@ -834,7 +834,7 @@ class Database
     /**
      * Get a Row
      *
-     * @param SQL $sql
+     * @param  SQL $sql
      * @return the first row as an array or false.
      */
     public function getRow($sql)
@@ -853,7 +853,7 @@ class Database
     /**
      * Get a Column
      *
-     * @param SQL $sql
+     * @param  SQL $sql
      * @return the first column as an array, or false.
      */
     public function getCol($sql)
@@ -875,7 +875,7 @@ class Database
     /**
      * Get One
      *
-     * @param SQL $sql
+     * @param  SQL $sql
      * @return the first field of the first row, or false.
      */
     public function getOne($sql)
@@ -894,7 +894,7 @@ class Database
     /**
      * Get an associative array using the first column as keys
      *
-     * @param SQL $sql
+     * @param  SQL         $sql
      * @return associative array, false if columns < 2, or no records found.
      */
     public function getASSOC($sql)
@@ -1046,8 +1046,8 @@ class Database
     /**
      * renumber
      *
-     * @param string $table
-     * @param int $id
+     * @param  string  $table
+     * @param  int     $id
      * @return boolean
      */
     public function renumber($table, $row = 'id')
@@ -1062,7 +1062,7 @@ class Database
     /**
      * forceTruncate - force truncate of a table
      *
-     * @param string $table
+     * @param  string  $table
      * @return boolean
      */
     public function forceTruncate($table)
@@ -1117,11 +1117,11 @@ class Database
     /**
      * general method for caching
      *
-     * @param string $fetch_method
-     * @param int $expire
-     * @param string $sql
-     * @param string $key
-     * @param string $group
+     * @param  string   $fetch_method
+     * @param  int      $expire
+     * @param  string   $sql
+     * @param  string   $key
+     * @param  string   $group
      * @return boolean;
      */
     protected function _Cache()
@@ -1185,11 +1185,11 @@ class Database
     /**
      * method for caching prepared statements
      *
-     * @param string $fetch_method
-     * @param int $expire
-     * @param string $sql
-     * @param string $key
-     * @param string $group
+     * @param  string   $fetch_method
+     * @param  int      $expire
+     * @param  string   $sql
+     * @param  string   $key
+     * @param  string   $group
      * @return boolean;
      */
     protected function _CacheP()
@@ -1267,10 +1267,10 @@ class Database
      * _setCache - store data in cache
      *
      * @access protected
-     * @param string $hkey The key that will be associated with the item.
-     * @param data $cache The variable to store
-     * @param int $expire Expiration time of the item
-     * @param string $group group:name (to group cache keys) usefull when flushing the cache
+     * @param  string  $hkey   The key that will be associated with the item.
+     * @param  data    $cache  The variable to store
+     * @param  int     $expire Expiration time of the item
+     * @param  string  $group  group:name (to group cache keys) usefull when flushing the cache
      * @return boolean
      */
     protected function _setCache($hkey, $cache, $expire = 3600, $group = null)
@@ -1308,8 +1308,8 @@ class Database
     /**
      * Cache flush
      *
-     * @param string $sql, SQL, cache group or null
-     * @param string $key
+     * @param  string  $sql, SQL, cache group or null
+     * @param  string  $key
      * @return boolean
      */
     public function CacheFlush($sql = null, $key = null)
@@ -1367,7 +1367,7 @@ class Database
     /**
      * Universally Unique Identifier v4
      *
-     * @param int $b
+     * @param  int   $b
      * @return UUID, if $b returns binary(16)
      */
     public function UUID($b=null)
