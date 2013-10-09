@@ -11,51 +11,51 @@ namespace DALMP\Cache;
  */
 interface CacheInterface
 {
-  /**
-   * Store data at the server
-   *
-   * @param string $key
-   * @param string $value
-   * @param int $ttl time in seconds(default is 0 meaning unlimited)
-   * @return this
-   */
-  public function Set($key, $value, $ttl = 0);
+    /**
+     * Store data at the server
+     *
+     * @param string $key
+     * @param string $value
+     * @param int $ttl time in seconds(default is 0 meaning unlimited)
+     * @return this
+     */
+    public function Set($key, $value, $ttl = 0);
 
-  /**
-   * Retrieve item from the server
-   *
-   * @param string $key
-   * @return mixed
-   */
-  public function Get($key);
+    /**
+     * Retrieve item from the server
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function Get($key);
 
-  /*
-   * Delete item from the server
-   *
-   * @param string $key
-   * @return bool
-   */
-  public function Delete($key);
+    /*
+     * Delete item from the server
+     *
+     * @param string $key
+     * @return bool
+     */
+    public function Delete($key);
 
-  /**
-   * Flush cache
-   *
-   * @return bool
-   */
-  public function Flush();
+    /**
+     * Flush cache
+     *
+     * @return bool
+     */
+    public function Flush();
 
-  /**
-   * Get cache stats
-   *
-   * @return bool
-   */
-  public function Stats();
+    /**
+     * Get cache stats
+     *
+     * @return bool
+     */
+    public function Stats();
 
-  /**
-   * X execute/call custom methods
-   *
-   * @return cache object
-   */
-  public function X();
+    /**
+     * X execute/call custom methods
+     *
+     * @return cache object
+     */
+    public function X();
 
 }

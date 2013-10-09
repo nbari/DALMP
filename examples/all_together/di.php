@@ -32,15 +32,15 @@ sleep(5);
 
 class teste
 {
-  public function __construct()
-  {
-    print_r(func_get_args());
-  }
+    public function __construct()
+    {
+        print_r(func_get_args());
+    }
 
-  public function foo()
-  {
-    echo __CLASS__ . __METHOD__;
-  }
+    public function foo()
+    {
+        echo __CLASS__ . __METHOD__;
+    }
 
 }
 
@@ -51,7 +51,7 @@ $a = $di->teste();
 $a->foo();
 
 $di->addObject('test2', $di->share(function () {
-  return new teste();
+    return new teste();
 }));
 
 echo PHP_EOL;

@@ -11,35 +11,35 @@ namespace DALMP\Queue;
  */
 interface QueueInterface
 {
-  /**
-   * enqueue
-   *
-   * @param string $value
-   * @return boolean
-   */
-  public function enqueue($value);
+    /**
+     * enqueue
+     *
+     * @param string $value
+     * @return boolean
+     */
+    public function enqueue($value);
 
-  /**
-   * dequeue
-   *
-   * @param int $limit returns {$limit} entries on the queue in ASC order
-   * @return array
-   */
-  public function dequeue($limit = false);
+    /**
+     * dequeue
+     *
+     * @param int $limit returns {$limit} entries on the queue in ASC order
+     * @return array
+     */
+    public function dequeue($limit = false);
 
-  /**
-   * delete element from queue
-   *
-   * @param string $key
-   * @return boolean
-   */
-  public function delete($key);
+    /**
+     * delete element from queue
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function delete($key);
 
-  /**
-   * X execute/call custom methods
-   *
-   * @return queue object
-   */
-  public function X();
+    /**
+     * X execute/call custom methods
+     *
+     * @return queue object
+     */
+    public function X();
 
 }
