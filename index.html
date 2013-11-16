@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Dalmp by nbari</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Dalmp</h1>
+        <h2>Database Abstraction Layer for MySQL using PHP</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/nbari/DALMP/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/nbari/DALMP/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/nbari/DALMP" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a name="dalmp---beta-version-3" class="anchor" href="#dalmp---beta-version-3"><span class="octicon octicon-link"></span></a>DALMP - BETA version (3)</h1>
+
+<p>Database Abstraction Layer for MySQL using PHP (version 3)</p>
+
+<p>0% fat and extremely easy to use, only connect to database when needed.</p>
+
+<p>handbook: <a href="http://www.dalmp.com">www.dalmp.com</a></p>
+
+<h2>
+<a name="details" class="anchor" href="#details"><span class="octicon octicon-link"></span></a>Details</h2>
+
+<ul>
+<li>Dependecy Injector (DI) support, load once and trigger when required.</li>
+<li>Redis.io support.</li>
+<li>Memcache single or multiple hosts and socket support.</li>
+<li>APC support (<a href="http://pecl.php.net/package/APC">http://pecl.php.net/package/APC</a>).</li>
+<li>Group caching cache by groups and flush by groups or individual keys.</li>
+<li>Disk cache support.</li>
+<li>Prepared statements ready, support dynamic building queries, auto detect types (i,d,s,b).</li>
+<li>Secure connections with SSL.</li>
+<li>SQLite3 Encryption (<a href="http://sqlcipher.net">http://sqlcipher.net</a>).</li>
+<li>Simple store of session on database (mysql/sqlite) or a cache like redis/memcache.</li>
+<li>Easy to use/install/adapt.</li>
+<li>Nested Transactions (SAVEPOINT / ROLLBACK TO SAVEPOINT).</li>
+<li>Support connections via unix_sockets.</li>
+<li>SQL queues.</li>
+<li>Export to CSV.</li>
+<li>Trace/measure everything enabling the debugger by just setting something like $db-&gt;debug(1).</li>
+<li>Works outof the box with Cloud databases like Amazon RDS.</li>
+<li>Lazy database connection. Connect only when needed.</li>
+<li>PSR-0 compliance.</li>
+</ul><p><em>FreeBSD</em>
+Install from ports: /usr/ports/databases/dalmp</p>
+
+<h2>
+<a name="sessions" class="anchor" href="#sessions"><span class="octicon octicon-link"></span></a>Sessions</h2>
+
+<p>For storing PHP sessions on mysql you need to create a table with the following schema</p>
+
+<pre><code>CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
+`sid` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+`expiry` int(11) unsigned NOT NULL DEFAULT '0',
+`data` longtext CHARACTER SET utf8 COLLATE utf8_bin,
+`ref` varchar(255) DEFAULT NULL,
+`ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`sid`),
+KEY `index` (`ref`,`sid`,`expiry`)
+) DEFAULT CHARSET=utf8;
+</code></pre>
+
+<h2>
+<a name="tests" class="anchor" href="#tests"><span class="octicon octicon-link"></span></a>Tests</h2>
+
+<p>For testing the session_handler that uses mysql you need to edit phpunit.xml
+file and enter your database DSN:</p>
+
+<pre><code>cp phpunit.xml.dist phpunit.xml
+</code></pre>
+
+<p>Edit the DSN section</p>
+
+<pre><code>...
+&lt;php&gt;
+  &lt;var name="DSN" value="utf8://root@localhost:3306/dalmp" /&gt;
+&lt;/php&gt;
+...
+</code></pre>
+
+<p>The DSN format is:</p>
+
+<pre><code>DSN format: charset://username:password@host:port/database
+$db = new DALMP\Database('utf8://user:password@host:3306/your_database');
+</code></pre>
+
+<p>For testing the database load the world.sql.gz located at the examples dir:</p>
+
+<pre><code>gzcat examples/world.sql.gz | mysql -uroot dalmp
+</code></pre>
+
+<p>You can try also with gzip, gunzip, zcat as alternative to gzcat</p>
+
+<p>That will load all the world tables into the dalmp database and also create the
+dalmp_sessions table.</p>
+
+<p>For testing purposes the same DSN (same database) is used when testing sessions
+and database, in practice you can have different DSN depending on your
+requirements.</p>
+
+<p>Install composer and required packages:</p>
+
+<pre><code>curl -sS https://getcomposer.org/installer | php -- --install-dir=bin
+</code></pre>
+
+<p>Install phpunit via composer:</p>
+
+<pre><code>./bin/composer.phar install --dev
+</code></pre>
+
+<p>For example to test only the Cache\Memcache:</p>
+
+<pre><code>./bin/phpunit --testsuite CacheMemcache --tap -c phpunit.xml
+</code></pre>
+
+<p>To run all the tests:</p>
+
+<pre><code>./bin/phpunit --tap -c phpunit.xml
+</code></pre>
+
+<h2>
+<a name="bugs--suggestions--comments" class="anchor" href="#bugs--suggestions--comments"><span class="octicon octicon-link"></span></a>Bugs / suggestions / comments</h2>
+
+<p>If you found a bug or have any other inquiries please use the the DALMP group at: <a href="https://groups.google.com/group/dalmp">https://groups.google.com/group/dalmp</a></p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
