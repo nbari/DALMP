@@ -1,7 +1,7 @@
-Zunzuncito
-===========
+DALMP
+=====
 
-micro-framework for creating REST API's.
+Database Abstraction Layer for MySQL using PHP
 
 Table of Contents
 =================
@@ -13,8 +13,3 @@ Table of Contents
    Download
    Install
    Quickstart
-   zunzun
-   API resource <resource>
-   tools
-   http_status_codes
-   zunzuncito
