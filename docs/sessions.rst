@@ -5,3 +5,4 @@ Sessions class
    :maxdepth: 2
 
    sessions/construct
+   sessions/debug
