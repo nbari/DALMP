@@ -1,11 +1,11 @@
 Download
 ========
 
-Zip File: `https://github.com/nbari/zunzuncito/zipball/master
-<https://github.com/nbari/zunzuncito/zipball/master>`_
+Zip File: `https://github.com/nbari/dalmp/zipball/master
+<https://github.com/nbari/dalmp/zipball/master>`_
 
-Tar Ball: `https://github.com/nbari/zunzuncito/tarball/master
-<https://github.com/nbari/zunzuncito/tarball/master>`_
+Tar Ball: `https://github.com/nbari/dalmp/tarball/master
+<https://github.com/nbari/dalmp/tarball/master>`_
 
-View on GitHub: `https://github.com/nbari/zunzuncito
-<https://github.com/nbari/zunzuncito>`_
+View on GitHub: `https://github.com/nbari/dalmp
+<https://github.com/nbari/dalmp>`_
