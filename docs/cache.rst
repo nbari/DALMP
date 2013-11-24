@@ -5,3 +5,4 @@ Cache class
    :maxdepth: 2
 
    cache/construct
+   cache/debug

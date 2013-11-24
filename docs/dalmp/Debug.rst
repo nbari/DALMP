@@ -1,4 +1,4 @@
-Debug
+debug
 =====
 
 todo
