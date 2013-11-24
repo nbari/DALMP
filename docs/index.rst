@@ -14,3 +14,7 @@ Table of Contents
    Install
    Quickstart
    dalmp
+   cache
+   queue
+   sessions
+   tests
