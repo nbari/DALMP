@@ -8,3 +8,4 @@ DALMP class
    dalmp/Cache
    dalmp/UUID
    dalmp/construct
+   dalmp/debug
