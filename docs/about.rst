@@ -49,7 +49,7 @@ of PHP didn't include PDO by default).
 To take advantage of the cache class and methods it is suggested to install the
 following extensions:
 
-redis: `http://github.com/nicolasff/phpredis <http://github.com/nicolasff/phpredis>`_
-memcache: `http://pecl.php.net/package/memcache <http://pecl.php.net/package/memcache>`_
+* redis: `http://github.com/nicolasff/phpredis <http://github.com/nicolasff/phpredis>`_
+* memcache: `http://pecl.php.net/package/memcache <http://pecl.php.net/package/memcache>`_
 
 On `FreeBSD <http://www.freebsd.org>`_ you can install DALMP from ports: /usr/ports/databases/dalmp
