@@ -216,8 +216,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'DALMP', 'DALMP Documentation',
-     ['Nicolas Embriz'], 1)
+    ('index', 'DALMP', u'DALMP Documentation',
+     [u'Nicolas Embriz'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -231,7 +231,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'DALMP', u'DALMP Documentation',
-   u'Nicolas Embriz', 'DALMP', "Database Abstraction Layer for MySQL using PHP
+   u'Nicolas Embriz', 'DALMP', "Database Abstraction Layer for MySQL using PHP",
    'Miscellaneous'),
 ]
 
