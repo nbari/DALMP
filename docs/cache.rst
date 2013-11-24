@@ -1,0 +1,7 @@
+Cache class
+===========
+
+.. toctree::
+   :maxdepth: 2
+
+   cache/construct
