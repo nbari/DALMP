@@ -2,6 +2,7 @@ DALMP
 =====
 
 Database Abstraction Layer for MySQL using PHP
+----------------------------------------------
 
 * Redis.io support.
 * Memcache single or multiple hosts and socket support.
