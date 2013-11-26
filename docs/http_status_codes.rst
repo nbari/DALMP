@@ -1,4 +1,0 @@
-HTTP status codes
-=================
-
-TODO
