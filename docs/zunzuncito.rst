@@ -31,4 +31,3 @@ zunzuncito Package
 .. automodule:: zunzuncito.zunzun
     :members:
     :undoc-members:
-    :show-inheritance:
