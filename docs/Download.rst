@@ -9,3 +9,7 @@ Tar Ball: `https://github.com/nbari/dalmp/tarball/master
 
 View on GitHub: `https://github.com/nbari/dalmp
 <https://github.com/nbari/dalmp>`_
+
+Clone the repository::
+
+    git clone git://github.com/nbari/DALMP.git dalmp
