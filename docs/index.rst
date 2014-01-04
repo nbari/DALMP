@@ -10,6 +10,9 @@ Clone the repository::
     git clone git://github.com/nbari/DALMP.git dalmp
 
 
+Details
+.......
+
 * Redis.io support.
 * Memcache single or multiple hosts and socket support.
 * `APC support <http://pecl.php.net/package/APC>`_.
