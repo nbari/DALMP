@@ -6,7 +6,7 @@ Quick Start
 start using it you need to define these values as shown in the self explanatory
 example below.
 
-.. sidebar::
+.. sidebar:: DSN values
 
    :charset: latin1
    :user: root
