@@ -101,4 +101,4 @@ The **$ssl** array argument, must follow this format:
 
 
 .. note::
-   When using SSL, `OpenSSL <http://www.php.net/openssl>`_ support must be enable for this to work.
+   When using SSL, PHP `OpenSSL <http://www.php.net/openssl>`_ support must be enable for this to work.
