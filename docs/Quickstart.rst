@@ -179,7 +179,11 @@ Example using a socket
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 1
+   :emphasize-lines: 5
+
+   <?php
+
+   require_once 'dalmp.php';
 
    $DSN = "utf8://$user:$password".'@unix_socket=\tmp\mysql.sock/test';
 
