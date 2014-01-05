@@ -73,3 +73,4 @@ Table of Contents
    sessions
    prepared_statements
    tests
+   examples
