@@ -40,7 +40,33 @@ example below.
     * 1 log to single file
     * 2 log to multiple files (creates a log per request)
     * 'off' to stop debuging
-    */
+    \*/
    $db->debug(1);
 
    echo $db, PHP_EOL; // print connection details
+
+
+If you wan to use the system default charset the DSN would be:
+
+.. code-block:: php
+   :linenos:
+
+   $DSN = "mysql://$user:$password@127.0.0.1/dalmptest";
+
+If you want to use SSL, an array containing the SSL parameters must be passed as
+the second argument to the database method example:
+
+.. code-block:: php
+   :linenos:
+
+   $ssl = array('key' => null, 'cert' => null, 'ca' => 'mysql-ssl.ca-cert.pem', 'capath' => null, 'cipher' => null);
+
+   $db = new DALMP\Database('latin1://root:mysql@127.0.0.1/dalmp', $ssl);
+
+In this case the DSN is formed by:
+
+:charset: latin1
+:user: root
+:password: mysql
+:host: 127.0.0.1
+:database:  dalmp
