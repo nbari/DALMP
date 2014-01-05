@@ -58,6 +58,7 @@ the second argument to the database method example:
 
 .. code-block:: php
    :linenos:
+   :emphasize-lines: 3
 
    $ssl = array('key' => null, 'cert' => null, 'ca' => 'mysql-ssl.ca-cert.pem', 'capath' => null, 'cipher' => null);
 
