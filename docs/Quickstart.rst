@@ -139,3 +139,59 @@ Otherwise:
      [Variable_name] => have_ssl
      [Value] => DISABLED
    )
+
+When running this:
+
+.. code-block:: php
+   :linenos:
+
+   try {
+     print_r($db->GetRow("show status like 'ssl_cipher'"));
+   } catch (\Exception $e) {
+     print_r($e->getMessage());
+   }
+
+If you have SSL you will get something like:
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 4
+
+   Array
+   (
+     [Variable_name] => Ssl_cipher
+     [Value] => DHE-RSA-AES256-SHA
+   )
+
+Otherwise:
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 4
+
+   Array
+   (
+     [Variable_name] => Ssl_cipher
+     [Value] =>
+   )
+
+Example using a socket
+......................
+
+.. code-block:: php
+   :linenos:
+   :emphasize-line: 1
+
+   $DSN = "utf8://$user:$password".'@unix_socket=\tmp\mysql.sock/test';
+
+   $db = new DALMP\Database($DSN);
+
+   $db->debug(1);
+
+   try {
+     echo PHP_EOL, 'example using unix_socket: ', $db->getOne('SELECT NOW()'), PHP_EOL;
+   } catch (\Exception $e) {
+     print_r($e->getMessage());
+   }
+
+   echo $db; // will print: DALMP :: connected to: db4, Character set: utf8, Localhost via UNIX socket,...
