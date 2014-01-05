@@ -2,9 +2,16 @@ Quick Start
 ===========
 
 
-**DALMP** takes the parameters from a `DSN <http://en.wikipedia.org/wiki/Data_source_name>`_ (database source name) so before you can
-start using it you need to define these values as shown in the self explanatory
-example below.
+**DALMP** takes the parameters from a `DSN <http://en.wikipedia.org/wiki/Data_source_name>`_ (database source name) so before you can start using it you need to define these values:
+
+
+DSN format
+..........
+
+
+
+Examples
+........
 
 .. sidebar:: DSN values
 
@@ -50,9 +57,19 @@ If you wan to use the system default charset the DSN would be:
 .. code-block:: php
    :linenos:
 
-   $DSN = "mysql://$user:$password@127.0.0.1/dalmptest";
+   $DSN = "mysql://$user:$password@127.0.0.1/test";
+
+* notice the **mysql://** instead of the **utf8://**
 
 If you want to use `SSL <http://en.wikipedia.org/wiki/Secure_Sockets_Layer>`_, an array containing the SSL parameters must be passed as the second argument to the database method example:
+
+.. sidebar:: DSN values
+
+   :charset: latin1
+   :user: root
+   :password: secret
+   :host: 127.0.0.1
+   :database: test
 
 .. code-block:: php
    :linenos:
@@ -60,15 +77,10 @@ If you want to use `SSL <http://en.wikipedia.org/wiki/Secure_Sockets_Layer>`_, a
 
    $ssl = array('key' => null, 'cert' => null, 'ca' => 'mysql-ssl.ca-cert.pem', 'capath' => null, 'cipher' => null);
 
-   $db = new DALMP\Database('latin1://root:mysql@127.0.0.1/dalmp', $ssl);
+   $DSN = 'latin1://root:secret@127.0.0.1/test';
 
-In this case the DSN is formed by:
+   $db = new DALMP\Database($DSN, $ssl);
 
-:charset: latin1
-:user: root
-:password: mysql
-:host: 127.0.0.1
-:database:  dalmp
 
 .. note::
    When using SSL, `OpenSSL <http://www.php.net/openssl>`_ support must be enable for this to work.
