@@ -38,7 +38,7 @@ Requirements
 
 * `PHP <http://www.php.net>`_ >= 5.4
 
-* A MySQL server to connect via host/socket
+* A `MySQL <http://www.mysql.org>`_ server to connect via host or `unix sockets. <http://en.wikipedia.org/wiki/Unix_domain_socket>`_
 
 To use the cache features you need either the redis, memcache or APC extensions
 compiled, otherwise disk cache will be used.
