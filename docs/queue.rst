@@ -1,5 +1,5 @@
-QUEUE class
-===========
+QUEUE
+=====
 
 .. toctree::
    :maxdepth: 2
