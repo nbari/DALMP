@@ -11,7 +11,7 @@ Composer
 ........
 
 
-A basic `composer.json <http://getcomposer.org/>`_ file:
+A basic `composer.json <http://getcomposer.org/doc/04-schema.md#composer-json>`_ file:
 
 .. code-block:: json
    :linenos:
@@ -25,3 +25,7 @@ A basic `composer.json <http://getcomposer.org/>`_ file:
 
 ::
    $ composer.phar install
+
+.. seemore::
+
+   `composer <http://getcomposer.org>`_
