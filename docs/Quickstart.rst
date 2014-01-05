@@ -120,7 +120,7 @@ To check that your connection has SSL you can test with this:
 
    $ssl = array('key' => null, 'cert' => null, 'ca' => 'mysql-ssl.ca-cert.pem', 'capath' => null, 'cipher' => null);
 
-   $DSN = 'latin1://root:secret@127.0.0.1/test';
+   $DSN = 'utf8://root:secret@127.0.0.1/test';
 
    $db = new DALMP\Database($DSN, $ssl);
 
