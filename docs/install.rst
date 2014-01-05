@@ -23,7 +23,8 @@ A basic `composer.json <http://getcomposer.org/doc/04-schema.md#composer-json>`_
      "minimum-stability": "dev"
    }
 
-::
+.. code-block:: sh
+
    $ composer.phar install
 
 .. seemore::
