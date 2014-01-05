@@ -78,6 +78,11 @@ If you wan to use the system default charset the DSN would be:
 
 * notice the **mysql://** instead of the **utf8://**
 
+
+SSL
+...
+
+
 If you want to use `SSL <http://en.wikipedia.org/wiki/Secure_Sockets_Layer>`_, an array containing the SSL parameters must be passed as the second argument to the database method example:
 
 .. code-block:: php
