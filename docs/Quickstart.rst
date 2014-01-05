@@ -114,6 +114,16 @@ To check that your connection has SSL you can test with this:
 .. code-block:: php
    :linenos:
 
+   <?php
+
+   require_once 'dalmp.php';
+
+   $ssl = array('key' => null, 'cert' => null, 'ca' => 'mysql-ssl.ca-cert.pem', 'capath' => null, 'cipher' => null);
+
+   $DSN = 'latin1://root:secret@127.0.0.1/test';
+
+   $db = new DALMP\Database($DSN, $ssl);
+
    try {
      $db->getOne('SELECT NOW()');
      print_r($db->FetchMode('ASSOC')->GetRow("show variables like 'have_ssl'"));
@@ -121,46 +131,24 @@ To check that your connection has SSL you can test with this:
      print_r($e->getMessage());
    }
 
-If you have SSL you will get something like:
-
-.. code-block:: php
-   :linenos:
-   :emphasize-lines: 4
-
-   Array
-   (
-     [Variable_name] => have_ssl
-     [Value] => YES
-   )
-
-Otherwise:
-
-.. code-block:: php
-   :linenos:
-   :emphasize-lines: 4
-
-   Array
-   (
-     [Variable_name] => have_ssl
-     [Value] => DISABLED
-   )
-
-When running this:
-
-.. code-block:: php
-   :linenos:
-
    try {
      print_r($db->GetRow("show status like 'ssl_cipher'"));
    } catch (\Exception $e) {
      print_r($e->getMessage());
    }
 
+
 If you have SSL you will get something like:
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 4
+   :emphasize-lines: 4,10
+
+   Array
+   (
+     [Variable_name] => have_ssl
+     [Value] => YES
+   )
 
    Array
    (
@@ -172,7 +160,13 @@ Otherwise:
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 4
+   :emphasize-lines: 4, 10
+
+   Array
+   (
+     [Variable_name] => have_ssl
+     [Value] => DISABLED
+   )
 
    Array
    (
