@@ -180,7 +180,7 @@ Example using a socket
 
 .. code-block:: php
    :linenos:
-   :emphasize-line: 1
+   :emphasize-lines: 1
 
    $DSN = "utf8://$user:$password".'@unix_socket=\tmp\mysql.sock/test';
 
