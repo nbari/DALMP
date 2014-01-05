@@ -12,7 +12,7 @@ DSN format
 
    charset://username:password@host:port/database
 
-When using unix sockets::
+When using `Unix domain sockets <http://en.wikipedia.org/wiki/Unix_domain_socket>`_::
 
    charset://username:password@unix_socket=\path\of\the.socket/database
 
