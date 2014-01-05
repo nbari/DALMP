@@ -99,7 +99,7 @@ If you want to use `SSL <http://en.wikipedia.org/wiki/Secure_Sockets_Layer>`_, a
    $db = new DALMP\Database($DSN, $ssl);
 
 
-The SSL array argument, must follow this format:
+The **$ssl** array argument, must follow this format:
 
 :key: The path name to the key file.
 :cert: The path name to the certificate file.
