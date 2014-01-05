@@ -36,7 +36,9 @@ Details
 Requirements
 ............
 
-`PHP <http://www.php.net>`_ >= 5.4
+* `PHP <http://www.php.net>`_ >= 5.4
+
+* A MySQL server to connect via host/socket
 
 To use the cache features you need either the redis, memcache or APC extensions
 compiled, otherwise disk cache will be used.
@@ -51,10 +53,7 @@ If you want to store session encrypted then you need SQLite3 Encryption
 **DALMP** does not use `PDO <http://www.php.net/pdo>`_, so do not worry if your PHP does not have the pdo
 extension.
 
-A MySQL server to connect via host/socket
-
 On `FreeBSD <http://www.freebsd.org>`_ you can install **DALMP** from ports: /usr/ports/databases/dalmp
-
 
 
 Table of Contents
