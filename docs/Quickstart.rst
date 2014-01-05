@@ -1,8 +1,16 @@
 Quick Start
 ===========
 
+.. code-block:: php
+   :linenos:
 
-**DALMP** takes the parameters from a `DSN <http://en.wikipedia.org/wiki/Data_source_name>`_ (database source name) so before you can start using it you need to define these values:
+   <?php
+    require_once 'dalmp.php';
+   // DSN format: charset://username:password@host:port/database
+   $db = new DALMP('utf8://root:'.rawurlencode('pass-?/:word').'@127.0.0.1:3306/mydatabase');
+   $rs = $db->FetchMode('ASSOC')->PGetAll('SELECT id, name FROM users WHERE id=?',3);
+
+**DALMP** takes the parameters from a `DSN <http://en.wikipedia.org/wiki/Data_source_name>`_ (database source name).
 
 
 DSN format
