@@ -19,7 +19,7 @@ example below.
    /**
     * example of a simple connection
     *
-    * charset: default system
+    * charset: utf8
     * user: dalmp
     * password: password
     * host: 127.0.0.1
@@ -28,9 +28,18 @@ example below.
     */
 
 
-   $db = new DALMP\Database('mysql://dalmp:password@127.0.0.1/dalmptest');
+   $db = new DALMP\Database("utf8://$user:$password@127.0.0.1/dalmptest");
    try {
        $rs = $db->getOne('SELECT now()');
    } catch (\Exception $e) {
        print_r($e->getMessage());
    }
+
+   /**
+    * 1 log to single file
+    * 2 log to multiple files (creates a log per request)
+    * 'off' to stop debuging
+    */
+   $db->debug(1);
+
+   echo $db, PHP_EOL; // print connection details
