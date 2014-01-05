@@ -90,7 +90,7 @@ If you want to use `SSL <http://en.wikipedia.org/wiki/Secure_Sockets_Layer>`_, a
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 3
+   :emphasize-lines: 1, 3
 
    $ssl = array('key' => null, 'cert' => null, 'ca' => 'mysql-ssl.ca-cert.pem', 'capath' => null, 'cipher' => null);
 
