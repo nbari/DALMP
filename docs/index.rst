@@ -7,7 +7,7 @@ DALMP
 
 Clone the repository::
 
-    git clone git://github.com/nbari/DALMP.git dalmp
+   $ git clone git://github.com/nbari/DALMP.git dalmp
 
 
 Details
