@@ -80,14 +80,6 @@ If you wan to use the system default charset the DSN would be:
 
 If you want to use `SSL <http://en.wikipedia.org/wiki/Secure_Sockets_Layer>`_, an array containing the SSL parameters must be passed as the second argument to the database method example:
 
-.. sidebar:: DSN values
-
-   :charset: latin1
-   :user: root
-   :password: secret
-   :host: 127.0.0.1
-   :database: test
-
 .. code-block:: php
    :linenos:
    :emphasize-lines: 1, 3
