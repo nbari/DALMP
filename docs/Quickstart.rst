@@ -102,3 +102,40 @@ The **$ssl** array argument, must follow this format:
 
 .. note::
    When using SSL, PHP `OpenSSL <http://www.php.net/openssl>`_ support must be enable for this to work.
+
+
+To check that your connection has SSL you can test with this:
+
+.. code-block:: php
+   :linenos:
+
+   try {
+     $db->getOne('SELECT NOW()');
+     print_r($db->FetchMode('ASSOC')->GetRow("show variables like 'have_ssl'"));
+   } catch (\Exception $e) {
+     print_r($e->getMessage());
+   }
+
+If you have SSL you will get something like:
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 4
+
+   Array
+   (
+     [Variable_name] => have_ssl
+     [Value] => YES
+   )
+
+Otherwise:
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 4
+
+   Array
+   (
+     [Variable_name] => have_ssl
+     [Value] => DISABLED
+   )
