@@ -8,6 +8,22 @@ Quick Start
 DSN format
 ..........
 
+::
+    charset://username:password@host:port/database
+
+When using unix sockets::
+
+    charset://username:password@unix_socket=\path\of\the.socket/database
+
+* Notice that the path of the socket is using backslashes.
+
+::
+
+    \path\of\the.socket
+
+Will be translated to::
+
+    /path/of/the.socket
 
 
 Examples
