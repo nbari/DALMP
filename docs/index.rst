@@ -72,5 +72,6 @@ Table of Contents
    queue
    sessions
    prepared_statements
+   DI
    tests
    examples
