@@ -26,9 +26,10 @@ example below.
     * database: dalmptest
     *
     */
+   $DSN = "utf8://$user:$password@127.0.0.1/dalmptest";
 
+   $db = new DALMP\Database($DSN);
 
-   $db = new DALMP\Database("utf8://$user:$password@127.0.0.1/dalmptest");
    try {
        $rs = $db->getOne('SELECT now()');
    } catch (\Exception $e) {
