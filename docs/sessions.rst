@@ -1,5 +1,5 @@
-Sessions class
-==============
+Sessions
+========
 
 .. toctree::
    :maxdepth: 2

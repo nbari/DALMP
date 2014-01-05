@@ -71,4 +71,5 @@ Table of Contents
    cache
    queue
    sessions
+   prepared_statements
    tests

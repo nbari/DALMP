@@ -1,5 +1,5 @@
-Cache class
-===========
+Cache
+=====
 
 .. toctree::
    :maxdepth: 2
