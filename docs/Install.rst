@@ -2,7 +2,9 @@ Install
 =======
 
 
-Clone the repository::
+Clone the repository:
+
+.. code-block:: sh
 
    $ git clone git://github.com/nbari/DALMP.git dalmp
 
