@@ -90,6 +90,8 @@ If you wan to use the system default charset the DSN would be:
 .. code-block:: php
    :linenos:
 
+   <?php
+
    $DSN = "mysql://$user:$password@127.0.0.1/test";
 
 * notice the **mysql://** instead of the **utf8://**
