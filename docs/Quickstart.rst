@@ -204,3 +204,8 @@ Example using a socket
 
    echo $db;
    # will print: DALMP :: connected to: db, Character set: utf8, Localhost via UNIX socket,...
+
+
+.. seealso::
+
+   `DALMP Examples <https://github.com/nbari/DALMP/tree/master/examples>`_
