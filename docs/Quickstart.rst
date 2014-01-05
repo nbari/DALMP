@@ -69,3 +69,6 @@ In this case the DSN is formed by:
 :password: mysql
 :host: 127.0.0.1
 :database:  dalmp
+
+.. note::
+   When using SSL, `OpenSSL <http://www.php.net/openssl>`_ support must be enable for this to work.
