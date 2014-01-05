@@ -8,11 +8,11 @@ example below.
 
 .. sidebar:: DSN values
 
-   :charset: latin1
-   :user: root
-   :password: mysql
+   :charset: utf8
+   :user: $user
+   :password: $password
    :host: 127.0.0.1
-   :database:  dalmp
+   :database:  test
 
 .. code-block:: php
    :linenos:
@@ -25,7 +25,7 @@ example below.
 
    require_once 'dalmp.php';
 
-   $DSN = "utf8://$user:$password@127.0.0.1/dalmptest";
+   $DSN = "utf8://$user:$password@127.0.0.1/test";
 
    $db = new DALMP\Database($DSN);
 
