@@ -194,4 +194,5 @@ Example using a socket
      print_r($e->getMessage());
    }
 
-   echo $db; // will print: DALMP :: connected to: db4, Character set: utf8, Localhost via UNIX socket,...
+   echo $db;
+   // will print: DALMP :: connected to: db4, Character set: utf8, Localhost via UNIX socket,...
