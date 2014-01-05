@@ -99,5 +99,14 @@ If you want to use `SSL <http://en.wikipedia.org/wiki/Secure_Sockets_Layer>`_, a
    $db = new DALMP\Database($DSN, $ssl);
 
 
+The SSL array argument, must follow this format:
+
+:key: The path name to the key file.
+:cert: The path name to the certificate file.
+:ca: The path name to the certificate authority file.
+:capath: The pathname to a directory that contains trusted SSL CA certificates in PEM format.
+:cipher:  A list of allowable ciphers to use for SSL encryption.
+
+
 .. note::
    When using SSL, `OpenSSL <http://www.php.net/openssl>`_ support must be enable for this to work.
