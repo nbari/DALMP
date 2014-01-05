@@ -64,7 +64,7 @@ Table of Contents
 
    about
    Download
-   Install
+   install
    Quickstart
    dalmp
    cache
