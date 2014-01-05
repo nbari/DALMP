@@ -27,6 +27,11 @@ Will be translated to::
     /path/of/the.socket
 
 
+.. seealso::
+
+   `Unix sockets vs Internet sockets <http://lists.freebsd.org/pipermail/freebsd-performance/2005-February/001143.html>`_
+
+
 Examples
 ........
 
