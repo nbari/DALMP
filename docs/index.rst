@@ -5,7 +5,9 @@ DALMP
 
 0% fat and extremely easy to use. Only connect to database when needed.
 
-Clone the repository::
+Clone the repository:
+
+.. code-block:: sh
 
    $ git clone git://github.com/nbari/DALMP.git dalmp
 
