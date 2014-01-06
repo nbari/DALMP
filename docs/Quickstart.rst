@@ -63,6 +63,16 @@ Will be translated to::
    `Unix sockets vs Internet sockets <http://lists.freebsd.org/pipermail/freebsd-performance/2005-February/001143.html>`_
 
 
+DALMP Classes
+.............
+
+For better code maintainability, **DALMP** is formed by different classes, the
+main class and the one that does the `abstraction layer <http://en.wikipedia.org/wiki/Database_abstraction_layer>`_
+is 'DALMP\Database'.
+
+
+
+
 Examples
 ........
 
