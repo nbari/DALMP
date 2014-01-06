@@ -26,7 +26,7 @@ $disk = new DALMP\Cache(new DALMP\Cache\Disk());
 $user = getenv('MYSQL_USER') ?: 'root';
 $password = getenv('MYSQL_PASS') ?: '';
 $host = getenv('MYSQL_HOST') ?: '127.0.0.1';
-$port = getenv('MYSQL_HOST') ?: '3306';
+$port = getenv('MYSQL_PORT') ?: '3306';
 $db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
 
 $sql = 'SELECT * FROM Country LIMIT 2';
