@@ -8,6 +8,20 @@ The next table contains, the 5 methods, that return the same result, but behave
 different, depending on the query or for particular cases, the developer should
 chose the proper one.
 
++------+----------+---------------------+---------------+---------------------------+
+| Name | Normal   | Prepared Statements | Cache Normal  | Cache Prepared Statements |
++======+==========+=====================+===============+===========================+
+| all  | GetAll   | PGetAll             | CacheGetAll   | CachePGetAll              |
++------+----------+---------------------+---------------+---------------------------+
+| row  | GetRow   | PGetRow             | CacheGetRow   | CachePGetRow              |
++------+----------+---------------------+---------------+---------------------------+
+| col  | GetCol   | PGetCol             | CacheGetCol   | CachePGetCol              |
++------+----------+---------------------+---------------+---------------------------+
+| one  | GetOne   | PGetOne             | CacheGetOne   | CachePGetOne              |
++------+----------+---------------------+---------------+---------------------------+
+| assoc| GetAssoc | PGetAssoc           | CacheGetAssoc | CachePGetAssoc            |
++------+----------+---------------------+---------------+---------------------------+
+
 
 .. toctree::
    :maxdepth: 2
