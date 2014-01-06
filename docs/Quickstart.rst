@@ -267,7 +267,7 @@ Example using cache (memcache)
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 5
+   :emphasize-lines: 12, 14
 
    <?php
 
@@ -283,7 +283,6 @@ Example using cache (memcache)
    $cache = new DALMP\Cache(new DALMP\Cache\Memcache());
 
    $db->useCache($cache);
-
 
    $rs = $db->CacheGetOne('SELECT now()');
 
