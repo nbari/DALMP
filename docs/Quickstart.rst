@@ -237,7 +237,7 @@ Example using a socket
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 5
+   :emphasize-lines: 8
 
    <?php
 
