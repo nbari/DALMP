@@ -1,5 +1,5 @@
-Cache
-=====
+DALMP\Cache
+===========
 
 .. toctree::
    :maxdepth: 2

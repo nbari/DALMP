@@ -68,7 +68,7 @@ Table of Contents
    Download
    Install
    Quickstart
-   dalmp
+   database
    cache
    queue
    sessions

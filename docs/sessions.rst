@@ -1,4 +1,4 @@
-Sessions
+DALMP\Sessions
 ========
 
 .. toctree::

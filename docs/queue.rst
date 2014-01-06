@@ -1,5 +1,5 @@
-QUEUE
-=====
+DALMP\Queue
+===========
 
 .. toctree::
    :maxdepth: 2
