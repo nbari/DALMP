@@ -68,7 +68,19 @@ DALMP Classes
 
 For better code maintainability, **DALMP** is formed by different classes, the
 main class and the one that does the `abstraction layer <http://en.wikipedia.org/wiki/Database_abstraction_layer>`_
-is `DALMP\Database </en/latest/database.html>`_.
+is `DALMP\\Database </en/latest/database.html>`_.
+
++----------+-----------------------------------------------+
+| mysql    | `DALMP\\Database </en/latest/database.html>`_ |
++----------+-----------------------------------------------+
+| cache    | `DALMP\\Cache </en/latest/cache.html>`_       |
++----------+-----------------------------------------------+
+| queue    | `DALMP\\Queue </en/latest/queue.html>`_       |
++----------+-----------------------------------------------+
+| sessions | `DALMP\\Sessions </en/latest/sessions.html>`_ |
++----------+-----------------------------------------------+
+| DI       | `DALMP\\DI </en/latest/DI.html>`_             |
++----------+-----------------------------------------------+
 
 
 
