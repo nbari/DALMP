@@ -1,7 +1,7 @@
 DALMP\\Database
 ==============
 
-The ``DALMP\Database`` class contains a set of methods that allow to query a
+The ``DALMP\Database`` class contains a set of `methods <https://github.com/nbari/DALMP/blob/master/src/DALMP/Database.php>`_ that allow to query a
 database in a more easy and secure way.
 
 The next table contains, the 5 methods, that return the same result, but behave
@@ -43,22 +43,21 @@ chose the proper one.
    database/RollBackTrans
    database/StartTrans
    database/UUID
-   database/X
    database/closeConnection
    database/connect
    database/csv
    database/debug
    database/forceTruncate
-   database/getASSOC
    database/getAll
-   database/getClientVersion
+   database/getASSOC
    database/getCol
+   database/getOne
+   database/getRow
    database/getColumnNames
+   database/getClientVersion
    database/getNumOfFields
    database/getNumOfRows
    database/getNumOfRowsAffected
-   database/getOne
-   database/getRow
    database/getServerVersion
    database/isConnected
    database/map
@@ -67,3 +66,4 @@ chose the proper one.
    database/query
    database/renumber
    database/useCache
+   database/X
