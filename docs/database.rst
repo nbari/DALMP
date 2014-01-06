@@ -8,19 +8,19 @@ The next table contains, the 5 methods, that return the same result, but behave
 different, depending on the query or for particular cases, the developer should
 chose the proper one.
 
-+------+----------+---------------------+---------------+---------------------------+
-| Name | Normal   | Prepared Statements | Cache Normal  | Cache Prepared Statements |
-+======+==========+=====================+===============+===========================+
-| all  | `GetAll </en/latest/database/getAll.html>`_   | PGetAll             | CacheGetAll   | CachePGetAll              |
-+------+----------+---------------------+---------------+---------------------------+
++------+-------------------------------------------------+---------------------+---------------+---------------------------+
+| Name | Normal                                          | Prepared Statements | Cache Normal  | Cache Prepared Statements |
++======+=================================================+=====================+===============+===========================+
+| all  | `GetAll </en/latest/database/getAll.html>`_     | PGetAll             | CacheGetAll   | CachePGetAll              |
++------+-------------------------------------------------+---------------------+---------------+---------------------------+
 | assoc| `GetAssoc </en/latest/database/getASSOC.html>`_ | PGetAssoc           | CacheGetAssoc | CachePGetAssoc            |
-+------+----------+---------------------+---------------+---------------------------+
-| col  | `GetCol </en/latest/database/getCol.html>`_   | PGetCol             | CacheGetCol   | CachePGetCol              |
-+------+----------+---------------------+---------------+---------------------------+
-| one  | `GetOne </en/latest/database/getOne.html>`_   | PGetOne             | CacheGetOne   | CachePGetOne              |
-+------+----------+---------------------+---------------+---------------------------+
-| row  | `GetRow </en/latest/database/getRow.html>`_  | PGetRow             | CacheGetRow   | CachePGetRow              |
-+------+----------+---------------------+---------------+---------------------------+
++------+-------------------------------------------------+---------------------+---------------+---------------------------+
+| col  | `GetCol </en/latest/database/getCol.html>`_     | PGetCol             | CacheGetCol   | CachePGetCol              |
++------+-------------------------------------------------+---------------------+---------------+---------------------------+
+| one  | `GetOne </en/latest/database/getOne.html>`_     | PGetOne             | CacheGetOne   | CachePGetOne              |
++------+-------------------------------------------------+---------------------+---------------+---------------------------+
+| row  | `GetRow </en/latest/database/getRow.html>`_     | PGetRow             | CacheGetRow   | CachePGetRow              |
++------+-------------------------------------------------+---------------------+---------------+---------------------------+
 
 
 .. toctree::
