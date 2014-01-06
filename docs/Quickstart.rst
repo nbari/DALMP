@@ -9,9 +9,27 @@ Quick Start
    require_once 'dalmp.php';
 
    // DSN format: charset://username:password@host:port/database
-   $db = new DALMP('utf8://root:'.rawurlencode('pass-?/:word').'@127.0.0.1:3306/mydatabase');
+   $db = new DALMP\database('utf8://root@localhost:3306/mydatabase');
 
-   $rs = $db->FetchMode('ASSOC')->PGetAll('SELECT id, name FROM users WHERE id=?',3);
+   $rs = $db->FetchMode('ASSOC')->GetAssoc('SHOW VARIABLES LIKE "char%"');
+
+Will output something like:
+
+.. code-block:: php
+   :linenos:
+
+   Array
+   (
+       [character_set_client] => utf8
+       [character_set_connection] => utf8
+       [character_set_database] => latin1
+       [character_set_filesystem] => binary
+       [character_set_results] => utf8
+       [character_set_server] => latin1
+       [character_set_system] => utf8
+       [character_sets_dir] => /usr/local/mysql-5.6.10-osx10.7-x86/share/charsets/
+   )
+
 
 **DALMP** takes the parameters from a `DSN <http://en.wikipedia.org/wiki/Data_source_name>`_ (database source name).
 
