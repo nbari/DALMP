@@ -13,13 +13,13 @@ chose the proper one.
 +======+==========+=====================+===============+===========================+
 | all  | GetAll   | PGetAll             | CacheGetAll   | CachePGetAll              |
 +------+----------+---------------------+---------------+---------------------------+
-| row  | GetRow   | PGetRow             | CacheGetRow   | CachePGetRow              |
+| assoc| GetAssoc | PGetAssoc           | CacheGetAssoc | CachePGetAssoc            |
 +------+----------+---------------------+---------------+---------------------------+
 | col  | GetCol   | PGetCol             | CacheGetCol   | CachePGetCol              |
 +------+----------+---------------------+---------------+---------------------------+
 | one  | GetOne   | PGetOne             | CacheGetOne   | CachePGetOne              |
 +------+----------+---------------------+---------------+---------------------------+
-| assoc| GetAssoc | PGetAssoc           | CacheGetAssoc | CachePGetAssoc            |
+| row  | GetRow   | PGetRow             | CacheGetRow   | CachePGetRow              |
 +------+----------+---------------------+---------------+---------------------------+
 
 
