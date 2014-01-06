@@ -14,6 +14,10 @@ Quick Start
 
    $rs = $db->FetchMode('ASSOC')->GetAssoc('SHOW VARIABLES LIKE "char%"');
 
+.. note::
+
+   **DALMP** is the name of the `namespace  <http://www.php.net/namespaces>`_
+
 Will output something like:
 
 .. code-block:: php
@@ -30,13 +34,6 @@ Will output something like:
        [character_set_system] => utf8
        [character_sets_dir] => /usr/local/mysql-5.6.10-osx10.7-x86/share/charsets/
    )
-
-
-**DALMP** takes the parameters from a `DSN <http://en.wikipedia.org/wiki/Data_source_name>`_ (database source name).
-
-.. note::
-
-   **DALMP** is the name of the `namespace  <http://www.php.net/namespaces>`_
 
 
 DSN format
