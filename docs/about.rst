@@ -31,7 +31,7 @@ following extensions:
 * memcache: `http://pecl.php.net/package/memcache <http://pecl.php.net/package/memcache>`_
 
 If you have a site on the cloud or in a load balanced enviroment, you could
-take advantege of how DALMP handle sessions by storing them in a database or in
+take advantege of how **DALMP** handle `sessions <http://www.php.net/manual/en/book.session.php>`_ by storing them in a database or in
 a cache engine.
 
 
