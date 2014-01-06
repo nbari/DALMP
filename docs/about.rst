@@ -35,7 +35,7 @@ take advantege of how DALMP handle sessions by storing them in a database or in
 a cache engine.
 
 
-.. seemore::
+.. seealso::
 
    `Dalmp\\Sessions </en/latest/sessions.html>`_
 
