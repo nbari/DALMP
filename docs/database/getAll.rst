@@ -1,4 +1,4 @@
-getALL
+getAll
 ======
 
 Todo
