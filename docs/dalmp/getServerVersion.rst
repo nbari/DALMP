@@ -1,4 +1,0 @@
-getServerVersion
-================
-
-Todo

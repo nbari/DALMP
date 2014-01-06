@@ -1,4 +1,0 @@
-getNumOfFields
-==============
-
-Todo
