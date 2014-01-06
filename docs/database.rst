@@ -1,6 +1,13 @@
 DALMP\\Database
 ==============
 
+The ``DALMP\Database`` class contains a set of methods that allow to query a
+database in a more easy and secure way.
+
+The next table contains, the 5 methods that return the same result, but behave different,
+depending on the query or for particular casees, the end user, developer should chose the proper one.
+
+
 .. toctree::
    :maxdepth: 2
 
