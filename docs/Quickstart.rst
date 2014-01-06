@@ -3,6 +3,7 @@ Quick Start
 
 .. code-block:: php
    :linenos:
+   :emphasize-lines: 6
 
    <?php
 
@@ -32,6 +33,10 @@ Will output something like:
 
 
 **DALMP** takes the parameters from a `DSN <http://en.wikipedia.org/wiki/Data_source_name>`_ (database source name).
+
+.. note::
+
+   **DALMP** is the name of the `namespace  <http://www.php.net/namespaces>`_`
 
 
 DSN format
