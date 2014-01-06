@@ -11,15 +11,15 @@ chose the proper one.
 +------+----------+---------------------+---------------+---------------------------+
 | Name | Normal   | Prepared Statements | Cache Normal  | Cache Prepared Statements |
 +======+==========+=====================+===============+===========================+
-| all  | GetAll   | PGetAll             | CacheGetAll   | CachePGetAll              |
+| all  | `GetAll </en/latest/database/getAll.html>`_   | PGetAll             | CacheGetAll   | CachePGetAll              |
 +------+----------+---------------------+---------------+---------------------------+
-| assoc| GetAssoc | PGetAssoc           | CacheGetAssoc | CachePGetAssoc            |
+| assoc| `GetAssoc </en/latest/database/getASSOC.html>`_ | PGetAssoc           | CacheGetAssoc | CachePGetAssoc            |
 +------+----------+---------------------+---------------+---------------------------+
-| col  | GetCol   | PGetCol             | CacheGetCol   | CachePGetCol              |
+| col  | `GetCol </en/latest/database/getCol.html>`_   | PGetCol             | CacheGetCol   | CachePGetCol              |
 +------+----------+---------------------+---------------+---------------------------+
-| one  | GetOne   | PGetOne             | CacheGetOne   | CachePGetOne              |
+| one  | `GetOne </en/latest/database/getOne.html>`_   | PGetOne             | CacheGetOne   | CachePGetOne              |
 +------+----------+---------------------+---------------+---------------------------+
-| row  | GetRow   | PGetRow             | CacheGetRow   | CachePGetRow              |
+| row  | `GetRow </en/latest/database/getRow.html>`_  | PGetRow             | CacheGetRow   | CachePGetRow              |
 +------+----------+---------------------+---------------+---------------------------+
 
 
