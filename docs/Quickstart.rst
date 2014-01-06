@@ -9,7 +9,7 @@ Quick Start
    require_once 'dalmp.php';
 
    // DSN format: charset://username:password@host:port/database
-   $db = new DALMP\database('utf8://root@localhost:3306/mydatabase');
+   $db = new DALMP\database('utf8://root@localhost:3306/');
 
    $rs = $db->FetchMode('ASSOC')->GetAssoc('SHOW VARIABLES LIKE "char%"');
 
