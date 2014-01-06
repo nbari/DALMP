@@ -36,7 +36,7 @@ Will output something like:
 
 .. note::
 
-   **DALMP** is the name of the `namespace  <http://www.php.net/namespaces>`_`
+   **DALMP** is the name of the `namespace  <http://www.php.net/namespaces>`_
 
 
 DSN format
