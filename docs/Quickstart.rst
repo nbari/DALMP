@@ -1,15 +1,16 @@
 Quick Start
 ===========
 
+Connecting and doing a query:
+
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 6
+   :emphasize-lines: 5
 
    <?php
 
    require_once 'dalmp.php';
 
-   // DSN format: charset://username:password@host:port/database
    $db = new DALMP\database('utf8://root@localhost');
 
    $rs = $db->FetchMode('ASSOC')->GetAssoc('SHOW VARIABLES LIKE "char%"');
