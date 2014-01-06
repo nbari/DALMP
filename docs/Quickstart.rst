@@ -68,8 +68,7 @@ DALMP Classes
 
 For better code maintainability, **DALMP** is formed by different classes, the
 main class and the one that does the `abstraction layer <http://en.wikipedia.org/wiki/Database_abstraction_layer>`_
-is 'DALMP\Database'.
-
+is `DALMP\Database </en/latest/database.html>`_.
 
 
 
