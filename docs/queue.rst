@@ -1,4 +1,4 @@
-DALMP\Queue
+DALMP\\Queue
 ===========
 
 .. toctree::
