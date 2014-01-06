@@ -243,6 +243,9 @@ Example using a socket
 
    require_once 'dalmp.php';
 
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
    $DSN = "utf8://$user:$password".'@unix_socket=\tmp\mysql.sock/test';
 
    $db = new DALMP\Database($DSN);
@@ -257,6 +260,34 @@ Example using a socket
 
    echo $db;
    # will print: DALMP :: connected to: db, Character set: utf8, Localhost via UNIX socket,...
+
+
+Example using cache (memcache)
+..............................
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 5
+
+   <?php
+
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   $DSN = "utf8://$user:$password".'@localhost/test';
+
+   $db = new DALMP\Database($DSN);
+
+   $cache = new DALMP\Cache(new DALMP\Cache\Memcache());
+
+   $db->useCache($cache);
+
+
+   $rs = $db->CacheGetOne('SELECT now()');
+
+   echo $rs, PHP_EOL;
 
 
 .. seealso::
