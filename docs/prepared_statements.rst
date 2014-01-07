@@ -13,8 +13,14 @@ The following table, show the characters which specify the types for the corresp
 variables:
 
 
-+-----------+-----------------------------------------+
-| Character | Description                             |
-+===========+=========================================+
-| i         | corresponding variable has type integer |
-+-----------+-----------------------------------------+
++-----------+--------------------------------------------------------------+
+| Character | Description                                                  |
++===========+==============================================================+
+| i         | corresponding variable has type integer                      |
++-----------+--------------------------------------------------------------+
+| d         | corresponding variable has type double                       |
++-----------+--------------------------------------------------------------+
+| s         | corresponding variable has type string                       |
++-----------+--------------------------------------------------------------+
+| b         | corresponding variable is a blob and will be sent in packets |
++-----------+--------------------------------------------------------------+
