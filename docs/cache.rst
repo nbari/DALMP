@@ -6,5 +6,6 @@ TODO
 .. toctree::
    :maxdepth: 2
 
-   cache/construct
-   cache/debug
+   cache/disk
+   cache/memcache
+   cache/redis
