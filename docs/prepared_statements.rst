@@ -1,7 +1,7 @@
-Prepared Statements
+Prepared statements
 ===================
 
-`Prepared Statements <http://en.wikipedia.org/wiki/Prepared_statement>`_ help
+`Prepared statements <http://en.wikipedia.org/wiki/Prepared_statement>`_ help
 you in many cases to avoid avoid mysql injections and helps increasing security
 of your queries by separating the SQL logic from the data being supplied.
 
@@ -30,7 +30,7 @@ methods:
 
 
 +------+----------+--------------------------------------------------+---------------+---------------------------+
-| Name | Normal   | Prepared Statements                              | Cache Normal  | Cache Prepared Statements |
+| Name | Normal   | Prepared statements                              | Cache Normal  | Cache Prepared statements |
 +======+==========+==================================================+===============+===========================+
 | all  | GetAll   | `PGetAll </en/latest/database/getAll.html>`_     | CacheGetAll   | CachePGetAll              |
 +------+----------+--------------------------------------------------+---------------+---------------------------+
