@@ -37,7 +37,7 @@ PGetRow   | Executes the SQL and returns the first row as an array.
           | If an error occurs, false is returned.
 PGetCol   | Executes the SQL and returns all elements of the first column as
           | a 1-dimensional array. If an error occurs, false is returned.
-PGetOne   | Executes the SQL and returns the first field of the first row.
-          | If an error occurs, false is returned.
-PGetASSOC |
+PGetOne   Executes the SQL and returns the first field of the first row.
+          If an error occurs, false is returned.
+PGetASSOC
 ========= =========================================================================
