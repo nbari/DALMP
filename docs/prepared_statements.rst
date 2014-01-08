@@ -25,7 +25,7 @@ variables:
 | b         | corresponding variable is a blob and will be sent in packets |
 +-----------+--------------------------------------------------------------+
 
-To use prepared statements on your SQL statements you can use the following
+To use "Prepared statements" on your SQL statements you can use the following
 methods:
 
 
@@ -45,5 +45,5 @@ methods:
 
 .. note::
 
-   Notice that when using prepared statements basically the methods are
+   Notice that when using "Prepared statements" basically the methods are
    prefixed with a **P**
