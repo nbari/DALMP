@@ -24,3 +24,7 @@ variables:
 +-----------+--------------------------------------------------------------+
 | b         | corresponding variable is a blob and will be sent in packets |
 +-----------+--------------------------------------------------------------+
+
+In most cases you probably only use this method when Inserting or Updating
+data, for retrieving data you can use the same methods used for the Cache method
+which are:
