@@ -29,16 +29,16 @@ To use prepared statements on your SQL statements you can use the following
 methods:
 
 
-+------+----------+--------------------------------------------------+---------------+------------------------------+
-| Name | Normal   | Prepared Statements                              | Cache Normal  | Cache Prepared Statements    |
-+======+==========+==================================================+===============+==============================+
-| all  | GetAll   | `PGetAll </en/latest/database/getAll.html>`_     | CacheGetAll   | CachePGetAll                 |
-+------+----------+--------------------------------------------------+---------------+------------------------------+
-| assoc| GetAssoc | `PGetAssoc </en/latest/database/getASSOC.html>`_ | CacheGetAssoc | CachePGetAssoc               |
-+------+----------+--------------------------------------------------+---------------+------------------------------+
-| col  | GetCol   | `PGetCol </en/latest/database/getCol.html>`_     | CacheGetCol   | CachePGetCol                 |
-+------+----------+--------------------------------------------------+---------------+------------------------------+
-| one  | GetOne   | `PGetOne </en/latest/database/getOne.html>`_     | PGetOne       | CacheGetOne   | CachePGetOne |
-+------+----------+--------------------------------------------------+---------------+------------------------------+
-| row  | GetRow   | `PGetRow </en/latest/database/getRow.html>`_     | PGetRow       | CacheGetRow   | CachePGetRow |
-+------+----------+--------------------------------------------------+---------------+------------------------------+
++------+----------+--------------------------------------------------+---------------+---------------------------+
+| Name | Normal   | Prepared Statements                              | Cache Normal  | Cache Prepared Statements |
++======+==========+==================================================+===============+===========================+
+| all  | GetAll   | `PGetAll </en/latest/database/getAll.html>`_     | CacheGetAll   | CachePGetAll              |
++------+----------+--------------------------------------------------+---------------+---------------------------+
+| assoc| GetAssoc | `PGetAssoc </en/latest/database/getASSOC.html>`_ | CacheGetAssoc | CachePGetAssoc            |
++------+----------+--------------------------------------------------+---------------+---------------------------+
+| col  | GetCol   | `PGetCol </en/latest/database/getCol.html>`_     | CacheGetCol   | CachePGetCol              |
++------+----------+--------------------------------------------------+---------------+---------------------------+
+| one  | GetOne   | `PGetOne </en/latest/database/getOne.html>`_     | PGetOne       | CacheGetOne               |
++------+----------+--------------------------------------------------+---------------+---------------------------+
+| row  | GetRow   | `PGetRow </en/latest/database/getRow.html>`_     | PGetRow       | CacheGetRow               |
++------+----------+--------------------------------------------------+---------------+---------------------------+
