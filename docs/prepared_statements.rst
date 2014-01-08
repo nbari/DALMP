@@ -42,3 +42,8 @@ methods:
 +------+----------+--------------------------------------------------+---------------+---------------------------+
 | row  | GetRow   | `PGetRow </en/latest/database/getRow.html>`_     | PGetRow       | CacheGetRow               |
 +------+----------+--------------------------------------------------+---------------+---------------------------+
+
+.. note::
+
+   Notice that when using prepared statements basically the methods are
+   prefixed with a **P**
