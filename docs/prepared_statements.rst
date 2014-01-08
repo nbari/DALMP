@@ -28,9 +28,9 @@ variables:
 To use prepared statements on your SQL statements you can use the following
 methods:
 
-========= ===========
+========= =========================================================================
 method    Description
-========= ===========
+========= =========================================================================
 PGetAll   | Executes the SQL and returns the all the rows as a 2-dimensional array.
           | If an error occurs, false is returned.
 PGetRow   | Executes the SQL and returns the first row as an array.
@@ -40,3 +40,4 @@ PGetCol   | Executes the SQL and returns all elements of the first column as
 PGetOne   | Executes the SQL and returns the first field of the first row.
           | If an error occurs, false is returned.
 PGetASSOC |
+========= =========================================================================
