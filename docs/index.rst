@@ -15,15 +15,15 @@ Clone the repository:
 Details
 .......
 
-* `Redis.io </en/latest/cache/redis.html>`_ support.
-* `Memcache </en/latest/cache/memcache.html>`_ support.
 * `APC </en/latest/cache/APC.html>`_ support.
 * `Disk </en/latest/cache/disk.html>`_ cache support.
+* `Memcache </en/latest/cache/memcache.html>`_ support.
+* `Redis.io </en/latest/cache/redis.html>`_ support.
 * Group `caching cache </en/latest/cache.html>`_ by groups and flush by groups or individual keys.
+* Ability to use different cache types at the same time.
 * `Prepared statements </en/latest/prepared_statements.html>`_ ready, support dynamic building queries, auto detect types (i,d,s,b).
 * Secure connections with `SSL </en/latest/Quickstart.html#ssl>`_.
 * `SQLite3 Encryption <http://sqlcipher.net>`_.
-* Ability to use different cache types at the same time.
 * Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.
 * Easy to use/install/adapt.
 * Nested `Transactions </en/latest/database/StartTrans.html>`_ (SAVEPOINT / ROLLBACK TO SAVEPOINT).
