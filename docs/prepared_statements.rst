@@ -49,11 +49,11 @@ methods:
 
 
 Examples
---------
+........
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 11
+   :emphasize-lines: 12
 
    <?php
 
@@ -67,3 +67,54 @@ Examples
    $db = new DALMP\Database($DSN);
 
    $db->PExecute('SET time_zone=?', 'UTC');
+
+
+Example using `LIKE <http://dev.mysql.com/doc/refman/5.0/en/pattern-matching.html>`_ statement:
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 5
+
+   <?php
+
+   $sql = 'SELECT Name, Continent FROM Country WHERE Population > ? AND Code LIKE ?';
+
+   $rs = $db->FetchMode('ASSOC')->PGetAll($sql, 1000000, '%P%');
+
+
+If you want to define the types, you must pass an array specifying each type.
+Example:
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 3
+
+   <?php
+
+   $rs = $db->FetchMode('ASSOC')->PGetAll('SELECT * FROM mytable WHERE name=? AND id=?', array('s' => '99.3', 7));
+
+An Insert example:
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 3
+
+   <?php
+
+   $db->PExecute('INSERT INTO mytable (colA, colB) VALUES(?, ?)', rand(), rand());
+
+
+An Update example:
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 3
+
+   <?php
+
+   $db->PExecute('UPDATE Country SET code=? WHERE Code=?', 'PRT', 'PR');
+
+.. note::
+
+   When updating the return value **0**, Zero indicates that no records where
+   updated.
