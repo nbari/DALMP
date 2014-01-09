@@ -19,10 +19,8 @@ Clone the repository:
 Details
 .......
 
-* `APC </en/latest/cache/APC.html>`_ cache support.
-* `Disk </en/latest/cache/disk.html>`_ cache support.
-* `Memcache </en/latest/cache/memcache.html>`_ cache support.
-* `Redis.io </en/latest/cache/redis.html>`_ cache support.
+* Dependecy Injector (DI) support, load once and trigger when required.
+* `APC </en/latest/cache/APC.html>`_, `Disk </en/latest/cache/disk.html>`_, `Memcache </en/latest/cache/memcache.html>`_, `Redis.io </en/latest/cache/redis.html>`_ cache support.
 * Group `caching cache </en/latest/cache.html>`_ by groups and flush by groups or individual keys.
 * Ability to use different cache types at the same time.
 * `Prepared statements </en/latest/prepared_statements.html>`_ ready, support dynamic building queries, auto detect types (i,d,s,b).
@@ -37,6 +35,7 @@ Details
 * Trace/measure everything enabling the debugger by just setting something like `$db->debug(1) </en/latest/database/debug.html>`_.
 * Works out of the box with Cloud databases like `Amazon RDS <http://aws.amazon.com/rds/>`_ or `Google cloud <https://developers.google.com/cloud-sql/>`_.
 * Lazy database connection. Connect only when needed.
+* PSR-0 compliance.
 
 
 Requirements
