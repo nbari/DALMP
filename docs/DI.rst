@@ -1,4 +1,4 @@
-Dependency injection
+Dependency injector
 ====================
 
 TODO
