@@ -24,6 +24,11 @@ the corresponding bind variables:
 | b         | corresponding variable is a blob and will be sent in packets |
 +-----------+--------------------------------------------------------------+
 
+
+.. seealso::
+
+   Method `<prepare en/latest/database/Prepare.html>`_
+
 To use "Prepared statements" on your SQL statements you can use the following
 methods:
 
@@ -112,7 +117,7 @@ An Update example:
 
    $db->PExecute('UPDATE Country SET code=? WHERE Code=?', 'PRT', 'PR');
 
-.. note::
+.. warning::
 
    When updating the return value **0**, Zero indicates that no records where
    updated.
