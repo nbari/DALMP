@@ -19,6 +19,10 @@ can help the developer to focus more in optimizing his 'SQL statements' rather
 than worry about how to properly configure cache instances or about duplicating
 current connections to the database.
 
+.. seealso::
+
+   `Prepared statements </en/latest/prepared_statements.html>`_
+
 One of the main goals of **DALMP** is to avoid complexity at all cost without
 losing flexibility and performance. The main class uses the PHP
 `mysqli extension <http://php.net/mysqli>`_, therefore there is not need
@@ -29,6 +33,10 @@ following extensions:
 
 * redis: `http://github.com/nicolasff/phpredis <http://github.com/nicolasff/phpredis>`_
 * memcache: `http://pecl.php.net/package/memcache <http://pecl.php.net/package/memcache>`_
+
+.. seealso::
+
+  `Dalmp\\Cache </en/latest/cache.html>`_
 
 If you have a site on the cloud or in a load balanced enviroment, you could
 take advantege of how **DALMP** handle `sessions <http://www.php.net/manual/en/book.session.php>`_ by storing them in a database or in
