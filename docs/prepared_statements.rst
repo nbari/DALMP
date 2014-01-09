@@ -78,7 +78,7 @@ Examples
    $db->PExecute('SET time_zone=?', 'UTC');
 
 
-Example using `LIKE <http://dev.mysql.com/doc/refman/5.0/en/pattern-matching.html>`_ statement:
+Example using the `LIKE <http://dev.mysql.com/doc/refman/5.0/en/pattern-matching.html>`_ statement:
 
 .. code-block:: php
    :linenos:
@@ -111,6 +111,9 @@ An Insert example:
 
    $db->PExecute('INSERT INTO mytable (colA, colB) VALUES(?, ?)', rand(), rand());
 
+.. seealso::
+
+   Method `PExecute </en/latest/database/PExecute.html>`_
 
 An Update example:
 
