@@ -4,9 +4,7 @@ DALMP\\Database
 The ``DALMP\Database`` class contains a set of `methods <https://github.com/nbari/DALMP/blob/master/src/DALMP/Database.php>`_ that allow to query a
 database in a more easy and secure way.
 
-The next table contains, the 5 methods, that return the same result, but behave
-different, depending on the query or for particular cases, the developer should
-chose the proper one.
+The next table contains, 5 common methods for retrieving data:
 
 +------+-------------------------------------------------+---------------------+---------------+---------------------------+
 | Name | Normal                                          | Prepared Statements | Cache Normal  | Cache Prepared Statements |
@@ -21,6 +19,20 @@ chose the proper one.
 +------+-------------------------------------------------+---------------------+---------------+---------------------------+
 | row  | `GetRow </en/latest/database/getRow.html>`_     | PGetRow             | CacheGetRow   | CachePGetRow              |
 +------+-------------------------------------------------+---------------------+---------------+---------------------------+
+
+
+For Inserting or Updating:
+
+======= ======= ===================
+Name    Normal  Prepared statements
+======= ======= ===================
+Execute `Execute </en/latest/database/Execute.html>`_ PExecute
+======= ======= ===================
+
+
+.. seealso::
+
+   `Prepared statements </en/latest/prepared_statements.html>`_
 
 
 The available methods are:
