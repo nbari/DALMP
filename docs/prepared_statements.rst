@@ -52,6 +52,10 @@ methods:
    Notice that when using "Prepared statements" basically the methods are
    prefixed with a **P**
 
+.. seealso::
+
+   Method `Cache </en/latest/database/Cache.html>`_
+
 
 Examples
 ........
