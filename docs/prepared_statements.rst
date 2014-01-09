@@ -27,7 +27,7 @@ the corresponding bind variables:
 
 .. seealso::
 
-   Method `<prepare en/latest/database/Prepare.html>`_
+   Method `prepare </en/latest/database/Prepare.html>`_
 
 To use "Prepared statements" on your SQL statements you can use the following
 methods:
