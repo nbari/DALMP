@@ -20,18 +20,18 @@ Details
 * `APC <http://pecl.php.net/package/APC>`_ support.
 * Group caching cache by groups and flush by groups or individual keys.
 * Disk cache support.
-* Prepared statements ready, support dynamic building queries, auto detect types (i,d,s,b).
-* Secure connections with SSL.
+* Prepared statements ready, support dynamic building queries, auto detect types `(i,d,s,b) <http://www.php.net/manual/en/mysqli-stmt.bind-param.php>`_.
+* Secure connections with `SSL <http://www.php.net/openssl>`_.
 * `SQLite3 Encryption <http://sqlcipher.net>`_.
 * Ability to use different cache types at the same time.
 * Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.
 * Easy to use/install/adapt.
-* Nested Transactions (SAVEPOINT / ROLLBACK TO SAVEPOINT).
-* Support connections via unix_sockets.
+* Nested `Transactions <http://dev.mysql.com/doc/refman/5.0/en/commit.html>`_ (SAVEPOINT / ROLLBACK TO SAVEPOINT).
+* Support connections via `unix_sockets <http://en.wikipedia.org/wiki/Unix_domain_socket>`_.
 * SQL queues.
-* Export to CSV.
+* Export to `CSV <http://en.wikipedia.org/wiki/Comma-separated_values>`_.
 * Trace/measure everything enabling the debugger by just setting something like $db->debug(1).
-* Works out of the box with Cloud databases like Amazon RDS.
+* Works out of the box with Cloud databases like `Amazon RDS <http://aws.amazon.com/rds/>`_ or `Google cloud <https://developers.google.com/cloud-sql/>`_.
 * Lazy database connection. Connect only when needed.
 
 
