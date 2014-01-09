@@ -20,6 +20,10 @@ The next table contains, 5 common methods for retrieving data:
 | row  | `GetRow </en/latest/database/getRow.html>`_     | PGetRow             | CacheGetRow   | CachePGetRow              |
 +------+-------------------------------------------------+---------------------+---------------+---------------------------+
 
+.. seealso::
+
+   `DALMP\\Cache </en/latest/cache.html>`_
+
 
 Any query or either for Inserting or Updating:
 
