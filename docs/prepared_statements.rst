@@ -73,7 +73,6 @@ Example using `LIKE <http://dev.mysql.com/doc/refman/5.0/en/pattern-matching.htm
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 5
 
    <?php
 
@@ -90,7 +89,9 @@ Example:
 
    <?php
 
-   $rs = $db->FetchMode('ASSOC')->PGetAll('SELECT * FROM mytable WHERE name=? AND id=?', array('s' => '99.3', 7));
+   $sql = 'SELECT * FROM mytable WHERE name=? AND id=?';
+
+   $rs = $db->FetchMode('ASSOC')->PGetAll($sql, array('s' => '99.3', 7));
 
 An Insert example:
 
