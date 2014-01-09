@@ -30,6 +30,12 @@ Execute `Execute </en/latest/database/Execute.html>`_ PExecute
 ======= ============================================= ===================
 
 
+.. tabularcolumns:: |l|c|p{5cm}|
+
++---------+-----------------------------------------------+----------+
+| Execute | `Execute </en/latest/database/Execute.html>`_ | PExecute |
++---------+-----------------------------------------------+----------+
+
 .. seealso::
 
    `Prepared statements </en/latest/prepared_statements.html>`_
