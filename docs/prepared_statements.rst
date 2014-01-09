@@ -27,7 +27,7 @@ the corresponding bind variables:
 
 .. seealso::
 
-   Method `prepare </en/latest/database/Prepare.html>`_
+   Method `prepare </en/latest/database/Prepare.html>`_, & `mysqli_stmt_bind_param <http://www.php.net/manual/en/mysqli-stmt.bind-param.php>`_
 
 To use "Prepared statements" on your SQL statements you can use the following
 methods:
