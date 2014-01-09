@@ -15,11 +15,11 @@ Clone the repository:
 Details
 .......
 
-* `Redis.io <http://www.redis.io>`_ support.
-* `Memcache <http://memcached.org/>`_ support.
-* `APC <http://pecl.php.net/package/APC>`_ support.
+* `Redis.io </en/latest/cache/redis.html>`_ support.
+* `Memcache </en/latest/cache/memcache.htm>`_ support.
+* `APC </en/latest/cache/APC.html>`_ support.
+* `Disk </en/latest/cache/disk.html>`_ cache support.
 * Group `caching cache </en/latest/cache.html>`_ by groups and flush by groups or individual keys.
-* Disk cache support.
 * `Prepared statements </en/latest/prepared_statements.html>`_ ready, support dynamic building queries, auto detect types (i,d,s,b).
 * Secure connections with `SSL </en/latest/Quickstart.html#ssl>`_.
 * `SQLite3 Encryption <http://sqlcipher.net>`_.
