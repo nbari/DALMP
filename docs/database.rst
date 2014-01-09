@@ -23,9 +23,9 @@ The next table contains, 5 common methods for retrieving data:
 
 Any query or either for Inserting or Updating:
 
-======= ======== ===================
-Name    Normal   Prepared statements
-======= ======== ===================
+======= ========= ===================
+Name    Normal    Prepared statements
+======= ========= ===================
 Execute `Execute </en/latest/database/Execute.html>`_ PExecute
 ======= ======== ===================
 
