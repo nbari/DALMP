@@ -15,9 +15,9 @@ Clone the repository:
 Details
 .......
 
-* Redis.io support.
-* Memcache single or multiple hosts and socket support.
-* `APC support <http://pecl.php.net/package/APC>`_.
+* `Redis.io <http://www.redis.io>`_ support.
+* `Memcache <http://memcached.org/>`_ support.
+* `APC <http://pecl.php.net/package/APC>`_ support.
 * Group caching cache by groups and flush by groups or individual keys.
 * Disk cache support.
 * Prepared statements ready, support dynamic building queries, auto detect types (i,d,s,b).
