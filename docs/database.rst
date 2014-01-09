@@ -21,7 +21,7 @@ The next table contains, 5 common methods for retrieving data:
 +------+-------------------------------------------------+---------------------+---------------+---------------------------+
 
 
-For Inserting or Updating:
+Any query or either for Inserting or Updating:
 
 ======= ============================================= ===================
 Name    Normal                                        Prepared statements

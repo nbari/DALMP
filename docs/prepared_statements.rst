@@ -47,7 +47,7 @@ following methods can be used:
 +------+----------+--------------------------------------------------+---------------+---------------------------+
 
 
-For Inserting or Updating:
+Any query or either for Inserting or Updating:
 
 ======= ======= ===================
 Name    Normal  Prepared statements
