@@ -19,10 +19,9 @@ Clone the repository:
 Details
 .......
 
-* Dependecy Injector (DI) support, load once and trigger when required.
+* Dependecy Injector (DI) support, load once, trigger when required.
 * `APC </en/latest/cache/APC.html>`_, `Disk </en/latest/cache/disk.html>`_, `Memcache </en/latest/cache/memcache.html>`_, `Redis.io </en/latest/cache/redis.html>`_ cache support.
 * Group `caching cache </en/latest/cache.html>`_ by groups and flush by groups or individual keys.
-* Ability to use different cache types at the same time.
 * `Prepared statements </en/latest/prepared_statements.html>`_ ready, support dynamic building queries, auto detect types (i,d,s,b).
 * Secure connections with `SSL </en/latest/Quickstart.html#ssl>`_.
 * `SQLite3 Encryption <http://sqlcipher.net>`_.
