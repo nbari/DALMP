@@ -49,4 +49,21 @@ methods:
 
 
 Examples
-........
+--------
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 11
+
+   <?php
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   require_once 'dalmp.php';
+
+   $DSN = "utf8://$user:$password@127.0.0.1/test";
+
+   $db = new DALMP\Database($DSN);
+
+   $db->PExecute('SET time_zone=?', 'UTC');
