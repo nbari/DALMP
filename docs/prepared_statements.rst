@@ -87,7 +87,6 @@ Example:
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 3
 
    <?php
 
@@ -97,7 +96,6 @@ An Insert example:
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 3
 
    <?php
 
@@ -108,7 +106,6 @@ An Update example:
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 3
 
    <?php
 
