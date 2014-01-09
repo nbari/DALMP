@@ -30,7 +30,7 @@ Details
 * Support connections via `unix_sockets </en/latest/Quickstart.html#example-using-a-socket>`_
 * SQL `queues </en/latest/queue.html>`_.
 * Export to `CSV </en/latest/database/csv.html>`_.
-* Trace/measure everything enabling the debugger by just setting something like $db->debug(1).
+* Trace/measure everything enabling the debugger by just setting something like `$db->debug(1) </en/latest/database/debug.html>`_.
 * Works out of the box with Cloud databases like `Amazon RDS <http://aws.amazon.com/rds/>`_ or `Google cloud <https://developers.google.com/cloud-sql/>`_.
 * Lazy database connection. Connect only when needed.
 
