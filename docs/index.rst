@@ -35,7 +35,7 @@ Details
 * Trace/measure everything enabling the debugger by just setting something like `$db->debug(1) </en/latest/database/debug.html>`_.
 * Works out of the box with Cloud databases like `Amazon RDS <http://aws.amazon.com/rds/>`_ or `Google cloud <https://developers.google.com/cloud-sql/>`_.
 * Lazy database connection. Connect only when needed.
-* PSR-0 compliance.
+* `PSR-0 <http://www.php-fig.org/psr/psr-0/>`_ compliance.
 
 
 Requirements
