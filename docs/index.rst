@@ -18,18 +18,18 @@ Details
 * `Redis.io <http://www.redis.io>`_ support.
 * `Memcache <http://memcached.org/>`_ support.
 * `APC <http://pecl.php.net/package/APC>`_ support.
-* Group caching cache by groups and flush by groups or individual keys.
+* Group `caching cache </en/latest/cache.html>`_ by groups and flush by groups or individual keys.
 * Disk cache support.
-* `Prepared statements </en/latest/prepared_statements.html>`_ ready, support dynamic building queries, auto detect types `(i,d,s,b) <http://www.php.net/manual/en/mysqli-stmt.bind-param.php>`_.
-* Secure connections with `SSL <http://www.php.net/openssl>`_.
+* `Prepared statements </en/latest/prepared_statements.html>`_ ready, support dynamic building queries, auto detect types (i,d,s,b).
+* Secure connections with `SSL </en/latest/Quickstart.html#ssl>`_.
 * `SQLite3 Encryption <http://sqlcipher.net>`_.
 * Ability to use different cache types at the same time.
 * Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.
 * Easy to use/install/adapt.
-* Nested `Transactions <http://dev.mysql.com/doc/refman/5.0/en/commit.html>`_ (SAVEPOINT / ROLLBACK TO SAVEPOINT).
-* Support connections via `unix_sockets <http://en.wikipedia.org/wiki/Unix_domain_socket>`_.
+* Nested `Transactions </en/latest/database/StartTrans.html>`_ (SAVEPOINT / ROLLBACK TO SAVEPOINT).
+* Support connections via `unix_sockets </en/latest/Quickstart.html#example-using-a-socket>`_
 * SQL `queues </en/latest/queue.html>`_.
-* Export to `CSV <http://en.wikipedia.org/wiki/Comma-separated_values>`_.
+* Export to `CSV </en/latest/database/csv.html>`_.
 * Trace/measure everything enabling the debugger by just setting something like $db->debug(1).
 * Works out of the box with Cloud databases like `Amazon RDS <http://aws.amazon.com/rds/>`_ or `Google cloud <https://developers.google.com/cloud-sql/>`_.
 * Lazy database connection. Connect only when needed.
