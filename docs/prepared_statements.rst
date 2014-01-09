@@ -29,9 +29,8 @@ the corresponding bind variables:
 
    Method `prepare </en/latest/database/Prepare.html>`_, & `mysqli_stmt_bind_param <http://www.php.net/manual/en/mysqli-stmt.bind-param.php>`_
 
-To use "Prepared statements" on your SQL statements you can use the following
-methods:
-
+To use "Prepared statements" on your SQL statements for retrieving data, the
+following methods can be used:
 
 +------+----------+--------------------------------------------------+---------------+---------------------------+
 | Name | Normal   | Prepared statements                              | Cache Normal  | Cache Prepared statements |
@@ -46,6 +45,15 @@ methods:
 +------+----------+--------------------------------------------------+---------------+---------------------------+
 | row  | GetRow   | `PGetRow </en/latest/database/getRow.html>`_     | PGetRow       | CacheGetRow               |
 +------+----------+--------------------------------------------------+---------------+---------------------------+
+
+
+For Inserting or Updating:
+
+======= ======= ===================
+Name    Normal  Prepared statements
+======= ======= ===================
+Execute Execute `PExecute </en/latest/database/PExecute.html>`_
+======= ======= ===================
 
 .. note::
 
