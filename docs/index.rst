@@ -16,7 +16,7 @@ Details
 .......
 
 * `Redis.io </en/latest/cache/redis.html>`_ support.
-* `Memcache </en/latest/cache/memcache.htm>`_ support.
+* `Memcache </en/latest/cache/memcache.html>`_ support.
 * `APC </en/latest/cache/APC.html>`_ support.
 * `Disk </en/latest/cache/disk.html>`_ cache support.
 * Group `caching cache </en/latest/cache.html>`_ by groups and flush by groups or individual keys.
