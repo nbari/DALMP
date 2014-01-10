@@ -38,7 +38,7 @@ method                                                 Description
                                                        If the number of columns returned is greater to two, a 2-dimensional array is returned\
                                                        with the first column of the recordset becomes the keys to the rest of the rows. \
                                                        If the columns is equal to two, a 1-dimensional array is created, where the the keys \
-                                                       directly map to the values.\
+                                                       directly map to the values.\n
                                                        If an error occurs, false is returned.
 ====================================================== =========================================================================================
 
