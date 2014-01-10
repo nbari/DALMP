@@ -47,3 +47,26 @@ Insert all `$_POST <http://www.php.net/manual/en/reserved.variables.post.php>`_ 
 
    $db->AutoExecute('mytable',$_POST);
    // the key values of $_POST must be equal to the column names of the mysql table
+
+
+Update example:
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 12
+
+   <?php
+
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   $DSN = "utf8://$user:$password".'@unix_socket=\tmp\mysql.sock/test';
+
+   $db = new DALMP\Database($DSN);
+
+   $date = array('username' => 'nbari',
+                 'status' => 1);
+
+   $db->AutoExecute('mytable',$data, 'UPDATE','status=0 AND uid=14');
