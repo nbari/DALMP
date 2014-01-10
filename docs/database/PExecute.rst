@@ -45,4 +45,8 @@ method                                                 Description
 .. note::
 
   Notice that when using "Prepared statements" the methods are
-  prefixed with a **P**
+  prefixed with a **P**.
+
+
+Examples
+........
