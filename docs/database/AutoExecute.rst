@@ -41,7 +41,7 @@ Insert all `$_POST <http://www.php.net/manual/en/reserved.variables.post.php>`_ 
    $user = getenv('MYSQL_USER') ?: 'root';
    $password = getenv('MYSQL_PASS') ?: '';
 
-   $DSN = "utf8://$user:$password".'@unix_socket=\tmp\mysql.sock/test';
+   $DSN = "utf8://$user:$password".'@127.0.0.1/test';
 
    $db = new DALMP\Database($DSN);
 
@@ -62,7 +62,7 @@ Update example:
    $user = getenv('MYSQL_USER') ?: 'root';
    $password = getenv('MYSQL_PASS') ?: '';
 
-   $DSN = "utf8://$user:$password".'@unix_socket=\tmp\mysql.sock/test';
+   $DSN = "utf8://$user:$password".'@127.0.0.1/test';
 
    $db = new DALMP\Database($DSN);
 
