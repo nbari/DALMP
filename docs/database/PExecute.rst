@@ -26,7 +26,7 @@ data you can use:
 ====================================================== =========================================================================================
 method                                                 Description
 ====================================================== =========================================================================================
-**P**                                                  Executes the SQL and returns the all the rows as a 2-dimensional array. \
+**P**\                                                 Executes the SQL and returns the all the rows as a 2-dimensional array. \
 `GetAll </en/latest/database/getAll.html>`_            if an error occurs, false is returned.
 **P**\                                                 Executes the SQL and returns the first row as an array. \
 `GetRow </en/latest/database/getRow.html>`_            - If an error occurs, false is returned.
