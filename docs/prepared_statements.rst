@@ -130,7 +130,7 @@ An Update example:
 
    <?php
 
-   $db->PExecute('UPDATE Country SET code=? WHERE Code=?', 'PRT', 'PR');
+   $db->PExecute('UPDATE Country SET code=? WHERE Code=?', 'PRT', 'PRT');
 
 .. warning::
 
