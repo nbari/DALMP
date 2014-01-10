@@ -39,7 +39,8 @@ method                                                 Description
                                                        with the first column of the recordset becomes the keys to the rest of the rows. \
                                                        If the columns is equal to two, a 1-dimensional array is created, where the the keys \
                                                        directly map to the values.
-                                                       | If an error occurs, false is returned.
+                                                       |
+                                                       If an error occurs, false is returned.
 ====================================================== =========================================================================================
 
 .. note::
