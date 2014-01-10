@@ -32,7 +32,7 @@ method                                                 Description
                                                        If an error occurs, false is returned.
 **P** `GetCol </en/latest/database/getCol.html>`_      Executes the SQL and returns all elements of the first column as a 1-dimensional array. \
                                                        If an error occurs, false is returned.
-**P** `GetOne </en/latest/database/getOne.html>`_      Executes the SQL and returns the first field of the first row. \
+**P** `GetOne </en/latest/database/getOne.html>`_      Executes the SQL and returns the first field of the first row.
                                                        If an error occurs, false is returned.
 **P** `GetASSOC </en/latest/database/getASSOC.html>`_  Executes the SQL and returns an associative array for the given query. \
                                                        If the number of columns returned is greater to two, a 2-dimensional array is returned\
