@@ -86,9 +86,6 @@ An Insert example:
 
    $db->PExecute('INSERT INTO mytable (colA, colB) VALUES(?, ?)', rand(), rand());
 
-.. seealso::
-
-   Method `PExecute </en/latest/database/PExecute.html>`_
 
 An Update example:
 
