@@ -28,7 +28,7 @@ Details
 * Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.
 * Easy to use/install/adapt.
 * Nested `Transactions </en/latest/database/StartTrans.html>`_ (SAVEPOINT / ROLLBACK TO SAVEPOINT).
-* Support connections via `unix_sockets </en/latest/Quickstart.html#example-using-a-socket>`_
+* Support connections via `unix_sockets </en/latest/Quickstart.html#example-using-a-socket>`_.
 * SQL `queues </en/latest/queue.html>`_.
 * Export to `CSV </en/latest/database/csv.html>`_.
 * Trace/measure everything enabling the debugger by just setting something like `$db->debug(1) </en/latest/database/debug.html>`_.
