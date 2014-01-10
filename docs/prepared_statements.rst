@@ -57,7 +57,7 @@ Execute Execute `PExecute </en/latest/database/PExecute.html>`_
 
 .. note::
 
-   Notice that when using "Prepared statements" basically the methods are
+   Notice that when using "Prepared statements" the methods are
    prefixed with a **P**
 
 .. seealso::
