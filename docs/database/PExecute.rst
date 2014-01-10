@@ -23,9 +23,9 @@ Like the `Execute </en/latest/database/Execute.html>`_ Method, in most cases you
 probably only use this method when Inserting or Updating data for retrieving
 data you can use:
 
-========  ======================================================================
+========= =========================================================================================
 method    Description
-========  ======================================================================
+========= =========================================================================================
 PGetAll   | Executes the SQL and returns the all the rows as a 2-dimensional array.
           | If an error occurs, false is returned.
 PGetRow   | Executes the SQL and returns the first row as an array.
@@ -40,4 +40,4 @@ PGetASSOC | Executes the SQL and returns an associative array for the given quer
           | the rest of the rows. If the columns is equal to two, a 1-dimensional array is
           | created, where the the keys directly map to the values. If an error occurs,
           | false is returned.
-========  ======================================================================
+========= =========================================================================================
