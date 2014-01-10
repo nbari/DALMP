@@ -1,4 +1,7 @@
 PExecute
 ========
 
-Execute an SQL statement using `Prepared Statements <http://en.wikipedia.org/wiki/Prepared_statement>`_.
+Execute an SQL statement using `Prepared Statements </en/latest/prepared_statements.html>`_.
+
+
+TODO
