@@ -22,3 +22,27 @@ Parameters
 :$mode: INSERT or UPDATE
 
 :$where: A string to be used in the WHERE clause. This is only used when $mode = UPDATE.
+
+
+Examples
+........
+
+Insert all $_POST data example:
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 12
+
+   <?php
+
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   $DSN = "utf8://$user:$password".'@unix_socket=\tmp\mysql.sock/test';
+
+   $db = new DALMP\Database($DSN);
+
+   $db->AutoExecute('mytable',$_POST);
+   // the key values of $_POST must be equal to the column names of the mysql table
