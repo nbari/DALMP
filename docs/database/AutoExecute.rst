@@ -27,7 +27,8 @@ Parameters
 Examples
 ........
 
-Insert all $_POST data example:
+
+Insert all `$_POST <http://www.php.net/manual/en/reserved.variables.post.php>`_ data example:
 
 .. code-block:: php
    :linenos:
