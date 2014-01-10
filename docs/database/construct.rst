@@ -84,6 +84,6 @@ If you wan to use the system default charset the DSN would be:
 * notice the **mysql://** instead of the **utf8://**
 
 
-.. seemore::
+.. seealso::
 
    `Quickstart </en/latest/Quickstart.html>`_.
