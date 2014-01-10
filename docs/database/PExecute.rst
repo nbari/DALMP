@@ -43,8 +43,63 @@ method                                                 Description
   prefixed with a **P**.
 
 
-Examples
-........
+PExecute Examples
+.................
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 12
+
+   <?php
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   require_once 'dalmp.php';
+
+   $DSN = "utf8://$user:$password@127.0.0.1/test";
+
+   $db = new DALMP\Database($DSN);
+
+   $db->PExecute('SET time_zone=?', 'UTC');
 
 
-TODO
+Example using the `LIKE <http://dev.mysql.com/doc/refman/5.0/en/pattern-matching.html>`_ statement:
+
+.. code-block:: php
+   :linenos:
+
+   <?php
+
+   $sql = 'SELECT Name, Continent FROM Country WHERE Population > ? AND Code LIKE ?';
+
+   $rs = $db->FetchMode('ASSOC')->PGetAll($sql, 1000000, '%P%');
+
+
+
+An Insert example:
+
+.. code-block:: php
+   :linenos:
+
+   <?php
+
+   $db->PExecute('INSERT INTO mytable (colA, colB) VALUES(?, ?)', rand(), rand());
+
+.. seealso::
+
+   Method `PExecute </en/latest/database/PExecute.html>`_
+
+An Update example:
+
+.. code-block:: php
+   :linenos:
+
+   <?php
+
+   $db->PExecute('UPDATE Country SET code=? WHERE Code=?', 'PRT', 'PR');
+
+.. warning::
+
+   When updating the return value **0**, Zero indicates that no records where
+   updated.
