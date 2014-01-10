@@ -32,7 +32,7 @@ Insert all `$_POST <http://www.php.net/manual/en/reserved.variables.post.php>`_ 
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 12
+   :emphasize-lines: 13
 
    <?php
 
@@ -45,8 +45,8 @@ Insert all `$_POST <http://www.php.net/manual/en/reserved.variables.post.php>`_ 
 
    $db = new DALMP\Database($DSN);
 
-   $db->AutoExecute('mytable',$_POST);
    // the key values of $_POST must be equal to the column names of the mysql table
+   $db->AutoExecute('mytable', $_POST);
 
 
 Update example:
@@ -69,4 +69,4 @@ Update example:
    $date = array('username' => 'nbari',
                  'status' => 1);
 
-   $db->AutoExecute('mytable',$data, 'UPDATE','status=0 AND uid=14');
+   $db->AutoExecute('mytable', $data, 'UPDATE', 'status=0 AND uid=14');
