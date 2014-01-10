@@ -11,8 +11,7 @@ Parameters
     PExecute($sql, $varN)
 
 :$sql: The MySQL query to perform on the database
-:$varN: The variables that will be placed instead of the **?** placeholder
-separated by a ',' or it can be the method `Prepare </en/latest/database/Prepare.html>`_.
+:$varN: The variables that will be placed instead of the **?** placeholder separated by a ',' or it can be the method `Prepare </en/latest/database/Prepare.html>`_.
 
 
 .. seealso::
