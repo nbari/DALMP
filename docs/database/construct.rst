@@ -2,7 +2,7 @@ __construct
 ===========
 
 
-**DALMP\\Database** takes the parameters from a `DNS <http://en.wikipedia.org/wiki/Data_source_name>`_ (database source name) so
+``DALMP\\Database`` takes the parameters from a `DNS <http://en.wikipedia.org/wiki/Data_source_name>`_ (database source name) so
 before you can start using it you need to define this values.
 
 DSN format
