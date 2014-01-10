@@ -27,7 +27,7 @@ the corresponding bind variables:
 
 .. seealso::
 
-   Method `prepare </en/latest/database/Prepare.html>`_, & `mysqli_stmt_bind_param <http://www.php.net/manual/en/mysqli-stmt.bind-param.php>`_
+   Method `prepare </en/latest/database/Prepare.html>`_, & `mysqli_stmt_bind_param <http://www.php.net/manual/en/mysqli-stmt.bind-param.php>`_.
 
 To use "Prepared statements" on your SQL statements for retrieving data, the
 following methods can be used:
@@ -58,11 +58,11 @@ Execute Execute `PExecute </en/latest/database/PExecute.html>`_
 .. note::
 
    Notice that when using "Prepared statements" the methods are
-   prefixed with a **P**
+   prefixed with a **P**.
 
 .. seealso::
 
-   Method `Cache </en/latest/database/Cache.html>`_
+   Method `Cache </en/latest/database/Cache.html>`_.
 
 
 Examples
