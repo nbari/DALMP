@@ -36,6 +36,8 @@ Will output something like:
        [character_sets_dir] => /usr/local/mysql-5.6.10-osx10.7-x86/share/charsets/
    )
 
+**DALMP\\Database** takes the parameters from a `DNS <http://en.wikipedia.org/wiki/Data_source_name>`_ (database source name) so
+before you can start using it you need to define this values.
 
 DSN format
 ..........
