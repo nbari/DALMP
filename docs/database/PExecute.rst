@@ -64,19 +64,6 @@ PExecute Examples
    $db->PExecute('SET time_zone=?', 'UTC');
 
 
-Example using the `LIKE <http://dev.mysql.com/doc/refman/5.0/en/pattern-matching.html>`_ statement:
-
-.. code-block:: php
-   :linenos:
-
-   <?php
-
-   $sql = 'SELECT Name, Continent FROM Country WHERE Population > ? AND Code LIKE ?';
-
-   $rs = $db->FetchMode('ASSOC')->PGetAll($sql, 1000000, '%P%');
-
-
-
 An Insert example:
 
 .. code-block:: php
