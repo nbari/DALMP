@@ -28,6 +28,11 @@ Building dynamic queries that require prepared statements:
 
    <?php
 
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
    $x = 3;
    $id = 1;
 

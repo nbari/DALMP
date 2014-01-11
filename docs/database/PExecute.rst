@@ -52,10 +52,10 @@ PExecute Examples
 
    <?php
 
+   require_once 'dalmp.php';
+
    $user = getenv('MYSQL_USER') ?: 'root';
    $password = getenv('MYSQL_PASS') ?: '';
-
-   require_once 'dalmp.php';
 
    $DSN = "utf8://$user:$password@127.0.0.1/test";
 
