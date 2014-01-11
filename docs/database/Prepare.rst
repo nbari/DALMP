@@ -24,7 +24,7 @@ Building dynamic queries that require prepared statements:
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 4
+   :emphasize-lines: 11, 16, 20, 29
 
    <?php
 
@@ -51,7 +51,8 @@ Building dynamic queries that require prepared statements:
 
    /**
     * this will produce a query like:
-    * "sql: SELECT * FROM test WHERE id=? AND id !=? AND colB=?" with params = ["iis",1,3,"colb"]
+    * SELECT * FROM test WHERE id=? AND id !=? AND colB=?
+    * with params = ["iis",1,3,"colb"]
     */
     $rs = $db->PgetAll($sql, $db->Prepare());
 
