@@ -38,4 +38,4 @@ Example
 
 .. note::
 
-   Use `Pquery </en/latest/database/PQuery.html>`_ when using prepared statements.
+   For `Prepared statements </en/latest/prepared_statements.html>`_, use `Pquery </en/latest/database/PQuery.html>`_.
