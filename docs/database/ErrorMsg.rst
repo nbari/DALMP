@@ -9,7 +9,7 @@ Example
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 13
+   :emphasize-lines: 16
 
    <?php
 
