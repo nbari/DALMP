@@ -22,7 +22,7 @@ Example
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 16
+   :emphasize-lines: 14,15
 
    <?php
 
