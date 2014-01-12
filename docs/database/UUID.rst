@@ -67,3 +67,8 @@ Example converting from binary(16) to original UUID format chat(36):
    $sql = "SELECT LOWER(CONCAT_WS('-',LEFT(HEX(uuid),8),SUBSTR(HEX(uuid),9,4),SUBSTR(HEX(uuid),13,4),SUBSTR(HEX(uuid),17,4),RIGHT(HEX(uuid),12))) FROM table";
 
    $uuids = $db->FetchMode('ASSOC')->getCol($sql);
+
+
+.. seealso::
+
+   `MySQL string functions <http://dev.mysql.com/doc/refman/5.0/en/string-functions.html#function_unhex>`_.
