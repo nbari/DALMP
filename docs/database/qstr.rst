@@ -36,3 +36,10 @@ Example
    $query = $db->qstr($data);
 
    $db->GetRow("SELECT * FROM users WHERE name=$query");
+
+
+.. warning::
+
+   This method will query the database every time is called, so in cases where
+   you are using 'cache' it is not very usefull, since it will need to connect
+   to the database before doing the query.
