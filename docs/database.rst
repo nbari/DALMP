@@ -45,43 +45,43 @@ The available methods are:
 .. toctree::
    :maxdepth: 2
 
-   database/construct
    database/AutoExecute
    database/Cache
    database/CacheFlush
+   database/closeConnection
    database/CompleteTrans
+   database/construct
+   database/csv
+   database/debug
    database/ErrorMsg
    database/ErrorNum
    database/Execute
    database/FetchMode
+   database/forceTruncate
+   database/getAll
+   database/getASSOC
+   database/getClientVersion
+   database/getCol
+   database/getColumnNames
+   database/getNumOfFields
+   database/getNumOfRows
+   database/getNumOfRowsAffected
+   database/getOne
+   database/getRow
+   database/getServerVersion
    database/Insert_Id
+   database/isConnected
+   database/map
+   database/multipleInsert
    database/PClose
    database/PExecute
    database/PQuery
    database/Prepare
-   database/RollBackTrans
-   database/StartTrans
-   database/UUID
-   database/closeConnection
-   database/csv
-   database/debug
-   database/forceTruncate
-   database/getAll
-   database/getASSOC
-   database/getCol
-   database/getOne
-   database/getRow
-   database/getColumnNames
-   database/getClientVersion
-   database/getNumOfFields
-   database/getNumOfRows
-   database/getNumOfRowsAffected
-   database/getServerVersion
-   database/isConnected
-   database/map
-   database/multipleInsert
    database/qstr
    database/query
    database/renumber
+   database/RollBackTrans
+   database/StartTrans
    database/useCache
+   database/UUID
    database/X
