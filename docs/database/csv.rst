@@ -19,6 +19,8 @@ Parameters
 Example
 .......
 
+Serve a CSV file:
+
 .. code-block:: php
    :linenos:
    :emphasize-lines: 17
