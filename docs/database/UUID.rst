@@ -12,19 +12,21 @@ Parameters
 
 :$b: If true will return the UUID in binary, removing the dashes so that you can store it on a DB using column data type binary(16)
 
-Example
-.......
+Examples
+........
 
-:: code-block:: php
+.. code-block:: php
    :linenos:
+
+   <?php
+
 
    echo $db->UUID();
 
    echo $db->UUID(true);
 
 
-Example storing UUID as binary(16)
-..................................
+Example storing UUID as binary(16):
 
 .. code-block:: php
    :linenos:
@@ -46,8 +48,7 @@ Example storing UUID as binary(16)
    $db->PExecute("INSERT INTO table (post, uuid) VALUES(?, UNHEX(REPLACE(?, '-', '')))", json_encode($_POST), $uuid);
 
 
-Example converting from binary(16) to original UUID format chat(36)
-...................................................................
+Example converting from binary(16) to original UUID format chat(36):
 
 .. code-block:: php
    :linenos:
