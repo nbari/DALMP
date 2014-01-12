@@ -15,9 +15,12 @@ Parameters
 Example
 .......
 
-::
+:: code-block:: php
+   :linenos:
 
-    echo $db->UUID();
+   echo $db->UUID();
+
+   echo $db->UUID(true);
 
 
 Example storing UUID as binary(16)
@@ -25,7 +28,7 @@ Example storing UUID as binary(16)
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 13
+   :emphasize-lines: 12
 
    <?php
 
@@ -49,4 +52,17 @@ Example converting from binary(16) to original UUID format chat(36)
 .. code-block:: php
    :linenos:
 
-   $uuids = $db->FetchMode('ASSOC')->getCol("SELECT LOWER(CONCAT_WS('-',LEFT(HEX(uuid),8),SUBSTR(HEX(uuid),9,4),SUBSTR(HEX(uuid),13,4),SUBSTR(HEX(uuid),17,4),RIGHT(HEX(uuid),12))) FROM table);")
+   <?php
+
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   $DSN = "utf8://$user:$password".'@127.0.0.1/test';
+
+   $db = new DALMP\Database($DSN);
+
+   $sql = "SELECT LOWER(CONCAT_WS('-',LEFT(HEX(uuid),8),SUBSTR(HEX(uuid),9,4),SUBSTR(HEX(uuid),13,4),SUBSTR(HEX(uuid),17,4),RIGHT(HEX(uuid),12))) FROM table";
+
+   $uuids = $db->FetchMode('ASSOC')->getCol($sql);
