@@ -63,7 +63,6 @@ The available methods are:
    database/StartTrans
    database/UUID
    database/closeConnection
-   database/connect
    database/csv
    database/debug
    database/forceTruncate
