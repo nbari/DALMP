@@ -1,9 +1,8 @@
 csv
 ===
 
-
 This method exports your results in CSV
-(`http://en.wikipedia.org/wiki/Comma-separated_values <http://en.wikipedia.org/wiki/Comma-separated_values>`_).
+(`Comma Separated Values <http://en.wikipedia.org/wiki/Comma-separated_values>`_).
 
 
 Parameters
