@@ -1,7 +1,7 @@
 forceTruncate
 =============
 
-Force truncate of a table either if are innodb.
+Force truncate of a table either if are `InnoDB <http://en.wikipedia.org/wiki/InnoDB>`_.
 
 Parameters
 ..........
