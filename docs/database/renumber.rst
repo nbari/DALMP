@@ -11,10 +11,11 @@ Parameters
 
 ::
 
-    renumber($table)
+    renumber($table, $row='id')
 
 
 :$table: name of the table to renumber.
+:$row: name of the **autoincrement** row to apply the renumber method.
 
 
 Example
@@ -38,8 +39,7 @@ Example
 
    $db->renumber('table');
 
-Example where uid is the auto-increment row and db1 is your connection to
-database 1:
+Example where uid is the auto-increment row:
 
 .. code-block:: php
    :linenos:
