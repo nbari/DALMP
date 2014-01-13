@@ -166,3 +166,92 @@ The output would be something like:
                [Code2] => AI
            )
    ...
+
+No mode
+.......
+
+When No mode is defined, the default is to use 'both' (MYSQLI_BOTH). example:
+
+.. code-block:: php
+   :linenos:
+
+   <?php
+
+   $rs = $db->PGetAll('SELECT * FROM Country WHERE Region = ?', 'Caribbean');
+
+In this case the output is like:
+
+.. code-block:: rest
+   :linenos:
+
+   // output of print($rs);
+   Array
+   (
+       [0] => Array
+           (
+               [0] => ABW
+               [Code] => ABW
+               [1] => Aruba
+               [Name] => Aruba
+               [2] => North America
+               [Continent] => North America
+               [3] => Caribbean
+               [Region] => Caribbean
+               [4] => 193
+               [SurfaceArea] => 193
+               [5] =>
+               [IndepYear] =>
+               [6] => 103000
+               [Population] => 103000
+               [7] => 78.400001525879
+               [LifeExpectancy] => 78.400001525879
+               [8] => 828
+               [GNP] => 828
+               [9] => 793
+               [GNPOld] => 793
+               [10] => Aruba
+               [LocalName] => Aruba
+               [11] => Nonmetropolitan Territory of The Netherlands
+               [GovernmentForm] => Nonmetropolitan Territory of The Netherlands
+               [12] => Beatrix
+               [HeadOfState] => Beatrix
+               [13] => 129
+               [Capital] => 129
+               [14] => AW
+               [Code2] => AW
+           )
+
+       [1] => Array
+           (
+               [0] => AIA
+               [Code] => AIA
+               [1] => Anguilla
+               [Name] => Anguilla
+               [2] => North America
+               [Continent] => North America
+               [3] => Caribbean
+               [Region] => Caribbean
+               [4] => 96
+               [SurfaceArea] => 96
+               [5] =>
+               [IndepYear] =>
+               [6] => 8000
+               [Population] => 8000
+               [7] => 76.099998474121
+               [LifeExpectancy] => 76.099998474121
+               [8] => 63.200000762939
+               [GNP] => 63.200000762939
+               [9] =>
+               [GNPOld] =>
+               [10] => Anguilla
+               [LocalName] => Anguilla
+               [11] => Dependent Territory of the UK
+               [GovernmentForm] => Dependent Territory of the UK
+               [12] => Elisabeth II
+               [HeadOfState] => Elisabeth II
+               [13] => 62
+               [Capital] => 62
+               [14] => AI
+               [Code2] => AI
+           )
+   ...
