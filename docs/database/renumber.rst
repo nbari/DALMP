@@ -15,7 +15,7 @@ Parameters
 
 
 :$table: name of the table to renumber.
-:$row: name of the **autoincrement** row to apply the renumber method.
+:$row: name of the **auto-increment** row to apply the renumber method.
 
 
 Example
@@ -24,7 +24,7 @@ Example
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 13
+   :emphasize-lines: 12
 
    <?php
 
@@ -43,7 +43,7 @@ Example where uid is the auto-increment row:
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 13
+   :emphasize-lines: 12
 
    <?php
 
