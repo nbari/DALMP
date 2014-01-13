@@ -176,7 +176,7 @@ When No mode is defined, the default is to use 'both' (MYSQLI_BOTH). example:
    :linenos:
 
    <?php
-
+   ...
    $rs = $db->PGetAll('SELECT * FROM Country WHERE Region = ?', 'Caribbean');
 
 In this case the output is like:
