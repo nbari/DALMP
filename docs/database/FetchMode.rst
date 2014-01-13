@@ -23,7 +23,7 @@ Examples
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 13
+   :emphasize-lines: 12
 
    <?php
 
@@ -46,7 +46,7 @@ Chainable example:
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 13
+   :emphasize-lines: 12
 
    <?php
 
