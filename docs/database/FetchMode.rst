@@ -1,7 +1,7 @@
 FetchMode
 =========
 
-This 'chainable' method indicates what type of array should be returned.
+This `chainable <http://en.wikipedia.org/wiki/Method_chaining>`_ method indicates what type of array should be returned.
 
 
 Parameters
