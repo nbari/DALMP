@@ -11,11 +11,11 @@ Parameters
 
 ::
 
-    renumber($table, $row='id')
+    renumber($table, $col='id')
 
 
 :$table: name of the table to renumber.
-:$row: name of the **auto-increment** row to apply the renumber method.
+:$col: name of the cow with the **auto-increment** attribute.
 
 
 Example
@@ -39,7 +39,7 @@ Example
 
    $db->renumber('table');
 
-Example where uid is the auto-increment row:
+Example where uid is the auto-increment column:
 
 .. code-block:: php
    :linenos:
@@ -57,3 +57,8 @@ Example where uid is the auto-increment row:
    $db = new DALMP\Database($DSN);
 
    $db->renumber('table', 'uid');
+
+
+.. seealso::
+
+   MySQL `AUTO_INCREMENT <http://dev.mysql.com/doc/refman/5.1/en/example-auto-increment.html>`_.
