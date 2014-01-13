@@ -41,7 +41,8 @@ Examples
    $rs = $db->PGetAll('SELECT * FROM Country WHERE Region = ?', 'Caribbean');
 
 
-Chainable example:
+Chainable example
+..................
 
 
 .. code-block:: php
@@ -109,13 +110,14 @@ When using NUM the keys of the result array are numeric. Example of the output:
        ...
 
 
-ASSOC mode, example:
+ASSOC mode, example
+...................
 
 .. code-block:: php
    :linenos:
 
    <?php
-
+   ...
    $rs = $db->FetchMode('ASSOC')->PGetAll('SELECT * FROM Country WHERE Region = ?', 'Caribbean');
 
 The output would be something like:
