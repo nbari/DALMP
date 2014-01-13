@@ -14,6 +14,9 @@ Parameters
 :$tablename: Name of the table to get the column names.
 
 
+Example
+.......
+
 .. code-block:: php
    :linenos:
    :emphasize-lines: 15,
