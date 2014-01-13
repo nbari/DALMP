@@ -11,7 +11,7 @@ Example
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 30, 31, 32, 34
+   :emphasize-lines: 29, 30, 31, 33
 
    <?php
 
@@ -23,7 +23,6 @@ Example
    $DSN = "utf8://$user:$password".'@127.0.0.1/test';
 
    $db = new DALMP\Database($DSN);
-
 
    $db->Execute('CREATE TABLE IF NOT EXISTS t_test (id INT NOT NULL PRIMARY KEY) ENGINE=InnoDB');
    $db->Execute('TRUNCATE TABLE t_test');
