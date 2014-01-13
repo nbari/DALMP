@@ -49,4 +49,5 @@ Example
 
 .. seealso::
 
-   `CompleteTrans </en/latest/database/CompleteTrans.html>`_
+   `CompleteTrans </en/latest/database/CompleteTrans.html>`_, `MySQL START
+   TRANSACTION, COMMIT and ROLLBACK Syntax <http://dev.mysql.com/doc/refman/5.5/en/commit.html>`_.
