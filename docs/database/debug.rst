@@ -31,7 +31,7 @@ Example
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 13
+   :emphasize-lines: 17
 
    <?php
 
