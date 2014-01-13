@@ -41,7 +41,7 @@ Examples
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 13
+   :emphasize-lines: 12
 
    <?php
 
@@ -61,7 +61,7 @@ You can also catch exception and continue execution:
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 13
+   :emphasize-lines: 13, 18
 
    <?php
 
