@@ -2,7 +2,7 @@ CompleteTrans
 =============
 
 Complete the transaction, this must be used in conjunction with method
-StartTrans().
+`StartTrans </en/latest/database/StartTrans.html>`_.
 
 If success returns **true**, otherwise **false**.
 
