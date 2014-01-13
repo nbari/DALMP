@@ -3,7 +3,7 @@ renumber
 
 Some times you lost continuity on tables with auto increment fields, for
 example instead of having a sequence like : 1 2 3 4 yo have something like: 1 5
-18 30; in this cases you can use renumber(table):
+18 30; in this cases, the method ``renumber('table')`` renumbers the table.
 
 
 Parameters
