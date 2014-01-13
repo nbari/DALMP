@@ -30,7 +30,7 @@ Example
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 15, 20
+   :emphasize-lines: 12
 
    <?php
 
@@ -84,6 +84,7 @@ Same query but using FetchMode('ASSOC')
 
 .. code-block:: php
    :linenos:
+   :emphasize-lines: 3
 
    <?php
    ...
