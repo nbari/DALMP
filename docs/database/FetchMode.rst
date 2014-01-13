@@ -255,3 +255,9 @@ In this case the output is like:
                [Code2] => AI
            )
    ...
+
+
+.. seealso::
+
+  PHP `mysqli_fetch_array <http://www.php.net/mysqli_fetch_array>`_ &
+  `mysqli_stmt_fetch <http://www.php.net/manual/en/mysqli-stmt.fetch.php>`_
