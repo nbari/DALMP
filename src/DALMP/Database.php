@@ -1047,13 +1047,13 @@ class Database
      * renumber
      *
      * @param  string  $table
-     * @param  int     $id
+     * @param  int     $col
      * @return boolean
      */
-    public function renumber($table, $row = 'id')
+    public function renumber($table, $col = 'id')
     {
         if (isset($table)) {
-            return $this->Execute('SET @var_dalmp=0') ? ($this->Execute("UPDATE $table SET $row = (@var_dalmp := @var_dalmp +1)") ? $this->Execute("ALTER TABLE $table AUTO_INCREMENT = 1") : false) : false;
+            return $this->Execute('SET @var_dalmp=0') ? ($this->Execute("UPDATE $table SET $col = (@var_dalmp := @var_dalmp +1)") ? $this->Execute("ALTER TABLE $table AUTO_INCREMENT = 1") : false) : false;
         } else {
             return false;
         }
