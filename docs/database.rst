@@ -60,14 +60,14 @@ The available methods are:
    database/forceTruncate
    database/getAll
    database/getASSOC
-   database/getClientVersion
    database/getCol
+   database/getOne
+   database/getRow
+   database/getClientVersion
    database/getColumnNames
    database/getNumOfFields
    database/getNumOfRows
    database/getNumOfRowsAffected
-   database/getOne
-   database/getRow
    database/getServerVersion
    database/Insert_Id
    database/isConnected
