@@ -32,4 +32,52 @@ retrieving data the 5 common methods are:
 
 .. seealso::
 
-   Prepared statements `PExecute </en/latest/database/PExecute.html>`_.
+   `Prepared statements </en/latest/prepared_statements.html>`_ & `PExecute </en/latest/database/PExecute.html>`_.
+
+
+Examples
+........
+
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 13
+
+   <?php
+
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   $DSN = "utf8://$user:$password".'@127.0.0.1/test';
+
+   $db = new DALMP\Database($DSN);
+
+   $rs = $db->Execute("INSERT INTO table (name,email,age) VALUES('name', 'email', 70)");
+
+
+You can also catch exception and continue execution:
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 13
+
+   <?php
+
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   $DSN = "utf8://$user:$password".'@127.0.0.1/test';
+
+   $db = new DALMP\Database($DSN);
+
+   try {
+       $db->Execute('CREATE TABLE myCity LIKE City');
+   } catch (Exception $e) {
+       echo "Table already exists.",$db->isCli(1);
+   }
+
+   $db->Execute("INSERT INTO myCity VALUES (NULL, 'Toluca', 'MEX', 'México', 467713)");
