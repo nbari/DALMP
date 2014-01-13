@@ -1,7 +1,7 @@
 StartTrans
 ==========
 
-Start the transaction, for this the mysql table must be of type InnoDB.
+Start the transaction, for this the mysql table must be of type `InnoDB <http://en.wikipedia.org/wiki/InnoDB>`_.
 
 Example
 .......
