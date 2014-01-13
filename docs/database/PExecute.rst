@@ -23,9 +23,9 @@ Like the `Execute </en/latest/database/Execute.html>`_ Method, in most cases you
 probably only use this method when Inserting or Updating data for retrieving
 data you can use:
 
-================ =========================================================================================
-method           Description
-================ =========================================================================================
+======================================================= =========================================================================================
+method                                                  Description
+======================================================= =========================================================================================
 **P**\ `getAll </en/latest/database/getAll.html>`_      Executes the SQL and returns the all the rows as a 2-dimensional array.
 **P**\ `getRow </en/latest/database/getRow.html>`_      Executes the SQL and returns the first row as an array.
 **P**\ `getCol </en/latest/database/getCol.html>`_      Executes the SQL and returns all elements of the first column as a 1-dimensional array.
@@ -35,7 +35,7 @@ method           Description
                                                         with the first column of the recordset becomes the keys to the rest of the rows. \
                                                         If the columns is equal to two, a 1-dimensional array is created, where the the keys \
                                                         directly map to the values.
-================ =========================================================================================
+======================================================= =========================================================================================
 
 .. note::
 
