@@ -26,6 +26,6 @@ Example
    $db->X()->stat();
 
 
-..seealso::
+.. seealso::
 
-  `class.mysqli.php <http://pt1.php.net/manual/en/class.mysqli.php>`_, ping <http://pt1.php.net/manual/en/mysqli.ping.php>`_, `stat <http://www.php.net/manual/en/mysqli.stat.php>`_.
+   `class.mysqli.php <http://pt1.php.net/manual/en/class.mysqli.php>`_, ping <http://pt1.php.net/manual/en/mysqli.ping.php>`_, `stat <http://www.php.net/manual/en/mysqli.stat.php>`_.
