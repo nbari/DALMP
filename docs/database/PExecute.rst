@@ -43,8 +43,8 @@ method                                                 Description
   prefixed with a **P**.
 
 
-PExecute Examples
-.................
+Examples
+........
 
 .. code-block:: php
    :linenos:
