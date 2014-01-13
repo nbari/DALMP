@@ -49,3 +49,8 @@ Example
    if ($db->CompleteTrans()) {
     // your code
    }
+
+
+.. seealso::
+
+   `StartTrans </en/latest/database/StartTrans.html>`_
