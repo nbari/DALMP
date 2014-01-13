@@ -26,11 +26,11 @@ data you can use:
 ====================================================== =========================================================================================
 method                                                 Description
 ====================================================== =========================================================================================
-**P** `GetAll </en/latest/database/getAll.html>`_      Executes the SQL and returns the all the rows as a 2-dimensional array.
-**P** `GetRow </en/latest/database/getRow.html>`_      Executes the SQL and returns the first row as an array.
-**P** `GetCol </en/latest/database/getCol.html>`_      Executes the SQL and returns all elements of the first column as a 1-dimensional array.
-**P** `GetOne </en/latest/database/getOne.html>`_      Executes the SQL and returns the first field of the first row. -
-**P** `GetASSOC </en/latest/database/getASSOC.html>`_  Executes the SQL and returns an associative array for the given query. \
+**P**,`getAll </en/latest/database/getAll.html>`_      Executes the SQL and returns the all the rows as a 2-dimensional array.
+**P** `getRow </en/latest/database/getRow.html>`_      Executes the SQL and returns the first row as an array.
+**P** `getCol </en/latest/database/getCol.html>`_      Executes the SQL and returns all elements of the first column as a 1-dimensional array.
+**P** `getOne </en/latest/database/getOne.html>`_      Executes the SQL and returns the first field of the first row. -
+**P** `getASSOC </en/latest/database/getASSOC.html>`_  Executes the SQL and returns an associative array for the given query. \
                                                        If the number of columns returned is greater to two, a 2-dimensional array is returned\
                                                        with the first column of the recordset becomes the keys to the rest of the rows. \
                                                        If the columns is equal to two, a 1-dimensional array is created, where the the keys \
