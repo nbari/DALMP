@@ -66,6 +66,31 @@ Will be translated to::
    `Unix sockets vs Internet sockets <http://lists.freebsd.org/pipermail/freebsd-performance/2005-February/001143.html>`_
 
 
+Common methods
+..............
+
+
+The next table contains, 5 common methods for retrieving data:
+
++------+-------------------------------------------------+---------------------+---------------+---------------------------+
+| Name | Normal                                          | Prepared Statements | Cache Normal  | Cache Prepared Statements |
++======+=================================================+=====================+===============+===========================+
+| all  | `GetAll </en/latest/database/getAll.html>`_     | PGetAll             | CacheGetAll   | CachePGetAll              |
++------+-------------------------------------------------+---------------------+---------------+---------------------------+
+| assoc| `GetAssoc </en/latest/database/getASSOC.html>`_ | PGetAssoc           | CacheGetAssoc | CachePGetAssoc            |
++------+-------------------------------------------------+---------------------+---------------+---------------------------+
+| col  | `GetCol </en/latest/database/getCol.html>`_     | PGetCol             | CacheGetCol   | CachePGetCol              |
++------+-------------------------------------------------+---------------------+---------------+---------------------------+
+| one  | `GetOne </en/latest/database/getOne.html>`_     | PGetOne             | CacheGetOne   | CachePGetOne              |
++------+-------------------------------------------------+---------------------+---------------+---------------------------+
+| row  | `GetRow </en/latest/database/getRow.html>`_     | PGetRow             | CacheGetRow   | CachePGetRow              |
++------+-------------------------------------------------+---------------------+---------------+---------------------------+
+
+For Inserting or Updating, you can use the `Execure </en/latest/database/Execute.html>`_ or
+`PExecute </en/latest/database/PExecute.html>`_ methods.
+
+
+
 DALMP Classes
 .............
 
