@@ -10,12 +10,15 @@ Parameters
 
    forceTable($table)
 
-:$table: Name of the table to truncate
+:$table: Name of the table to truncate.
 
+
+Example
+.......
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 12
+   :emphasize-lines: 13
 
    <?php
 
