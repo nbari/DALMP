@@ -32,7 +32,7 @@ Examples
    $user = getenv('MYSQL_USER') ?: 'root';
    $password = getenv('MYSQL_PASS') ?: '';
 
-   $DSN = "utf8://$user:$password".'@127.0.0.1/test';
+   $DSN = "utf8://$user:$password".'@127.0.0.1/dalmp';
 
    $db = new DALMP\Database($DSN);
 
@@ -56,7 +56,7 @@ Chainable example
    $user = getenv('MYSQL_USER') ?: 'root';
    $password = getenv('MYSQL_PASS') ?: '';
 
-   $DSN = "utf8://$user:$password".'@127.0.0.1/test';
+   $DSN = "utf8://$user:$password".'@127.0.0.1/dalmp';
 
    $db = new DALMP\Database($DSN);
 
