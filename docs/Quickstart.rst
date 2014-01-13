@@ -89,6 +89,9 @@ The next table contains, 5 common methods for retrieving data:
 For Inserting or Updating, you can use the `Execure </en/latest/database/Execute.html>`_ or
 `PExecute </en/latest/database/PExecute.html>`_ methods.
 
+.. seealso::
+
+   `Prepared statements </en/latest/prepared_statements.html>`_.
 
 
 DALMP Classes
