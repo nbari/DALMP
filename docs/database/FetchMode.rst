@@ -107,3 +107,60 @@ When using NUM the keys of the result array are numeric. Example of the output:
                [14] => AI
            )
        ...
+
+
+ASSOC mode, example:
+
+.. code-block:: php
+   :linenos:
+
+   <?php
+
+   $rs = $db->FetchMode('ASSOC')->PGetAll('SELECT * FROM Country WHERE Region = ?', 'Caribbean');
+
+The output would be something like:
+
+.. code-block:: rest
+   :linenos:
+
+   // output of print($rs);
+   Array
+   (
+       [0] => Array
+           (
+               [Code] => ABW
+               [Name] => Aruba
+               [Continent] => North America
+               [Region] => Caribbean
+               [SurfaceArea] => 193
+               [IndepYear] =>
+               [Population] => 103000
+               [LifeExpectancy] => 78.400001525879
+               [GNP] => 828
+               [GNPOld] => 793
+               [LocalName] => Aruba
+               [GovernmentForm] => Nonmetropolitan Territory of The Netherlands
+               [HeadOfState] => Beatrix
+               [Capital] => 129
+               [Code2] => AW
+           )
+
+       [1] => Array
+           (
+               [Code] => AIA
+               [Name] => Anguilla
+               [Continent] => North America
+               [Region] => Caribbean
+               [SurfaceArea] => 96
+               [IndepYear] =>
+               [Population] => 8000
+               [LifeExpectancy] => 76.099998474121
+               [GNP] => 63.200000762939
+               [GNPOld] =>
+               [LocalName] => Anguilla
+               [GovernmentForm] => Dependent Territory of the UK
+               [HeadOfState] => Elisabeth II
+               [Capital] => 62
+               [Code2] => AI
+           )
+   ...
