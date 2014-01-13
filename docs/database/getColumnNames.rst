@@ -19,7 +19,7 @@ Example
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 15,
+   :emphasize-lines: 13
 
    <?php
 
@@ -31,6 +31,8 @@ Example
    $DSN = "utf8://$user:$password".'@127.0.0.1/test';
 
    $db = new DALMP\Database($DSN);
+
+   $rs = $db->getColumnNames();
 
    // output of print_r($rs);
    Array
