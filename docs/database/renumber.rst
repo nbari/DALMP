@@ -15,7 +15,7 @@ Parameters
 
 
 :$table: name of the table to renumber.
-:$col: name of the cow with the **auto-increment** attribute.
+:$col: name of the column with the **auto-increment** attribute.
 
 
 Example
