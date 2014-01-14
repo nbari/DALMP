@@ -19,7 +19,25 @@ Parameters
 Example
 .......
 
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 10
 
+   <?php
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+   $host = getenv('MYSQL_HOST') ?: '127.0.0.1';
+   $port = getenv('MYSQL_PORT') ?: '3306';
+
+   $db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
+
+   $db->FetchMode('ASSOC');
+   $ors = $db->map('SELECT * FROM City WHERE Name="Toluca"');
+
+   echo sprintf('ID: %d CountryCode: %s', $ors->ID, $ors->CountryCode);
+
+   print_r($ors);
 
 .. seealso::
 
