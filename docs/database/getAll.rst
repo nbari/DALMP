@@ -54,7 +54,7 @@ Example
 
 Output of ``print_r($rs)``:
 
-.. code-block: rest
+.. code-block:: rest
    :linenos:
 
    Array
