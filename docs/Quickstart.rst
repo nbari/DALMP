@@ -335,6 +335,30 @@ Example using cache (memcache)
 
    echo $rs, PHP_EOL;
 
+Example using DSN cache (redis)
+...............................
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 12, 14
+
+   <?php
+
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   $DSN = "utf8://$user:$password".'@localhost/dalmp?redis';
+
+   $db = new DALMP\Database($DSN);
+
+   $db->FetchMode('ASSOC');
+
+   $rs = $db->CacheGetAll('SELECT * FROM City');
+
+   echo $rs, PHP_EOL;
+
 
 .. seealso::
 
