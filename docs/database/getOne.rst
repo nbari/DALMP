@@ -43,4 +43,9 @@ Example
 
    $rs = $db->PGetOne('SELECT * FROM Country WHERE Region = ? LIMIT 1', 'Caribbean');
 
-   // output of echo $rs: Aruba
+Output of ``echo $rs``:
+
+.. code-block:: rest
+   :linenos:
+
+   Aruba
