@@ -65,6 +65,23 @@ Will be translated to::
 
    `Unix sockets vs Internet sockets <http://lists.freebsd.org/pipermail/freebsd-performance/2005-February/001143.html>`_
 
+DSN Cache format
+................
+
+
+.. code-block:: rest
+
+   charset://username:password@host:port/database?(type:host:port:compression)
+
+:type: `Memcache </en/latest/cache/memcache.html>`_, `Redis </en/latest/cache/redis.html>`_, `Disk </en/latest/cache/disk.html>`_.
+:host: The host of the Memcache, Redis server
+:port: The port of the Memcache, Redis server
+:compression: To use or not compression, only available for memcache
+
+.. seealso::
+
+   DALMP\\Database `Cache method </en/latest/database/Cache.html>`_.
+
 
 Common methods
 ..............
