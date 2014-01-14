@@ -50,7 +50,11 @@ Example
 
    $rs = $db->PGetASSOC('SELECT name, continent FROM Country WHERE Region = ?', 'Caribbean');
 
-   // output of print_r($rs)
+Output of ``print_r($rs)``:
+
+.. code-block:: rest
+   :linenos:
+
    Array
    (
        [Aruba] => North America
