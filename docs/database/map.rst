@@ -25,6 +25,8 @@ Example
 
    <?php
 
+   require_once 'dalmp.php';
+
    $user = getenv('MYSQL_USER') ?: 'root';
    $password = getenv('MYSQL_PASS') ?: '';
    $host = getenv('MYSQL_HOST') ?: '127.0.0.1';
