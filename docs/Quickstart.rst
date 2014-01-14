@@ -74,9 +74,9 @@ DSN Cache format
    charset://username:password@host:port/database?(type:host:port:compression)
 
 :type: `Memcache </en/latest/cache/memcache.html>`_, `Redis </en/latest/cache/redis.html>`_, `Disk </en/latest/cache/disk.html>`_.
-:host: The host of the Memcache, Redis server
-:port: The port of the Memcache, Redis server
-:compression: To use or not compression, only available for memcache
+:host: The host of the Memcache, Redis server.
+:port: The port of the Memcache, Redis server.
+:compression: To use or not compression, only available for memcache.
 
 .. seealso::
 
