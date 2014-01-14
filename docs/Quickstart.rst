@@ -340,7 +340,7 @@ Example using DSN cache (redis)
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 12, 14
+   :emphasize-lines: 8, 14
 
    <?php
 
