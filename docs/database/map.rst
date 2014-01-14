@@ -21,7 +21,7 @@ Example
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 10
+   :emphasize-lines: 11
 
    <?php
 
@@ -38,6 +38,18 @@ Example
    echo sprintf('ID: %d CountryCode: %s', $ors->ID, $ors->CountryCode);
 
    print_r($ors);
+
+   // output
+   ID: 2534 CountryCode: MEX
+
+   stdClass Object
+   (
+       [ID] => 2534
+       [Name] => Toluca
+       [CountryCode] => MEX
+       [District] => México
+       [Population] => 665617
+   )
 
 .. seealso::
 
