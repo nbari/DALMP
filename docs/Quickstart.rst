@@ -349,7 +349,7 @@ Example using DSN cache (redis)
    $user = getenv('MYSQL_USER') ?: 'root';
    $password = getenv('MYSQL_PASS') ?: '';
 
-   $DSN = "utf8://$user:$password".'@localhost/dalmp?redis';
+   $DSN = "utf8://$user:$password".'@localhost/dalmp?redis:127.0.0.1:6379';
 
    $db = new DALMP\Database($DSN);
 

@@ -9,7 +9,7 @@ $password = getenv('MYSQL_PASS') ?: '';
 $host = getenv('MYSQL_HOST') ?: '127.0.0.1';
 $port = getenv('MYSQL_PORT') ?: '3306';
 
-$DSN = "utf8://$user:$password@$host:$port/dalmp?redis";
+$DSN = "utf8://$user:$password@$host:$port/dalmp?redis:127.0.0.1:6379";
 
 $db = new DALMP\Database($DSN);
 
