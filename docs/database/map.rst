@@ -21,7 +21,6 @@ Example
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 11
 
    <?php
 
