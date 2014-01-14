@@ -45,7 +45,11 @@ Example
 
    $rs = $db->PGetRow('SELECT * FROM Country WHERE Region = ? LIMIT 1', 'Caribbean');
 
-   // output of print_r($rs)
+Output of ``print_r($rs)``:
+
+.. code-block:: rest
+   :linenos:
+
    Array
    (
        [0] => ABW
@@ -90,7 +94,11 @@ Same query but using FetchMode('ASSOC')
    ...
    $rs = $db->FetchMode('ASSOC')->PGetRow('SELECT * FROM Country WHERE Region = ? LIMIT 1', 'Caribbean');
 
-   // output of print_r($rs)
+Output of ``print_r($rs)``:
+
+.. code-block:: rest
+   :linenos:
+
    Array
    (
        [Code] => ABW
