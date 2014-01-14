@@ -45,7 +45,9 @@ Example
 
    $rs = $db->PGetCol('SELECT name FROM Country WHERE Region = ?', 'Caribbean');
 
-   // output of print_r($rs)
+Output of print_r($rs)::
+   :linenos:
+
    Array
    (
        [0] => Aruba
