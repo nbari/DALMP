@@ -43,12 +43,12 @@ Example
 
    /**
     * GetAll
-    * \/
+    */
    rs = $db->FetchMode('ASSOC')->GetAll('SELECT name, continent FROM Country WHERE Region ="Caribbean"');
 
    /**
     * Prepared statements
-    * \/
+    */
    $rs = $db->FetchMode('ASSOC')->PGetAll('SELECT name, continent FROM Country WHERE Region = ?', 'Caribbean');
 
 
