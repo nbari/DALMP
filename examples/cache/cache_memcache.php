@@ -8,7 +8,7 @@ $timer = new MPLT();
  */
 require_once '../../vendor/autoload.php';
 
-$cache= new DALMP\Cache\Memcache('127.0.0.1', 11211);
+$cache= new DALMP\Cache\Memcache('127.0.0.1', 11211, 1, 1);
 
 $cache->set('mykey', 'xpto', 300);
 var_dump($cache->get('mykey'));
