@@ -1,9 +1,5 @@
 Examples
 ========
 
-TODO
 
-.. toctree::
-   :maxdepth: 2
-
-   examples/basic
+`https://github.com/nbari/DALMP/tree/master/examples <https://github.com/nbari/DALMP/tree/master/examples>`_.
