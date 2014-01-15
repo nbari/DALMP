@@ -48,7 +48,7 @@ The available methods are:
    database/AutoExecute
    database/Cache
    database/CacheFlush
-   database/closeConnection
+   database/Close
    database/CompleteTrans
    database/construct
    database/csv
