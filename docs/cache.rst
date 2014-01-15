@@ -12,7 +12,7 @@ Parameters
 
   DALMP\Cache(object)
 
-:object: An `CacheInterface instance <>`_.
+:object: An `CacheInterface instance </en/latest/cache/CacheInterface.html>`_.
 
 .. toctree::
    :maxdepth: 2
