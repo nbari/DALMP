@@ -10,7 +10,7 @@ Parameters
 
     UUID($b=null)
 
-:$b: If true will return the UUID in binary, removing the dashes so that you can store it on a DB using column data type binary(16)
+:$b: If true will return the UUID in binary, removing the dashes so that you can store it on a DB using column data type binary(16).
 
 Examples
 ........
