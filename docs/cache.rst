@@ -1,3 +1,12 @@
+.. toctree::
+   :maxdepth: 2
+
+   cache/CacheInterface
+   cache/APC
+   cache/disk
+   cache/memcache
+   cache/redis
+
 DALMP\\Cache
 ===========
 
@@ -16,7 +25,7 @@ Parameters
 :object: An `CacheInterface instance </en/latest/cache/CacheInterface.html>`_.
 
 Example
--------
+.......
 
 .. code-block:: php
    :linenos:
@@ -40,13 +49,3 @@ Example
    $rs = $db->CacheGetOne('SELECT now()');
 
    echo $rs, PHP_EOL;
-
-
-.. toctree::
-   :maxdepth: 2
-
-   cache/CacheInterface
-   cache/APC
-   cache/disk
-   cache/memcache
-   cache/redis
