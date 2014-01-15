@@ -1,7 +1,7 @@
 SQLite
 ======
 
-Implements the ``QueueInteface`` using as `SQLite <http://www.sqlite.org` as the queue backend.
+Implements the ``QueueInteface`` using as `SQLite <http://www.sqlite.org>`_ as the queue backend.
 
 Requires `PHP SQLite3 support <http://www.php.net/manual/en/book.sqlite3.php>`_
 
@@ -10,11 +10,18 @@ __construct
 
 ::
 
-  __construct($host, $port, $timeout)
+  __construct($filename, $queue_name, $enc_key)
 
-:$host: Point to the host where redis is listening for connections. This parameter may also specify other transports like unix:///path/to/redis.sock to use UNIX domain sockets - default 127.0.0.1.
-:$port: Point to the port where redis is listening for connections - default 6379.
-:$timeout: Value in seconds which will be used for connecting to the daemon. Think twice before changing the default value of 1 second - you can lose all the advantages of caching if your connection is too slow.
+:$filename: Path to the SQLite database, or :memory: to use in-memory database.
+:$queue_name:  Name of the queue, defaults to 'default'.
+:$enc_key: The encryption key, default not set.
+
+
+.. seealso::
+
+   For using sqlite3 databases encrypted you need to install
+   sqlcipher: `sqlcipher.net <http://sqlcipher.net/>`_.
+
 
 Example
 .......
@@ -27,19 +34,17 @@ Example
 
     require_once 'dalmp.php';
 
-    $cache = new DALMP\Cache\Redis('10.10.10.13', 6379);
+    $queue = new DALMP\Queue(new DALMP\Queue\SQLite('/tmp/dalmp_queue.db'));
 
-    $cache->set('mykey', 'xpto', 300);
+    echo 'enqueue status: ', var_dump($queue->enqueue('this is a teste'));
 
-    $cache->get('mykey');
+    echo 'dequeue all: ', print_r($queue->dequeue(), true);
 
-    $cache->X()->HSET('myhash', 'field1', 'hello'):
+    echo 'dequeue only 3: ', print_r($queue->dequeue(3), true);
 
-    $cache->X()->HGET('myhash', 'field1');
-
-    $cache->X()->HGETALL('myhash');
+    echo 'delete from queue: ', var_dump($queue->delete(63));
 
 
 .. seealso::
 
-   `Cache Examples <https://github.com/nbari/DALMP/tree/master/examples/cache>`_.
+   `Queue Examples <https://github.com/nbari/DALMP/tree/master/examples/queue>`_.
