@@ -23,7 +23,7 @@ Constants
 Defines where to store the cache when using 'dir' cache type.
 
 This means that if no $path is passed as an argument to the **__construct**
-before using the default value will try to get a path from the DALMP_CACHE_DIR
+before using the default value will try to get a path from the **DALMP_CACHE_DIR**
 constant if set.
 
 Example
