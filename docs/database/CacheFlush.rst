@@ -11,8 +11,8 @@ Parameters
 
     CacheFlush(sql or group, $key=null)
 
-:sql or group: the query to flush or the group name
-:$key: the custom key assigned to the query.
+:sql or group: The query to flush or the group name
+:$key: The custom key assigned to the query.
 
 
 To flush / empty all the cache just call the CacheFlush with no parameteres,
@@ -52,12 +52,12 @@ Flush a query with a custom key:
 
 .. code-block:: php
    :linenos:
+   :emphasize-lines: 5
 
    <?php
    ...
    $rs = $db->CacheGetAll(300, 'SELECT * FROM City', 'my_custom_key');
 
-   // To flush the query
    $db->CacheFlush('SELECT * FROM City', 'my_custom_key');
 
 
@@ -72,5 +72,5 @@ Flushing a chached group:
    $rs = $db->CachePGetAll('SELECT * FROM Country WHERE Population <= ?', 100000, 'group:B');
    $rs = $db->CachePGetAll(86400, 'SELECT * FROM Country WHERE Continent = ?', 'Europe', 'group:B');
 
-   // To flush the query
+   // To flush all the group
    $db->CacheFlush('group:B');
