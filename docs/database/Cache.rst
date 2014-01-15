@@ -41,10 +41,16 @@ one     CacheGetOne   CachePGetOne
 row     CacheGetRow   CachePGetRow
 ======  ============= ===================
 
+.. note::
+
+   Notice that when using "Cache" the methods are prefixed with
+   **Cache**.
+
 Constants
 .........
 
 ::
-    define('DALMP_CACHE_DIR', '/tmp/dalmp/cache/');
+
+   define('DALMP_CACHE_DIR', '/tmp/dalmp/cache/');
 
 Defines where to store the cache when using 'dir' cache type.
