@@ -106,3 +106,35 @@ Cache the results for 300 seconds, 5 minutes:
    $rs = $db->CacheGetAll(300, 'SELECT * FROM City');
 
    echo $rs, PHP_EOL;
+
+Custom key example
+..................
+
+If you specify a custom key, the query result will be stored on the cache.
+
+On the cache engine, the (key, value) is translated to:
+
+:key: your custom key
+:value: the output of your query
+
+This is useful when you only want to flush certain parts of the cache, example:
+
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 14
+
+   <?php
+
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   $DSN = "utf8://$user:$password".'@localhost/dalmp?redis:127.0.0.1:6379';
+
+   $db = new DALMP\Database($DSN);
+
+   $db->FetchMode('ASSOC');
+
+   $rs = $db->CacheGetAll(300, 'SELECT * FROM City', 'my_custom_key');
