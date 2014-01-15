@@ -45,6 +45,9 @@ compatibility with other **DALMP** classes.
 
    echo $rs, PHP_EOL;
 
+
+**See also**
+
 .. toctree::
    :maxdepth: 2
 
