@@ -50,7 +50,7 @@ is useful so that you can later process the queries and not lose important data.
     * you can save the 'sql query' and later process it again.
     */
 
-    $sql = "INSERT INTO testX SET colA=(NOW())";
+    $sql = 'INSERT INTO testX SET colA=(NOW())';
     try {
         $rs = $db->Execute($sql);}
     } catch(Exception $e) {
