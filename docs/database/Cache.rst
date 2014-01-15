@@ -79,7 +79,7 @@ following options::
 :Cache[P]method: A normal or `prepared statements </en/latest/prepared_statements.html>`_ method: 'all, assoc, col, one, row'
 :TTL: The time to live (timeout) in seconds for your query, default 3600 seconds / 1 hour if not set.
 :query: A normal or prepared statements query.
-:key or group:X: A unique custom key for storing the query result or the name of a caching group.
+:key or group: A unique custom key for storing the query result or the name of a caching group:**X** Where X is the desired name of the group.
 
 TTL example
 ...........
