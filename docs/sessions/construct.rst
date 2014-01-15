@@ -1,4 +1,4 @@
-construct
-=========
+__construct
+===========
 
 todo
