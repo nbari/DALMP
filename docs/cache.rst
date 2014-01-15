@@ -15,8 +15,8 @@ Parameters
 
 :object: An `CacheInterface instance </en/latest/cache/CacheInterface.html>`_.
 
-Examples
-........
+Example
+-------
 
 .. code-block:: php
    :linenos:
