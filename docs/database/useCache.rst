@@ -11,7 +11,7 @@ Parameters
 
     useCache($cache)
 
-:$cache: An `DALMP\\Cache </en/latest/cache.html>`_ instance.
+:$cache: A `DALMP\\Cache </en/latest/cache.html>`_ instance.
 
 
 Example
