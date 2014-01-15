@@ -5,8 +5,7 @@ DALMP\\Cache
 The ``DALMP\Cache`` class works as a dispatcher for the current Cache classes, following  a common interface in order to maintain
 compatibility with other **DALMP** classes.
 
-| *Object interfaces allow you to create code which specifies which methods a \
-class must implement, without having to define how these methods are handled.*
+*Object interfaces allow you to create code which specifies which methods a class must implement, without having to define how these methods are handled.*
 
 .. seealso::
 
