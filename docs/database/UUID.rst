@@ -19,7 +19,7 @@ Examples
    :linenos:
 
    <?php
-
+   ...
 
    echo $db->UUID();
 
