@@ -168,7 +168,8 @@ without affecting the rest of your cache.
 .. note::
 
    When creating a cache group for your queries all of them must start with
-   **group:**
+   **group:**, so if you want a group called 'my_group' it should be:
+   **group:my_group**.
 
 
 .. seealso::
