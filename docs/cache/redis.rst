@@ -3,6 +3,7 @@ Redis
 
 Implements the ``CacheInteface`` using as `redis.io <http://www.redis.io` as the cache backend.
 
+Requires `REDIS extension <http://github.com/nicolasff/phpredis>`_.
 
 __construct
 ...........
