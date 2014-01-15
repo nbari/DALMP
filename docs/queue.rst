@@ -30,7 +30,7 @@ is useful so that you can later process the queries and not lose important data.
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 12, 14
+   :emphasize-lines: 12, 23
 
    <?php
 
