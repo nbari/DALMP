@@ -31,15 +31,15 @@ with out need to connect again to the database and fetch the results.
 
 There are five methods you can use within the Cache method which are:
 
-======  ============= ===================
-method  Normal        Prepared statements
-======  ============= ===================
-all     CacheGetAll   CachePGetAll
-assoc   CacheGetASSOC CachePGetASSOC
-col     CacheGetCol   CachePGetCol
-one     CacheGetOne   CachePGetOne
-row     CacheGetRow   CachePGetRow
-======  ============= ===================
+============================================ ============= ===================
+method                                       Normal        Prepared statements
+============================================ ============= ===================
+`all </en/latest/database/getAll.html>`_     CacheGetAll   CachePGetAll
+`assoc </en/latest/database/getASSOC.html>`_ CacheGetASSOC CachePGetASSOC
+`col </en/latest/database/getCol.html>`_     CacheGetCol   CachePGetCol
+`one </en/latest/database/getOne.html>`_     CacheGetOne   CachePGetOne
+`row </en/latest/database/getRow.html>`_     CacheGetRow   CachePGetRow
+============================================ ============= ===================
 
 .. note::
 
