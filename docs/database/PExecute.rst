@@ -20,7 +20,7 @@ Parameters
 
 
 Like the `Execute </en/latest/database/Execute.html>`_ Method, in most cases you
-probably only use this method when ***Inserting** or **Updating** data for retrieving
+probably only use this method when **Inserting** or **Updating** data for retrieving
 data you can use:
 
 ================== =========================================================================================
