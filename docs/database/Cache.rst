@@ -19,6 +19,10 @@ DSN Cache format
 :port: The port of the Memcache, Redis server.
 :compression: To use or not compression, only available for memcache.
 
+.. note::
+
+   If no Cache is specified, defaults to `disk cache type </en/latest/cache/disk.html>_`.
+
 The Cache methods
 .................
 
