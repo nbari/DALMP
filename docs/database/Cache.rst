@@ -4,8 +4,8 @@ Cache
 The method ``Cache`` returns or instantiate a `DALMP\\Cache </en/latest/cache.html>`_ instance.
 
 To use the cache features you must specify the type of cache either via DSN or
-by passing a `DALMP\\Cache </en/latest/cache.html>`_ instance as an argument for the method `useCache
-</en/latest/database/useCache.html>`_.
+by passing a `DALMP\\Cache </en/latest/cache.html>`_ instance as an argument to the
+method `useCache </en/latest/database/useCache.html>`_.
 
 DSN Cache format
 ................
