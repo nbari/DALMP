@@ -6,8 +6,7 @@ The ``DALMP\Cache`` class works as a dispatcher for the current Cache classes, f
 compatibility with other **DALMP** classes.
 
 
-Parameters
-^^^^^^^^^^
+**Parameters**
 
 ::
 
