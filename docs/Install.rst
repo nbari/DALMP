@@ -29,6 +29,6 @@ A basic `composer.json <http://getcomposer.org/doc/04-schema.md#composer-json>`_
 
    $ composer.phar install
 
-.. seemore::
+.. seealso::
 
    `composer <http://getcomposer.org>`_
