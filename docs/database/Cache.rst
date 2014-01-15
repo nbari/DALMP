@@ -59,4 +59,4 @@ Constants
 
    define('DALMP_CACHE_DIR', '/tmp/dalmp/cache/');
 
-Defines where to store the cache when using 'dir' cache type.
+Defines where to store the cache when using `dir cache type </en/latest/cache/disk.html>`_.
