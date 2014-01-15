@@ -1,7 +1,7 @@
 DALMP\\Sessions
 ===============
 
-**DALMP** can store `PHP sessions <http://www.php.net/manual/en/features.sessions.php>`_` in a mysql/sqlite database or in a cache engine
+**DALMP** can store `PHP sessions <http://www.php.net/manual/en/features.sessions.php>`_ in a mysql/sqlite database or in a cache engine
 like redis or memcache.
 
 One of the advantage of storing the session on mysql or cache engine is the
@@ -25,8 +25,8 @@ Backend  Description
 Files    Use file system to store the sessions.
 Memcache Use memcache `DALMP\\Cache </en/latest/cache/memcache.html>`_
 MySQL    Use MySQL database `DALMP\\Database </en/latest/database.html>`_.
-Redis    Use redis DALMP\\Cache </en/latest/cache/redis.html>`_
-SQLite   Use SQLite
+Redis    Use redis DALMP\\Cache </en/latest/cache/redis.html>`_.
+SQLite   Use SQLite.
 
 
 **See Also:**
