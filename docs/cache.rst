@@ -15,6 +15,33 @@ Parameters
 
 :object: An `CacheInterface instance </en/latest/cache/CacheInterface.html>`_.
 
+Examples
+........
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 12, 14
+
+   <?php
+
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   $DSN = "utf8://$user:$password".'@localhost/test';
+
+   $db = new DALMP\Database($DSN);
+
+   $cache = new DALMP\Cache(new DALMP\Cache\Memcache());
+
+   $db->useCache($cache);
+
+   $rs = $db->CacheGetOne('SELECT now()');
+
+   echo $rs, PHP_EOL;
+
+
 .. toctree::
    :maxdepth: 2
 
