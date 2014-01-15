@@ -13,13 +13,17 @@ the storage engine that keep the sessions for storing valued information.
 
 The methods you can use to handle references stored on the sessions are:
 
-=============== ==========================================================
-Method          Description
-=============== ==========================================================
-getSessionsRefs return array of sessions containing any reference.
-getSessionRef   return array of sessions containing a specific reference.
-delSessionRef   delete sessions containing a specific reference.
-=============== ==========================================================
+================== ==========================================================
+Method             Description
+================== ==========================================================
+`getSessionsRefs`_ Return array of sessions containing any reference.
+`getSessionRef`_   Return array of sessions containing a specific reference.
+`delSessionRef`_   Delete sessions containing a specific reference.
+================== ==========================================================
+
+_getSessionsRefs: /en/latest/sessions/getSessionsRefs.html
+_getSessionRef: /en/latest/sessions/getSessionRef.html
+_delSessionRef: /en/latest/sessions/delSessionRef.html
 
 For example, you can store in the reference, the current user id 'UID' and
 configure your site to only accept users to loggin once avoiding with this
