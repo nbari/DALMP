@@ -77,7 +77,7 @@ following options::
     querym_ethod(TTL, <query>, customkey or group)
 
 :query_method: A normal or prepared statements method 'all, assoc, col, one, row'
-:TTL: The time to live in seconds for your query.
+:TTL: The time to live in seconds for your query, default 3600 seconds / 1 hour if not set.
 :query: A normal or prepared statements query.
 :custmokey or group: a unique key for storing the query result or the name of a caching group.
 
