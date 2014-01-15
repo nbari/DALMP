@@ -43,7 +43,7 @@ Example
 
 .. toctree::
    :maxdepth: 2
-   :includehidden:
+   :hidden:
 
    cache/CacheInterface
    cache/APC
