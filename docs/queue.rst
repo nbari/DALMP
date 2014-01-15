@@ -47,7 +47,7 @@ is useful so that you can later process the queries and not lose important data.
 
    /**
     * In case something goes wrong, the database is unavailable, fields missing,  etc,
-    * you can save 'sql query' and later process it again.
+    * you can save the 'sql query' and later process it again.
     */
 
     $sql = "INSERT INTO testX SET colA=(NOW())";
