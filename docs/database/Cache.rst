@@ -74,9 +74,9 @@ Parameters
 You can have finer control over your cached queries, for this you have the
 following options::
 
-    query_method(TTL, <query>, key or group)
+    Cache[P]method(TTL, <query>, key or group)
 
-:query_method: A normal or prepared statements method 'all, assoc, col, one, row'
+:Cache[P]method: A normal or `prepared statements </en/latest/prepared_statements.html>`_ method: 'all, assoc, col, one, row'
 :TTL: The time to live (timeout) in seconds for your query, default 3600 seconds / 1 hour if not set.
 :query: A normal or prepared statements query.
 :key or group: a unique key for storing the query result or the name of a caching group.
