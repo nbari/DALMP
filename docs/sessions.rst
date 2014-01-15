@@ -42,3 +42,7 @@ SQLite   Use SQLite.
    sessions/Redis
    sessions/SQLite
    sessions/regenerate_id
+
+.. warning::
+
+   In order to properly use ``DALMP\Sessions`` you need (PHP 5 >= 5.4.0).
