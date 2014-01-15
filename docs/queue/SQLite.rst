@@ -36,13 +36,13 @@ Example
 
     $queue = new DALMP\Queue(new DALMP\Queue\SQLite('/tmp/dalmp_queue.db'));
 
-    echo 'enqueue status: ', var_dump($queue->enqueue('this is a teste'));
+    echo 'enqueue status: ', var_dump($queue->enqueue('this is a teste')), PHP_EOL;
 
-    echo 'dequeue all: ', print_r($queue->dequeue(), true);
+    echo 'dequeue all: ', print_r($queue->dequeue(), true), PHP_EOL;
 
-    echo 'dequeue only 3: ', print_r($queue->dequeue(3), true);
+    echo 'dequeue only 3: ', print_r($queue->dequeue(3), true), PHP_EOL;
 
-    echo 'delete from queue: ', var_dump($queue->delete(63));
+    echo 'delete from queue: ', var_dump($queue->delete(63)), PHP_EOL;
 
 
 .. seealso::
