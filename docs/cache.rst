@@ -2,8 +2,9 @@ DALMP\\Cache
 ===========
 
 
-The ``DALMP\Cache`` class follows a common interface in order to maintain
+The ``DALMP\Cache`` class works as a dispatcher for the current Cache classes, following  a common interface in order to maintain
 compatibility with other **DALMP** classes.
+
 
 Parameters
 ..........
