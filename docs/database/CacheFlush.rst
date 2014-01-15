@@ -11,7 +11,7 @@ Parameters
 
     CacheFlush(sql or group, $key=null)
 
-:sql or group: The query to flush or the group name
+:sql or group: The query to flush or the group name.
 :$key: The custom key assigned to the query.
 
 
