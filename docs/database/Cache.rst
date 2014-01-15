@@ -74,12 +74,12 @@ Parameters
 You can have finer control over your cached queries, for this you have the
 following options::
 
-    Cache[P]method(TTL, <query>, key or group)
+    Cache[P]method(TTL, <query>, key or group:X)
 
 :Cache[P]method: A normal or `prepared statements </en/latest/prepared_statements.html>`_ method: 'all, assoc, col, one, row'
 :TTL: The time to live (timeout) in seconds for your query, default 3600 seconds / 1 hour if not set.
 :query: A normal or prepared statements query.
-:key or group: a unique key for storing the query result or the name of a caching group.
+:key or group:X: A unique custom key for storing the query result or the name of a caching group.
 
 TTL example
 ...........
@@ -114,8 +114,8 @@ If you specify a custom key, the query result will be stored on the cache.
 
 On the cache engine, the (key, value) is translated to:
 
-:key: your custom key
-:value: the output of your query
+:key: Your custom key.
+:value: The output of your query.
 
 This is useful when you only want to flush certain parts of the cache, example:
 
@@ -138,3 +138,39 @@ This is useful when you only want to flush certain parts of the cache, example:
    $db->FetchMode('ASSOC');
 
    $rs = $db->CacheGetAll(300, 'SELECT * FROM City', 'my_custom_key');
+
+Group caching, group:X
+......................
+
+Helps to group your queries in groups, so that later you can only flush group
+without affecting the rest of your cache.
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 14
+
+   <?php
+
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   $DSN = "utf8://$user:$password".'@localhost/dalmp?redis:127.0.0.1:6379';
+
+   $db = new DALMP\Database($DSN);
+
+   $db->FetchMode('ASSOC');
+
+   $rs = $db->CacheGetAll(300, 'SELECT * FROM City', 'group:B');
+
+
+.. note::
+
+   When creating a cache group for your queries all of them must start with
+   **group:**
+
+
+.. seealso::
+
+   `CacheFlush </en/latest/database/CacheFlush.html>`_
