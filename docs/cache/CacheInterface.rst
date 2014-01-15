@@ -18,6 +18,8 @@ X      Return the cache object.
 ====== ========================================================================
 
 
+All the cache backends must implement this `interface <https://github.com/nbari/DALMP/blob/master/src/DALMP/Cache/CacheInterface.php>`_ in order to properly work with **DALMP**.
+
 .. seealso::
 
    `PHP Object Interfaces <http://www.php.net/manual/en/language.oop5.interfaces.php>`_.
