@@ -38,3 +38,8 @@ Example
     $cache->X()->HGET('myhash', 'field1');
 
     $cache->X()->HGETALL('myhash');
+
+
+.. seealso::
+
+   `Cache Examples <https://github.com/nbari/DALMP/tree/master/examples/cache>`_.

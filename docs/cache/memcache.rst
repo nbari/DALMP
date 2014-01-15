@@ -1,7 +1,7 @@
 Memcache
 ========
 
-Implements the ``CacheInteface`` using as `memcached <http://memcached.org/` as the cache backend.
+Implements the ``CacheInteface`` using  `memcached <http://memcached.org>` as the cache backend.
 
 Requires `Memcache PECL extension <http://pecl.php.net/package/memcache>`_.
 
@@ -37,3 +37,8 @@ Example
     $cache->get('mykey');
 
     $cache->X()->replace('mykey', 'otpx', false, 300);
+
+
+.. seealso::
+
+   `Cache Examples <https://github.com/nbari/DALMP/tree/master/examples/cache>`_.
