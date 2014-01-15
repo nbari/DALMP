@@ -11,7 +11,7 @@ Parameters
 
     qstr($string)
 
-:$string: The var to quote
+:$string: The var to quote.
 
 
 Example

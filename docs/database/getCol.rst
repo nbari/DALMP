@@ -13,7 +13,7 @@ Parameters
 
     getCol($sql)
 
-:$sql: The MySQL query to perfom on the database
+:$sql: The MySQL query to perfom on the database.
 
 Prepared statements Parameters
 ..............................
