@@ -1,12 +1,3 @@
-.. toctree::
-   :maxdepth: 2
-
-   cache/CacheInterface
-   cache/APC
-   cache/disk
-   cache/memcache
-   cache/redis
-
 DALMP\\Cache
 ===========
 
@@ -49,3 +40,13 @@ Example
    $rs = $db->CacheGetOne('SELECT now()');
 
    echo $rs, PHP_EOL;
+
+.. toctree::
+   :maxdepth: 2
+   :includehidden:
+
+   cache/CacheInterface
+   cache/APC
+   cache/disk
+   cache/memcache
+   cache/redis
