@@ -20,31 +20,11 @@ compatibility with other **DALMP** classes.
 
 :object: An `QueueInterface instance </en/latest/cache/CacheInterface.html>`_.
 
-**Example**
+**Why?**
 
-.. code-block:: php
-   :linenos:
-   :emphasize-lines: 12, 14
-
-   <?php
-
-   require_once 'dalmp.php';
-
-   $user = getenv('MYSQL_USER') ?: 'root';
-   $password = getenv('MYSQL_PASS') ?: '';
-
-   $DSN = "utf8://$user:$password".'@localhost/test';
-
-   $db = new DALMP\Database($DSN);
-
-   $cache = new DALMP\Cache(new DALMP\Cache\Memcache());
-
-   $db->useCache($cache);
-
-   $rs = $db->CacheGetOne('SELECT now()');
-
-   echo $rs, PHP_EOL;
-
+There are times where database go down or you can't Insert/Update data into a
+table because of the 'too many connections mysql'. In this cases a queue always
+is useful so that you can later process the queries and not lose important data.
 
 **See also**
 
