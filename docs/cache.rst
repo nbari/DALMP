@@ -10,7 +10,7 @@ class must implement, without having to define how these methods are handled.*
 
 .. seealso::
 
-   `Object Interfaces <http://www.php.net/manual/en/language.oop5.interfaces.php>`_.
+   `PHP Object Interfaces <http://www.php.net/manual/en/language.oop5.interfaces.php>`_.
 
 
 **Parameters**
