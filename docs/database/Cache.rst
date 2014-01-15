@@ -182,4 +182,4 @@ without affecting the rest of your cache.
 
 .. seealso::
 
-   `CacheFlush </en/latest/database/CacheFlush.html>`_
+   `CacheFlush </en/latest/database/CacheFlush.html>`_ & `Cache Examples <https://github.com/nbari/DALMP/tree/master/examples/cache>`_
