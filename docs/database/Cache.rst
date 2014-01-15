@@ -21,7 +21,7 @@ DSN Cache format
 
 .. note::
 
-   If no Cache is specified, defaults to `disk cache type </en/latest/cache/disk.html>_`.
+   If no Cache is specified, defaults to `disk cache type </en/latest/cache/disk.html>`_.
 
 The Cache methods
 .................
