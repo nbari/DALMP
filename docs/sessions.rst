@@ -33,15 +33,15 @@ duplicate entries/access using the same user/password.
 
 The current available backends are:
 
-======== =================================================================
+======== ==========================================================================
 Backend  Description
-======== =================================================================
-Files    Use file system to store the sessions.
+======== ==========================================================================
+Files    Use `file system </en/latest/sessions/Files.html>`_ to store the sessions.
 Memcache Use memcache `DALMP\\Cache </en/latest/cache/memcache.html>`_
 MySQL    Use MySQL database `DALMP\\Database </en/latest/database.html>`_.
 Redis    Use redis `DALMP\\Cache </en/latest/cache/redis.html>`_.
-SQLite   Use SQLite.
-======== =================================================================
+SQLite   Use `SQLite </en/latest/sessions/SQLite.html>`_.
+======== ==========================================================================
 
 
 **See Also:**
