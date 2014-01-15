@@ -1,5 +1,5 @@
 DALMP\\Cache
-===========
+============
 
 
 The ``DALMP\Cache`` class works as a dispatcher for the current Cache classes, following  a common interface in order to maintain
