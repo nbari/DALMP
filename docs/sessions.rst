@@ -21,9 +21,9 @@ Method             Description
 `delSessionRef`_   Delete sessions containing a specific reference.
 ================== ==========================================================
 
-_getSessionsRefs: /en/latest/sessions/getSessionsRefs.html
-_getSessionRef: /en/latest/sessions/getSessionRef.html
-_delSessionRef: /en/latest/sessions/delSessionRef.html
+.. _getSessionsRefs: /en/latest/sessions/getSessionsRefs.html
+.. _getSessionRef: /en/latest/sessions/getSessionRef.html
+.. _delSessionRef: /en/latest/sessions/delSessionRef.html
 
 For example, you can store in the reference, the current user id 'UID' and
 configure your site to only accept users to loggin once avoiding with this
