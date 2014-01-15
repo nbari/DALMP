@@ -34,12 +34,14 @@ There are five methods you can use within the Cache method which are:
 ============================================ ============= ===================
 method                                       Normal        Prepared statements
 ============================================ ============= ===================
-`all </en/latest/database/getAll.html>`_     CacheGetAll   CachePGetAll
+`all`_                                       CacheGetAll   CachePGetAll
 `assoc </en/latest/database/getASSOC.html>`_ CacheGetASSOC CachePGetASSOC
 `col </en/latest/database/getCol.html>`_     CacheGetCol   CachePGetCol
 `one </en/latest/database/getOne.html>`_     CacheGetOne   CachePGetOne
 `row </en/latest/database/getRow.html>`_     CacheGetRow   CachePGetRow
 ============================================ ============= ===================
+
+.. _all: /en/latest/database/getAll.html
 
 .. note::
 
