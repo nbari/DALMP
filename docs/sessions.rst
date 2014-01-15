@@ -15,18 +15,19 @@ For example, you can store in the reference, the current user id 'UID' and
 configure your site to only accept users to loggin once avoiding with this
 duplicate entries/access using the same user/password.
 
-``DALMP\\Sessions`` implements the `SessionHandlerInterface class <http://www.php.net/manual/en/class.sessionhandlerinterface.php>`_.
+``DALMP\Sessions`` implements the `SessionHandlerInterface class <http://www.php.net/manual/en/class.sessionhandlerinterface.php>`_.
 
 The current available backends are:
 
-======== ============
+======== =================================================================
 Backend  Description
-======== ============
+======== =================================================================
 Files    Use file system to store the sessions.
 Memcache Use memcache `DALMP\\Cache </en/latest/cache/memcache.html>`_
 MySQL    Use MySQL database `DALMP\\Database </en/latest/database.html>`_.
 Redis    Use redis DALMP\\Cache </en/latest/cache/redis.html>`_.
 SQLite   Use SQLite.
+======== =================================================================
 
 
 **See Also:**
