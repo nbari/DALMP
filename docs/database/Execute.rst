@@ -11,7 +11,7 @@ Parameters
 
     Execute($sql)
 
-:$sql: The MySQL query to perform on the database
+:$sql: The MySQL query to perform on the database.
 
 In most cases you only use this method when Inserting or Updating data, for
 retrieving data the 5 common methods are:

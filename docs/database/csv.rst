@@ -14,7 +14,7 @@ Parameters
 
 :$sql: Your normal sql or either a prepared statement query.
 
-:returns: CVS
+:returns: CVS.
 
 Example
 .......
