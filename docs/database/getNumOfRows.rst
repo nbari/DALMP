@@ -1,5 +1,5 @@
-getNumOfFields
-==============
+getNumOfRows
+============
 
 Returns the number of rows for the most recent query.
 
