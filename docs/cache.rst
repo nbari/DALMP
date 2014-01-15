@@ -47,6 +47,7 @@ compatibility with other **DALMP** classes.
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
 
    cache/CacheInterface
    cache/APC
