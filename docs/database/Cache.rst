@@ -31,17 +31,21 @@ with out need to connect again to the database and fetch the results.
 
 There are five methods you can use within the Cache method which are:
 
-============================================ ============= ===================
-method                                       Normal        Prepared statements
-============================================ ============= ===================
-`all`_                                       CacheGetAll   CachePGetAll
-`assoc </en/latest/database/getASSOC.html>`_ CacheGetASSOC CachePGetASSOC
-`col </en/latest/database/getCol.html>`_     CacheGetCol   CachePGetCol
-`one </en/latest/database/getOne.html>`_     CacheGetOne   CachePGetOne
-`row </en/latest/database/getRow.html>`_     CacheGetRow   CachePGetRow
-============================================ ============= ===================
+======== ============= ===================
+method   Normal        Prepared statements
+======== ============= ===================
+`all`_   CacheGetAll   CachePGetAll
+`assoc`_ CacheGetASSOC CachePGetASSOC
+`col`_   CacheGetCol   CachePGetCol
+`one`_   CacheGetOne   CachePGetOne
+`row`_   CacheGetRow   CachePGetRow
+======== ============= ===================
 
 .. _all: /en/latest/database/getAll.html
+.. _assoc: /en/latest/database/getASSOC.html
+.. _col: /en/latest/database/getCol.html
+.. _one: /en/latest/database/getOne.html
+.. _row: /en/latest/database/getRow.html
 
 .. note::
 
