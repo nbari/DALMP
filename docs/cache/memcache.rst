@@ -15,7 +15,7 @@ __construct
 :$host: Point to the host where memcache is listening for connections. This parameter may also specify other transports like unix:///path/to/memcache.sock to use UNIX domain sockets - default 127.0.0.1.
 :$port: Point to the port where memcache is listening for connections - default 11211.
 :$timeout: Value in seconds which will be used for connecting to the daemon. Think twice before changing the default value of 1 second - you can lose all the advantages of caching if your connection is too slow.
-:$compress: Enables or disables payload compression, Use `MEMCACHE_COMPRESSED <http://www.php.net/manual/en/memcache.set.php>`_ to store the item compressed (uses zlib).
+:$compress: Enables or disables (true/false) payload compression, Use `MEMCACHE_COMPRESSED <http://www.php.net/manual/en/memcache.set.php>`_ to store the item compressed (uses zlib) - default false.
 
 
 
