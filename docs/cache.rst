@@ -47,7 +47,6 @@ compatibility with other **DALMP** classes.
 
 
 **See also**
-
 .. toctree::
    :maxdepth: 2
 
