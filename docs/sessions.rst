@@ -52,6 +52,9 @@ SQLite   Use SQLite.
    sessions/Redis
    sessions/SQLite
    sessions/regenerate_id
+   sessions/getSessionsRefs
+   sessions/getSessionRef
+   sessions/delSessionRef
 
 .. warning::
 
