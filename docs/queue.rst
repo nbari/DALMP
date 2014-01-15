@@ -26,6 +26,39 @@ There are times where database go down or you can't Insert/Update data into a
 table because of the 'too many connections mysql'. In this cases a queue always
 is useful so that you can later process the queries and not lose important data.
 
+**Example**
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 12, 14
+
+   <?php
+
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   $DSN = "utf8://$user:$password".'@localhost/test';
+
+   $db = new DALMP\Database($DSN);
+
+   $queue = new DALMP\Queue(new DALMP\Queue\SQLite('/tmp/dalmp_queue.db'));
+
+   /**
+    * In case something goes wrong, the database is unavailable, fields missing,  etc,
+    * you can save 'sql query' and later process it again.
+    */
+
+    $sql = "INSERT INTO testX SET colA=(NOW())";
+    try {
+        $rs = $db->Execute($sql);}
+    } catch(Exception $e) {
+       $queue->enqueue($sql);
+    }
+
+
+
 **See also**
 
 .. toctree::
