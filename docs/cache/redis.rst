@@ -11,10 +11,9 @@ __construct
 
   __construct($host, $port, $timeout)
 
-:$host: Point to the host where redis is listening for connections. This parameter may also specify other transports like unix:///path/to/redis.sock to use UNIX domain sockets. - default 127.0.0.1.
-:$port: Point to the port where redis is listening for connections. - default 6379.
-:$timeout: Value in seconds which will be used for connecting to the daemon. Think twice before changing the default value of 1 second - you can lose all
-the advantages of caching if your connection is too slow.
+:$host: Point to the host where redis is listening for connections. This parameter may also specify other transports like unix:///path/to/redis.sock to use UNIX domain sockets - default 127.0.0.1.
+:$port: Point to the port where redis is listening for connections - default 6379.
+:$timeout: Value in seconds which will be used for connecting to the daemon. Think twice before changing the default value of 1 second - you can lose all the advantages of caching if your connection is too slow.
 
 Example
 .......
