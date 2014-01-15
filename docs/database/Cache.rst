@@ -10,7 +10,6 @@ method `useCache </en/latest/database/useCache.html>`_.
 DSN Cache format
 ................
 
-
 .. code-block:: rest
 
    charset://username:password@host:port/database?(type:host:port:compression)
@@ -19,3 +18,29 @@ DSN Cache format
 :host: The host of the Memcache, Redis server.
 :port: The port of the Memcache, Redis server.
 :compression: To use or not compression, only available for memcache.
+
+The Cache methods
+.................
+
+The idea of using a 'cache' is to dispatch faster the results of a previous query
+with out need to connect again to the database and fetch the results.
+
+There are five methods you can use within the Cache method which are:
+
+======  ============= ===================
+method  Normal        Prepared statements
+======  ============= ===================
+all     CacheGetAll   CachePGetAll
+assoc   CacheGetASSOC CachePGetASSOC
+col     CacheGetCol   CachePGetCol
+one     CacheGetOne   CachePGetOne
+row     CacheGetRow   CachePGetRow
+======  ============= ===================
+
+Constants
+.........
+
+::
+    define('DALMP_CACHE_DIR', '/tmp/dalmp/cache/');
+
+Defines where to store the cache when using 'dir' cache type.
