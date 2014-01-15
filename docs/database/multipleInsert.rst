@@ -1,5 +1,5 @@
-multiple Insert
-===============
+multipleInsert
+==============
 
 Performs one query to insert multiple records.
 
@@ -9,12 +9,12 @@ Parameters
 
 ::
 
-    multipleInsert($table, array $col_name, array $multiple_values)
+    multipleInsert($table, array $col_name, array $values)
 
 
 :$table: Name of the table to insert the data.
 :$col_name: Array containing the name of the columns.
-:$multiple_values: multidimensional Array containing the values.
+:$values: Multidimensional Array containing the values.
 
 
 Example
@@ -23,7 +23,7 @@ Example
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 13
+   :emphasize-lines: 20
 
    <?php
 
