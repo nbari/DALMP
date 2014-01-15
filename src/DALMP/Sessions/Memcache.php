@@ -144,7 +144,7 @@ class Memcache implements \SessionHandlerInterface
      * getSessionRef
      *
      * @param string $ref
-     * @return array of session containing a specific reference
+     * @return array of sessions containing a specific reference
      */
     public function getSessionRef($ref)
     {
