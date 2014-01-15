@@ -1,6 +1,10 @@
 CacheInterface
 ==============
 
+``CacheInterface`` is **DALMP** interface to be use with the `DALMP\\Cache </en/latest/cache.html>`_ class.
+
+
+
 
 .. seealso::
 
