@@ -1,5 +1,5 @@
 DALMP\\Database
-==============
+===============
 
 The ``DALMP\Database`` class contains a set of `methods <https://github.com/nbari/DALMP/blob/master/src/DALMP/Database.php>`_ that allow to query a
 database in a more easy and secure way.
