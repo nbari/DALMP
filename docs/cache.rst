@@ -6,8 +6,7 @@ The ``DALMP\Cache`` class works as a dispatcher for the current Cache classes, f
 compatibility with other **DALMP** classes.
 
 
-Parameters
-..........
+**Parameters**
 
 ::
 
@@ -15,8 +14,7 @@ Parameters
 
 :object: An `CacheInterface instance </en/latest/cache/CacheInterface.html>`_.
 
-Example
-.......
+**Example**
 
 .. code-block:: php
    :linenos:
@@ -43,7 +41,6 @@ Example
 
 .. toctree::
    :maxdepth: 2
-   :hidden:
 
    cache/CacheInterface
    cache/APC
