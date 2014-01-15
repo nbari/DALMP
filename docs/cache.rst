@@ -59,4 +59,4 @@ compatibility with other **DALMP** classes.
 
 .. note::
 
-   The **Dalmp\\Cache** has no dependecy with the `DALMP\\Database </en/latest/database.html>`_ class, this means that you can use only the Database or the Cache classes with out need to depend on eitherone.
+   The **Dalmp\\Cache** has no dependency with the `DALMP\\Database </en/latest/database.html>`_ class, this means that you can use only the Database or the Cache classes with out need to depend on eitherone.
