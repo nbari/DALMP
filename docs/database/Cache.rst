@@ -60,3 +60,49 @@ Constants
    define('DALMP_CACHE_DIR', '/tmp/dalmp/cache/');
 
 Defines where to store the cache when using `dir cache type </en/latest/cache/disk.html>`_.
+
+
+How to use
+..........
+
+Whenever you want to use the cache, just just need to prepend the word
+**Cache** to the method you are using.
+
+Parameters
+..........
+
+You can have finer control over your cached queries, for this you have the
+following options::
+
+    querym_ethod(TTL, <query>, customkey or group)
+
+:query_method: A normal or prepared statements method 'all, assoc, col, one, row'
+:TTL: The time to live in seconds for your query.
+:query: A normal or prepared statements query.
+:custmokey or group: a unique key for storing the query result or the name of a caching group.
+
+Cache TTL example
+.................
+
+Cache the results for 300 seconds, 5 minutes:
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 8, 14
+
+   <?php
+
+   require_once 'dalmp.php';
+
+   $user = getenv('MYSQL_USER') ?: 'root';
+   $password = getenv('MYSQL_PASS') ?: '';
+
+   $DSN = "utf8://$user:$password".'@localhost/dalmp?redis:127.0.0.1:6379';
+
+   $db = new DALMP\Database($DSN);
+
+   $db->FetchMode('ASSOC');
+
+   $rs = $db->CacheGetAll(300, 'SELECT * FROM City');
+
+   echo $rs, PHP_EOL;
