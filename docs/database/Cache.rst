@@ -139,6 +139,11 @@ This is useful when you only want to flush certain parts of the cache, example:
 
    $rs = $db->CacheGetAll(300, 'SELECT * FROM City', 'my_custom_key');
 
+   // To flush the query
+   $db->CacheFlush('SELECT * FROM City', 'my_custom_key');
+
+
+
 Group caching, group:X
 ......................
 
@@ -163,6 +168,9 @@ without affecting the rest of your cache.
    $db->FetchMode('ASSOC');
 
    $rs = $db->CacheGetAll(300, 'SELECT * FROM City', 'group:B');
+
+   // To flush the group
+   $db->CacheFlush('group:B');
 
 
 .. note::
