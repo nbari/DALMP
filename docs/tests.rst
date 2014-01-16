@@ -11,7 +11,7 @@ For testing **DALMP** load the `world.sql.gz <https://github.com/nbari/DALMP/blo
 
 *You can try also with gzip, gunzip, zcat as alternative to gzcat*
 
-That will load all the world tables into the dalmp database and also create the
+That will load all the `world tables <http://dev.mysql.com/doc/index-other.html>`_ into the dalmp database and also create the
 dalmp_sessions table.
 
 For testing purposes the same DSN (same database) is used when testing sessions
