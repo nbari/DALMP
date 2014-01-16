@@ -33,6 +33,7 @@ extends ``abstractDI`` and creates the DI for **DALMP**.
 Example
 .......
 
+Using mysql, cache (redis), sessions.
 
 .. code-block:: php
    :linenos:
@@ -53,14 +54,15 @@ Example
 
    $db = $di->database($DSN);
 
-   $cache = $di->cache($di->cache_redis('127.0.0.1', 6379));
+   $cache = $di->cache($redis_cache);
 
-   $sessions = $di->sessions($cache, 'sha512');
+   $sessions = $di->sessions($di->sessions_redis($redis_cache), 'sha512');
+   $sessions->regenerate_id(true);
 
    $db->useCache($cache);
 
    $now = $db->CachegetOne('SELECT NOW()');
 
-   echo $now;
+   echo $now, PHP_EOL;
 
-   $sessions->regenerate_id(true);
+   echo session_id();
