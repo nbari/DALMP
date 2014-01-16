@@ -14,11 +14,6 @@ Parameters
 :$use_IP: Include client IP address on the fingerprint.
 
 
-.. seealso::
-
-   `PHP session_regenerate_id <http://www.php.net/session_regenerate_id>`_.
-
-
 Example
 .......
 
@@ -36,3 +31,13 @@ Example
    if ((mt_rand() % 10) == 0) {
        $sessions->regenerate_id(true);
    }
+
+   $_SESSION['test'] = 1 + @$_SESSION['test'];
+
+   echo $_SESSION['test'];
+
+   echo session_id();
+
+.. seealso::
+
+   `PHP session_regenerate_id <http://www.php.net/session_regenerate_id>`_.
