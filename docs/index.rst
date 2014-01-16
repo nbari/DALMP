@@ -78,3 +78,4 @@ Table of Contents
    DI
    tests
    examples
+   issues
