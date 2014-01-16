@@ -11,7 +11,7 @@ Examples and documentation at: http://docs.dalmp.com
 Clone the repository:
 
 
-   $ git clone git://github.com/nbari/DALMP.git dalmp
+    $ git clone git://github.com/nbari/DALMP.git dalmp
 
 
 To Install visit  http://docs.dalmp.com/en/latest/Install.html
