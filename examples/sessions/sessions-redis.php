@@ -1,59 +1,36 @@
 <?php
-require_once '../mplt.php';
-$timer = new mplt();
-require_once '../dalmp.php';
+require_once '../../MPLT.php';
+$timer = new MPLT();
+require_once '../../src/dalmp.php';
 # -----------------------------------------------------------------------------------------------------------------
 
-/**
- * start the cache object using redis
- */
-$cache = new DALMP_Cache('redis');
+$cache= new DALMP\Cache\Redis('127.0.0.1', 6379);
+
+$handler = new DALMP\Sessions\Redis($cache, 'UID');
+
+$sessions = new DALMP\Sessions($handler, 'sha512');
 
 /**
- * define sessions reference globals var name
+ * your login logic goes here, for example suppose a user logins and has user id=37
+ * therefore you store the user id on the globals UID.
  */
-define('DALMP_SESSIONS_REF', 'ID');
+$GLOBALS['UID'] = 37;
 
 /**
- * to store sessions on redis you need to pass the $cache DALMP_Cache object if not defaults to sqlite
+ * To check if there is no current user logged in you could use:
  */
-$sessions = new DALMP_Sessions($cache);
-
-/**
- * fake id of user to be 37
- */
-$GLOBALS['ID'] = 37;
-
-/**
- * randomly aprox avery 10 hits regenerate the id
- */
-if ((mt_rand() % 10) == 0) {
-  /**
-   * parameter int 4 means to use the full 4 IPv4 (255.255.255.255) blocks
-   */
-  $sessions->regenerate_id(4);
-}
-
-$_SESSION['test'] = 1 + @$_SESSION['test'];
-
-/**
- * print all references
- */
-print_r($sessions->getSessionsRefs());
-
-/**
- * print reference where id = 37
- */
-if ($rs = $sessions->getSessionRef(37)) {
-  /**
-   * prints all the sessions with REF = 37
-   * Based on your code, this could be the times the user as logged in and is active
-   */
-  print_r($rs);
+if ($sessions->getSessionRef($GLOBALS['UID'])) {
+    // user is online
+    exit('user already logged');
 } else {
-  echo 'no ref found';
+    $sessions->regenerate_id(true);
 }
 
-// $sessions->delSessionRef(37);
+/**
+ * You can use $_SESSIONS like always
+ */
+$_SESSIONS['foo'] = 'bar';
+
+echo session_id();
 # -----------------------------------------------------------------------------------------------------------------
-echo PHP_EOL,str_repeat('-', 80),PHP_EOL,'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
+echo PHP_EOL, str_repeat('-', 80), PHP_EOL, 'Time: ',$timer->getPageLoadTime(),' - Memory: ',$timer->getMemoryUsage(1),PHP_EOL,str_repeat('-', 80),PHP_EOL;
