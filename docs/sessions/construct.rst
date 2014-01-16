@@ -12,7 +12,7 @@ Parameters
 
     __construct($handler = false, $algo = 'sha256')
 
-:$handler: If false uses `SQLite /en/latest/sessions/SQLite.html>`_, otherwise argument must be an instance of `SessionHandlerInterface <http://www.php.net/manual/en/class.sessionhandlerinterface.php>`_.
+:$handler: If false uses `SQLite </en/latest/sessions/SQLite.html>`_, otherwise argument must be an instance of `SessionHandlerInterface <http://www.php.net/manual/en/class.sessionhandlerinterface.php>`_.
 :$algo: Allows you to specify the `hash algorithm <http://pt1.php.net/manual/en/function.hash-algos.php>`_ used to generate the session IDs - default **sha256**.
 
 The current backends are:
@@ -47,4 +47,4 @@ every session will contain this value.
 
 A unique key that will be used to create the store the session on
 Memcache/Redis backends, this is useful when working in shared hosted
-enviroments, basically to avoid collitions.
+enviroments, basically to avoid collisions.
