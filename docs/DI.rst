@@ -24,7 +24,7 @@ abstractDI
    The abstracDI class can be used as a base for any project not only **DALMP**
 
 DI
-==
+..
 
 `DI (Dependecy Injector) <https://github.com/nbari/DALMP/blob/master/src/DALMP/DI.php>`_
 extends ``abstractDI`` and creates the DI for **DALMP**.
