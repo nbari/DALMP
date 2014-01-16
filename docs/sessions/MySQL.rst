@@ -1,4 +1,4 @@
-Redis
+MySQL
 =====
 
 Handler for storing sessions in MySQL, implements
