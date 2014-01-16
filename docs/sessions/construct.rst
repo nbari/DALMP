@@ -43,7 +43,7 @@ every session will contain this value.
 
 ::
 
-    define('DALMP_SESSIONS_KEY', 'random %&"!"@');
+    define('DALMP_SESSIONS_KEY', '4d37a965ef035a7def3cd9c1baf82924c3cc792a');
 
 A unique key that will be used to create the store the session on
 Memcache/Redis backends, this is useful when working in shared hosted
