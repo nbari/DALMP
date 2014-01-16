@@ -26,13 +26,13 @@ Details
 * [Prepared statements](http://docs.dalmp.com/en/latest/prepared_statements.html) ready, support dynamic building queries, auto detect types (i,d,s,b).
 * Secure connections with [SSL](http://docs.dalmp.com/en/latest/Quickstart.html#ssl).
 * [SQLite3 Encryption](http://docs.dalmp.com/en/latest/queue/SQLite.html).
-* Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.
+* Save [sessions in database](http://docs.dalmp.com/en/latest/sessions.html) (mysql/sqlite) or a cache like redis/memcache/apc.
 * Easy to use/install/adapt.
 * Nested [Transactions](http://docs.dalmp.com/en/latest/database/StartTrans.html) (SAVEPOINT / ROLLBACK TO SAVEPOINT).
 * Support connections via [unix_sockets](http://docs.dalmp.com/en/latest/Quickstart.html#example-using-a-socket).
 * SQL [queues](http://docs.dalmp.com/en/latest/queue.html).
 * Export to [CSV](http://docs.dalmp.com/en/latest/database/csv.html).
-* Trace/measure everything enabling the debugger by just setting something like [$db->debug(1)](http://docs.dalmp.com/en/latest/database/debug.htm).
+* Trace/measure everything enabling the [debugger](http://docs.dalmp.com/en/latest/database/debug.htm).
 * Works out of the box with Cloud databases like [Amazon RDS](http://aws.amazon.com/rds/) or [Google cloud](https://developers.google.com/cloud-sql/).
 * Lazy database connection. Connect only when needed.
 * [PSR-0](http://www.php-fig.org/psr/psr-0/) compliance.
