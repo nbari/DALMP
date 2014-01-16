@@ -1,8 +1,8 @@
 Example
 =======
 
-In this example the backend is going to be redis and the global reference name
-will be 'UID', and the hash algorithim will be **sha512**.
+In this example the backend is going to be `redis </en/latest/sessions/Redis.html>`_ , the global reference name
+will be **UID**, and the hash algorithim will be **sha512**.
 
 For example, you can store in the reference, the current user id 'UID' and configure your site to only accept users to loggin once avoiding with this duplicate entries/access using the same user/password.
 
