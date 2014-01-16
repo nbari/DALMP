@@ -38,7 +38,10 @@ If set, the value is used as an argument for the `session.gc_maxlifetime <http:/
 
     define('DALMP_SESSIONS_REF', 'UID');
 
-Value that will be checked/used when handling sessions, every session will contain this value and perfome the corresponding operations.
+The global reference value that will be checked/used when handling sessions,
+every session will contain this value.
+
+::
 
     define('DALMP_SESSIONS_KEY', 'random %&"!"@');
 
