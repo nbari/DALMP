@@ -12,7 +12,7 @@ __construct
 
     __construct(\DALMP\Cache\Memcache $cache, $sessions_ref = 'UID')
 
-:$cache: An instance of `DALMP\Cache\Memcache </en/latest/cache/memcache.html>`_.
+:$cache: An instance of `DALMP\\Cache\\Memcache </en/latest/cache/memcache.html>`_.
 :$sessions_ref: Name of the global reference, defaults to **UID**.
 
 

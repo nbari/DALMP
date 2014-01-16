@@ -12,7 +12,7 @@ __construct
 
     __construct(\DALMP\Cache\Redis $cache, $sessions_ref = 'UID')
 
-:$cache: An instance of `DALMP\Cache\Redis </en/latest/cache/redis.html>`_.
+:$cache: An instance of `DALMP\\Cache\\Redis </en/latest/cache/redis.html>`_.
 :$sessions_ref: Name of the global reference, defaults to **UID**.
 
 
