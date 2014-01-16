@@ -24,6 +24,12 @@ The current backends are:
 * `SQLite </en/latest/sessions/SQLite.html>`_.
 
 
+.. note::
+
+    The construct for each cache backend maybe be different and it is used for
+    defining specific options like the host, port, path, etc.
+
+
 Constants
 .........
 
