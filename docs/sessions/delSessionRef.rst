@@ -8,12 +8,13 @@ Parameters
 
     delSessionRef($ref)
 
-:$ref: Name of Item of to be deleted from the reference.
+:$ref: Value of the reference to search for.
 
 
 Example
 .......
 
+In this example all the sessions containing the value '3', will be deleted.
 
 .. code-block:: php
    :linenos:
