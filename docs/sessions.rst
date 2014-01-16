@@ -63,6 +63,7 @@ SQLite   Use `SQLite </en/latest/sessions/SQLite.html>`_.
    sessions/getSessionsRefs
    sessions/getSessionRef
    sessions/delSessionRef
+   sessions/Example
 
 .. warning::
 
