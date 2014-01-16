@@ -1,7 +1,9 @@
 __construct
 ===========
 
-In order to use the ``DALMP\Sessions`` you need to create an instance of it.
+In order to use the ``DALMP\Sessions`` you need to create an instance of it,
+while creating the instance you define the backend that will store the sessions
+and the hash algorithm used to create them.
 
 Parameters
 ..........
