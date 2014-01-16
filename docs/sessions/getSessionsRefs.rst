@@ -1,4 +1,4 @@
 getSessionsRefs
 ===============
 
-TODO
+Return array of sessions containing any reference.
