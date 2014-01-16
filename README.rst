@@ -5,10 +5,7 @@ DALMP
 
 0% fat and extremely easy to use. Only connect to database when needed.
 
-Examples and documentation
-..........................
-
-http://docs.dalmp.com
+Examples and documentation at: http://docs.dalmp.com
 
 
 Clone the repository:
