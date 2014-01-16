@@ -23,5 +23,10 @@ Constants
     define('DALMP_SESSIONS_DIR', '/tmp/my_sessions');
 
 
-If set and no ``$session_dir`` defined while initializating the class, it will
+If set and no ``$session_dir`` defined while initializing the class, it will
 use this value.
+
+.. warning::
+
+
+   The **Files** backend, does NOT support reference handling.
