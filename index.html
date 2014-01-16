@@ -39,45 +39,41 @@
 
 <p>Clone the repository:</p>
 
-<p>.. code-block:: sh</p>
-
 <p>$ git clone git://github.com/nbari/DALMP.git dalmp</p>
 
-<p>.. seealso::</p>
+<p>To Install visit  <a href="http://docs.dalmp.com/en/latest/Install.html">http://docs.dalmp.com/en/latest/Install.html</a></p>
 
-<p><code>Install &lt;http://docs.dalmp.com/en/latest/Install.html&gt;</code>_</p>
-
-<p>Details
-.......</p>
+<h2>
+<a name="details" class="anchor" href="#details"><span class="octicon octicon-link"></span></a>Details</h2>
 
 <ul>
 <li>
-<code>Dependecy Injector &lt;http://docs.dalmp.com/en/latest/DI.html&gt;</code>_ (DI) support, load once, trigger when required.</li>
+<a href="http://docs.dalmp.com/en/latest/DI.html">Dependecy Injector</a> (DI) support, load once, trigger when required.</li>
 <li>
-<code>APC &lt;http://docs.dalmp.com/en/latest/cache/APC.html&gt;</code><em>, <code>Disk &lt;http://docs.dalmp.com/en/latest/cache/disk.html&gt;</code></em>, <code>Memcache &lt;http://docs.dalmp.com/en/latest/cache/memcache.html&gt;</code><em>, <code>Redis.io &lt;http://docs.dalmp.com/en/latest/cache/redis.html&gt;</code></em> cache support.</li>
-<li>Group <code>caching cache &lt;http://docs.dalmp.com/en/latest/cache.html&gt;</code>_ by groups and flush by groups or individual keys.</li>
+<a href="http://docs.dalmp.com/en/latest/cache/APC.html">APC</a>, <a href="http://docs.dalmp.com/en/latest/cache/disk.html">Disk</a>, <a href="http://docs.dalmp.com/en/latest/cache/memcache.html">Memcache</a>, <a href="http://docs.dalmp.com/en/latest/cache/redis.html">Redis.io</a> cache support.</li>
+<li>Group <a href="http://docs.dalmp.com/en/latest/cache.html">caching cache</a> by groups and flush by groups or individual keys.</li>
 <li>
-<code>Prepared statements &lt;http://docs.dalmp.com/en/latest/prepared_statements.html&gt;</code>_ ready, support dynamic building queries, auto detect types (i,d,s,b).</li>
-<li>Secure connections with <code>SSL &lt;http://docs.dalmp.com/en/latest/Quickstart.html#ssl&gt;</code>_.</li>
+<a href="http://docs.dalmp.com/en/latest/prepared_statements.html">Prepared statements</a> ready, support dynamic building queries, auto detect types (i,d,s,b).</li>
+<li>Secure connections with <a href="http://docs.dalmp.com/en/latest/Quickstart.html#ssl">SSL</a>.</li>
 <li>
-<code>SQLite3 Encryption &lt;http://docs.dalmp.com/en/latest/queue/SQLite.html&gt;</code>_.</li>
+<a href="http://docs.dalmp.com/en/latest/queue/SQLite.html">SQLite3 Encryption</a>.</li>
 <li>Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.</li>
 <li>Easy to use/install/adapt.</li>
-<li>Nested <code>Transactions &lt;http://docs.dalmp.com/en/latest/database/StartTrans.html&gt;</code>_ (SAVEPOINT / ROLLBACK TO SAVEPOINT).</li>
-<li>Support connections via <code>unix_sockets &lt;http://docs.dalmp.com/en/latest/Quickstart.html#example-using-a-socket&gt;</code>_.</li>
-<li>SQL <code>queues &lt;http://docs.dalmp.com/en/latest/queue.html&gt;</code>_.</li>
-<li>Export to <code>CSV &lt;http://docs.dalmp.com/en/latest/database/csv.html&gt;</code>_.</li>
-<li>Trace/measure everything enabling the debugger by just setting something like <code>$db-&gt;debug(1) &lt;http://docs.dalmp.com/en/latest/database/debug.html&gt;</code>_.</li>
-<li>Works out of the box with Cloud databases like <code>Amazon RDS &lt;http://aws.amazon.com/rds/&gt;</code>_ or <code>Google cloud &lt;https://developers.google.com/cloud-sql/&gt;</code>_.</li>
+<li>Nested <a href="http://docs.dalmp.com/en/latest/database/StartTrans.html">Transactions</a> (SAVEPOINT / ROLLBACK TO SAVEPOINT).</li>
+<li>Support connections via <a href="http://docs.dalmp.com/en/latest/Quickstart.html#example-using-a-socket">unix_sockets</a>.</li>
+<li>SQL <a href="http://docs.dalmp.com/en/latest/queue.html">queues</a>.</li>
+<li>Export to <a href="http://docs.dalmp.com/en/latest/database/csv.html">CSV</a>.</li>
+<li>Trace/measure everything enabling the debugger by just setting something like <a href="http://docs.dalmp.com/en/latest/database/debug.htm">$db-&gt;debug(1)</a>.</li>
+<li>Works out of the box with Cloud databases like <a href="http://aws.amazon.com/rds/">Amazon RDS</a> or <a href="https://developers.google.com/cloud-sql/">Google cloud</a>.</li>
 <li>Lazy database connection. Connect only when needed.</li>
 <li>
-<code>PSR-0 &lt;http://www.php-fig.org/psr/psr-0/&gt;</code>_ compliance.</li>
-</ul><p>Requirements
-............</p>
+<a href="http://www.php-fig.org/psr/psr-0/">PSR-0</a> compliance.</li>
+</ul><h2>
+<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
 
 <ul>
-<li><p><code>PHP &lt;http://www.php.net&gt;</code>_ &gt;= 5.4</p></li>
-<li><p>A <code>MySQL &lt;http://www.mysql.org&gt;</code>_ server to connect via host or <code>unix sockets. &lt;http://en.wikipedia.org/wiki/Unix_domain_socket&gt;</code>_</p></li>
+<li><p><a href="http://www.php.net">PHP</a> &gt;= 5.4</p></li>
+<li><p>A <a href="http://www.mysql.org">MySQL</a> server to connect via host or <a href="http://en.wikipedia.org/wiki/Unix_domain_socket">unix sockets</a>.</p></li>
 </ul><p>To use the cache features you need either the redis, memcache or APC extensions
 compiled, otherwise disk cache will be used.</p>
 
@@ -88,13 +84,12 @@ compiled, otherwise disk cache will be used.</p>
 </li>
 <li>APC PECL extension - <a href="http://pecl.php.net/package/APC">http://pecl.php.net/package/APC</a>
 </li>
-</ul><p>If you want to store session encrypted then you need SQLite3 Encryption
-(<a href="http://sqlcipher.net">http://sqlcipher.net</a>).</p>
+</ul><p>If you want to store session encrypted then you need SQLite3 Encryption <a href="http://sqlcipher.net">http://sqlcipher.net</a>.</p>
 
-<p><strong>DALMP</strong> does not use <code>PDO &lt;http://www.php.net/pdo&gt;</code>_, so do not worry if your PHP does not have the pdo
+<p><strong>DALMP</strong> does not use <a href="http://www.php.net/pdo">PDO</a>, so do not worry if your PHP does not have the pdo
 extension.</p>
 
-<p>On <code>FreeBSD &lt;http://www.freebsd.org&gt;</code>_ you can install <strong>DALMP</strong> from ports: /usr/ports/databases/dalmp</p>
+<p>On <a href="http://www.freebsd.org">FreeBSD</a> you can install <strong>DALMP</strong> from ports: /usr/ports/databases/dalmp</p>
         </section>
 
         <aside id="sidebar">
