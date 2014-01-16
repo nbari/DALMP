@@ -8,7 +8,6 @@ For example, you can store in the reference, the current user id 'UID' and confi
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 11
 
    <?php
 
@@ -32,7 +31,7 @@ For example, you can store in the reference, the current user id 'UID' and confi
     */
    if ($sessions->getSessionRef($GLOBALS['UID'])) {
        // user is online
-       exit('user already logged);
+       exit('user already logged');
    } else {
        $sessions->regenerate_id(true);
    }
