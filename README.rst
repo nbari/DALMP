@@ -27,7 +27,7 @@ Details
 * Group `caching cache <http://docs.dalmp.com/en/latest/cache.html>`_ by groups and flush by groups or individual keys.
 * `Prepared statements <http://docs.dalmp.com/en/latest/prepared_statements.html>`_ ready, support dynamic building queries, auto detect types (i,d,s,b).
 * Secure connections with `SSL <http://docs.dalmp.com/en/latest/Quickstart.html#ssl>`_.
-* `SQLite3 Encryption <http://sqlcipher.net>`_.
+* `SQLite3 Encryption <http://docs.dalmp.com/en/latest/queue/SQLite.html>`_.
 * Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.
 * Easy to use/install/adapt.
 * Nested `Transactions <http://docs.dalmp.com/en/latest/database/StartTrans.html>`_ (SAVEPOINT / ROLLBACK TO SAVEPOINT).
