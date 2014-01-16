@@ -33,3 +33,15 @@ Constants
 
 If set, the value is used as an argument for the `session.gc_maxlifetime <http://www.php.net/manual/en/session.configuration.php#ini.session.gc-maxlifetime>`_ with specifies the number of seconds after which data will be seen as
 'garbage' and potentially cleaned up.
+
+::
+
+    define('DALMP_SESSIONS_REF', 'UID');
+
+Value that will be checked/used when handling sessions, every session will contain this value and perfome the corresponding operations.
+
+    define('DALMP_SESSIONS_KEY', 'random %&"!"@');
+
+A unique key that will be used to create the store the session on
+Memcache/Redis backends, this is useful when working in shared hosted
+enviroments, basically to avoid collitions.
