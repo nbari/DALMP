@@ -37,7 +37,7 @@ class DI extends abstractDI
             return $obj->newInstanceArgs(func_get_args());
         });
 
-        $this->c['cache'] = $this->share(function(Closure $backend) {
+        $this->c['cache'] = $this->share(function($backend) {
             return new Cache($backend);
         });
 
@@ -59,7 +59,7 @@ class DI extends abstractDI
             return $obj->newInstanceArgs(func_get_args());
         });
 
-        $this->c['sessions'] = $this->share(function(Closure $backend) {
+        $this->c['sessions'] = $this->share(function($backend) {
             return new Sessions($backend);
         });
 
