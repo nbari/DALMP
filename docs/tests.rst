@@ -30,15 +30,15 @@ Edit the DSN section::
     </php>
     ...
 
-Install composer and required packages::
+Install `composer <http://getcomposer.org/>`_ and required packages::
 
     curl -sS https://getcomposer.org/installer | php -- --install-dir=bin
 
-Install phpunit via composer::
+Install `phpunit <http://phpunit.de/>`_ via composer::
 
     ./bin/composer.phar install --dev
 
-For example to test only the Cache\Memcache::
+For example to test only the `Cache\\Memcache </en/latest/cache/memcache.html>`_::
 
     ./bin/phpunit --testsuite CacheMemcache --tap -c phpunit.xml
 
