@@ -1,107 +1,60 @@
-DALMP - BETA version (3)
-========================
+DALMP
+=====
 
-Database Abstraction Layer for MySQL using PHP (version 3)
+**Database Abstraction Layer for MySQL using PHP**
 
-0% fat and extremely easy to use, only connect to database when needed.
+0% fat and extremely easy to use. Only connect to database when needed.
 
-handbook: www.dalmp.com
+Clone the repository:
+
+.. code-block:: sh
+
+   $ git clone git://github.com/nbari/DALMP.git dalmp
+
+.. seealso::
+
+   `Install </en/latest/Install.html>`_
+
 
 Details
--------
+.......
 
-  * Dependecy Injector (DI) support, load once and trigger when required.
-  * Redis.io support.
-  * Memcache single or multiple hosts and socket support.
-  * APC support (http://pecl.php.net/package/APC).
-  * Group caching cache by groups and flush by groups or individual keys.
-  * Disk cache support.
-  * Prepared statements ready, support dynamic building queries, auto detect types (i,d,s,b).
-  * Secure connections with SSL.
-  * SQLite3 Encryption (http://sqlcipher.net).
-  * Simple store of session on database (mysql/sqlite) or a cache like redis/memcache.
-  * Easy to use/install/adapt.
-  * Nested Transactions (SAVEPOINT / ROLLBACK TO SAVEPOINT).
-  * Support connections via unix_sockets.
-  * SQL queues.
-  * Export to CSV.
-  * Trace/measure everything enabling the debugger by just setting something like $db->debug(1).
-  * Works outof the box with Cloud databases like Amazon RDS.
-  * Lazy database connection. Connect only when needed.
-  * PSR-0 compliance.
-
-*FreeBSD*
-Install from ports: /usr/ports/databases/dalmp
-
-Sessions
---------
-
-For storing PHP sessions on mysql you need to create a table with the following schema
-
-    CREATE TABLE IF NOT EXISTS `dalmp_sessions` (
-    `sid` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
-    `expiry` int(11) unsigned NOT NULL DEFAULT '0',
-    `data` longtext CHARACTER SET utf8 COLLATE utf8_bin,
-    `ref` varchar(255) DEFAULT NULL,
-    `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`sid`),
-    KEY `index` (`ref`,`sid`,`expiry`)
-    ) DEFAULT CHARSET=utf8;
-
-Tests
------
-
-For testing the session_handler that uses mysql you need to edit phpunit.xml
-file and enter your database DSN:
-
-    cp phpunit.xml.dist phpunit.xml
-
-Edit the DSN section
-
-    ...
-    <php>
-      <var name="DSN" value="utf8://root@localhost:3306/dalmp" />
-    </php>
-    ...
+* `Dependecy Injector </en/latest/DI.html>`_ (DI) support, load once, trigger when required.
+* `APC </en/latest/cache/APC.html>`_, `Disk </en/latest/cache/disk.html>`_, `Memcache </en/latest/cache/memcache.html>`_, `Redis.io </en/latest/cache/redis.html>`_ cache support.
+* Group `caching cache </en/latest/cache.html>`_ by groups and flush by groups or individual keys.
+* `Prepared statements </en/latest/prepared_statements.html>`_ ready, support dynamic building queries, auto detect types (i,d,s,b).
+* Secure connections with `SSL </en/latest/Quickstart.html#ssl>`_.
+* `SQLite3 Encryption <http://sqlcipher.net>`_.
+* Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.
+* Easy to use/install/adapt.
+* Nested `Transactions </en/latest/database/StartTrans.html>`_ (SAVEPOINT / ROLLBACK TO SAVEPOINT).
+* Support connections via `unix_sockets </en/latest/Quickstart.html#example-using-a-socket>`_.
+* SQL `queues </en/latest/queue.html>`_.
+* Export to `CSV </en/latest/database/csv.html>`_.
+* Trace/measure everything enabling the debugger by just setting something like `$db->debug(1) </en/latest/database/debug.html>`_.
+* Works out of the box with Cloud databases like `Amazon RDS <http://aws.amazon.com/rds/>`_ or `Google cloud <https://developers.google.com/cloud-sql/>`_.
+* Lazy database connection. Connect only when needed.
+* `PSR-0 <http://www.php-fig.org/psr/psr-0/>`_ compliance.
 
 
-The DSN format is:
+Requirements
+............
 
-    DSN format: charset://username:password@host:port/database
-    $db = new DALMP\Database('utf8://user:password@host:3306/your_database');
+* `PHP <http://www.php.net>`_ >= 5.4
 
+* A `MySQL <http://www.mysql.org>`_ server to connect via host or `unix sockets. <http://en.wikipedia.org/wiki/Unix_domain_socket>`_
 
-For testing the database load the world.sql.gz located at the examples dir:
+To use the cache features you need either the redis, memcache or APC extensions
+compiled, otherwise disk cache will be used.
 
-    gzcat examples/world.sql.gz | mysql -uroot dalmp
+* Redis extension - http://github.com/nicolasff/phpredis
+* Memcache PECL extencsion - http://pecl.php.net/package/memcache
+* APC PECL extension - http://pecl.php.net/package/APC
 
-You can try also with gzip, gunzip, zcat as alternative to gzcat
+If you want to store session encrypted then you need SQLite3 Encryption
+(http://sqlcipher.net).
 
-That will load all the world tables into the dalmp database and also create the
-dalmp_sessions table.
+**DALMP** does not use `PDO <http://www.php.net/pdo>`_, so do not worry if your PHP does not have the pdo
+extension.
 
-For testing purposes the same DSN (same database) is used when testing sessions
-and database, in practice you can have different DSN depending on your
-requirements.
-
-Install composer and required packages:
-
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=bin
-
-Install phpunit via composer:
-
-    ./bin/composer.phar install --dev
-
-For example to test only the Cache\Memcache:
-
-    ./bin/phpunit --testsuite CacheMemcache --tap -c phpunit.xml
-
-To run all the tests:
-
-    ./bin/phpunit --tap -c phpunit.xml
-
-
-Bugs / suggestions / comments
------------------------------
-
-If you found a bug or have any other inquiries please use the the DALMP group at: https://groups.google.com/group/dalmp
+On `FreeBSD <http://www.freebsd.org>`_ you can install **DALMP** from ports: /usr/ports/databases/dalmp
