@@ -24,7 +24,7 @@ __construct
 ...........
 
 The construct for each cache backend maybe be different and it is used for
-defining specific options like the host, port, path etc,
+defining specific options like the host, port, path, etc.
 
 .. seealso::
 
