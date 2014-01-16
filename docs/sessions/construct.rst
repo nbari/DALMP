@@ -17,7 +17,7 @@ Parameters
 
 The current backends are:
 
-* `Files </en/latest/sessions/Files.html>`_.
+* `Files </en/latest/sessions/Files.html>`_ (does NOT support reference handling).
 * `Memcache </en/latest/sessions/Memcache.html>`_.
 * `MySQL </en/latest/sessions/MySQL.html>`_.
 * `Redis </en/latest/sessions/Redis.html>`_.
