@@ -1,7 +1,7 @@
 regenerate_id
 =============
 
-The ``regenerate_id`` methods, regenerate a sessions and create a fingerprint,
+The ``regenerate_id`` method, regenerate a sessions and create a fingerprint,
 helps to prevent HTTP session hijacking attacks.
 
 Parameters
