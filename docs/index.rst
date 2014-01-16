@@ -25,13 +25,13 @@ Details
 * `Prepared statements </en/latest/prepared_statements.html>`_ ready, support dynamic building queries, auto detect types (i,d,s,b).
 * Secure connections with `SSL </en/latest/Quickstart.html#ssl>`_.
 * `SQLite3 Encryption <http://sqlcipher.net>`_.
-* Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.
+* Save sessions in database (mysql/sqlite) or a cache like redis/memcache/apc.
 * Easy to use/install/adapt.
 * Nested `Transactions </en/latest/database/StartTrans.html>`_ (SAVEPOINT / ROLLBACK TO SAVEPOINT).
 * Support connections via `unix_sockets </en/latest/Quickstart.html#example-using-a-socket>`_.
 * SQL `queues </en/latest/queue.html>`_.
 * Export to `CSV </en/latest/database/csv.html>`_.
-* Trace/measure everything enabling the debugger by just setting something like `$db->debug(1) </en/latest/database/debug.html>`_.
+* Trace/measure everything enabling the `debugger </en/latest/database/debug.html>`_.
 * Works out of the box with Cloud databases like `Amazon RDS <http://aws.amazon.com/rds/>`_ or `Google cloud <https://developers.google.com/cloud-sql/>`_.
 * Lazy database connection. Connect only when needed.
 * `PSR-0 <http://www.php-fig.org/psr/psr-0/>`_ compliance.
