@@ -25,6 +25,10 @@ Method             Description
 .. _getSessionRef: /en/latest/sessions/getSessionRef.html
 .. _delSessionRef: /en/latest/sessions/delSessionRef.html
 
+.. warning::
+
+   The `Files </en/latest/sessions/Files.html>`_ backend, does NOT support reference handling.
+
 For example, you can store in the reference, the current user id 'UID' and
 configure your site to only accept users to loggin once avoiding with this
 duplicate entries/access using the same user/password.
