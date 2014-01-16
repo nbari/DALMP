@@ -18,7 +18,7 @@ For testing purposes the same DSN (same database) is used when testing sessions
 and database, in practice you can have different DSN depending on your
 requirements.
 
-You can hoever configure your DNS::
+You can however configure your DNS::
 
     cp phpunit.xml.dist phpunit.xml
 
