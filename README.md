@@ -14,11 +14,11 @@ Clone the repository:
    $ git clone git://github.com/nbari/DALMP.git dalmp
 
 
-   `Install <http://docs.dalmp.com/en/latest/Install.html>`_
+To Install visit  http://docs.dalmp.com/en/latest/Install.html
 
 
 Details
-.......
+-------
 
 * [Dependecy Injector](http://docs.dalmp.com/en/latest/DI.html) (DI) support, load once, trigger when required.
 * [APC](http://docs.dalmp.com/en/latest/cache/APC.html), [Disk](http://docs.dalmp.com/en/latest/cache/disk.html), [Memcache](http://docs.dalmp.com/en/latest/cache/memcache.html), [Redis.io](http://docs.dalmp.com/en/latest/cache/redis.html>) cache support.
