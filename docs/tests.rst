@@ -44,4 +44,6 @@ For example to test only the `Cache\\Memcache </en/latest/cache/memcache.html>`_
 
 To run all the tests:
 
-    ./bin/phpunit --tap -c phpunit.xml
+.. code-block:: shell
+
+   ./bin/phpunit --tap -c phpunit.xml
