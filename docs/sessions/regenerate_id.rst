@@ -17,3 +17,22 @@ Parameters
 .. seealso::
 
    `PHP session_regenerate_id <http://www.php.net/session_regenerate_id>`_.
+
+
+Example
+.......
+
+
+.. code-block:: php
+   :linenos:
+   :emphasize-lines: 8
+
+   <?php
+
+   require_once 'dalmp.php';
+
+   $sessions = new DALMP\Sessions();
+
+   if ((mt_rand() % 10) == 0) {
+       $sessions->regenerate_id(true);
+   }
