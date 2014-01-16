@@ -12,7 +12,7 @@ __construct
 
     __construct(\DALMP\Database $DB, $sessions_ref = 'UID')
 
-:$DB: An instance of `DALMP\Database </en/latest/cache/database.html>`_.
+:$DB: An instance of `DALMP\\Database </en/latest/database.html>`_.
 :$sessions_ref: Name of the global reference, defaults to **UID**.
 
 
