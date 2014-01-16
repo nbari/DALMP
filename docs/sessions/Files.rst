@@ -12,7 +12,7 @@ __construct
 
     __construct($sessions_dir = false)
 
-:$sessions_dir: Path to store the sessions, default '/tmp/dalmp_sessions'.
+:$sessions_dir: Path to store the sessions, default **/tmp/dalmp_sessions**.
 
 
 Constants
