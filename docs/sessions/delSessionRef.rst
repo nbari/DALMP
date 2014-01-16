@@ -28,6 +28,6 @@ In this example all the sessions containing the value '3', will be deleted.
 
    $handler = new DALMP\Sessions\Memcache($cache, 'ID');
 
-   $sessions = new DALMP\Sessions($handler, 'sha512);
+   $sessions = new DALMP\Sessions($handler, 'sha512');
 
    $sessions->delSessionRef('3');

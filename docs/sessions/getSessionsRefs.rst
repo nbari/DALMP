@@ -9,7 +9,7 @@ Example
 
 .. code-block:: php
    :linenos:
-   :emphasize-lines: 9
+   :emphasize-lines: 11
 
    <?php
 
@@ -19,6 +19,6 @@ Example
 
    $handler = new DALMP\Sessions\Memcache($cache, 'ID');
 
-   $sessions = new DALMP\Sessions($handler, 'sha512);
+   $sessions = new DALMP\Sessions($handler, 'sha512');
 
    $sessions->getSessionsRefs();

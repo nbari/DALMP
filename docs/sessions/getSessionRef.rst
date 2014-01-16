@@ -28,6 +28,6 @@ In this example all the sessions containing the value '3', will returned.
 
    $handler = new DALMP\Sessions\Memcache($cache, 'ID');
 
-   $sessions = new DALMP\Sessions($handler, 'sha512);
+   $sessions = new DALMP\Sessions($handler, 'sha512');
 
    $sessions->getSessionRef('3');
