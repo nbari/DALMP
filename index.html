@@ -2,19 +2,13 @@
 <html>
 
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Dalmp : Database Abstraction Layer for MySQL using PHP" />
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>DALMP</title>
+    <title>Dalmp</title>
   </head>
 
   <body>
@@ -66,13 +60,13 @@
 <li>Secure connections with <a href="http://docs.dalmp.com/en/latest/Quickstart.html#ssl">SSL</a>.</li>
 <li>
 <a href="http://docs.dalmp.com/en/latest/queue/SQLite.html">SQLite3 Encryption</a>.</li>
-<li>Simple store of session on database (mysql/sqlite) or a cache like redis/memcache/apc.</li>
+<li>Save <a href="http://docs.dalmp.com/en/latest/sessions.html">sessions in database</a> (mysql/sqlite) or a cache like redis/memcache/apc.</li>
 <li>Easy to use/install/adapt.</li>
 <li>Nested <a href="http://docs.dalmp.com/en/latest/database/StartTrans.html">Transactions</a> (SAVEPOINT / ROLLBACK TO SAVEPOINT).</li>
 <li>Support connections via <a href="http://docs.dalmp.com/en/latest/Quickstart.html#example-using-a-socket">unix_sockets</a>.</li>
 <li>SQL <a href="http://docs.dalmp.com/en/latest/queue.html">queues</a>.</li>
 <li>Export to <a href="http://docs.dalmp.com/en/latest/database/csv.html">CSV</a>.</li>
-<li>Trace/measure everything enabling the debugger by just setting something like <a href="http://docs.dalmp.com/en/latest/database/debug.htm">$db-&gt;debug(1)</a>.</li>
+<li>Trace/measure everything enabling the <a href="http://docs.dalmp.com/en/latest/database/debug.htm">debugger</a>.</li>
 <li>Works out of the box with Cloud databases like <a href="http://aws.amazon.com/rds/">Amazon RDS</a> or <a href="https://developers.google.com/cloud-sql/">Google cloud</a>.</li>
 <li>Lazy database connection. Connect only when needed.</li>
 <li>
@@ -120,13 +114,6 @@ extension.</p>
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
-<!-- logger.io -->
-<script type="text/javascript">
-  var _lg = ['755aa10bae0b','dalmp.com'];
-  (function(d, t){var l=d.createElement(t),s=d.getElementsByTagName(t)[0]; l.async = true;
-  l.src = ('https:' == location.protocol ? 'https://' : 'http://') + 'logger-io.appspot.com/logger.io.js';
-  s.parentNode.insertBefore(l, s)}(document, 'script'))
-</script>
 
 
   </body>
