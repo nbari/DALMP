@@ -19,7 +19,6 @@ For example, you can store in the reference, the current user id 'UID' and confi
 
    $sessions = new DALMP\Sessions($handler, 'sha512');
 
-
    /**
     * your login logic goes here, for example suppose a user logins and has user id=37
     * therefore you store the user id on the globals UID.
@@ -36,9 +35,7 @@ For example, you can store in the reference, the current user id 'UID' and confi
        $sessions->regenerate_id(true);
    }
 
-
    /**
     * You can use $_SESSIONS like always
     */
-
-    $_SESSIONS['foo'] = 'bar';
+   $_SESSIONS['foo'] = 'bar';
