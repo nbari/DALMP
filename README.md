@@ -42,7 +42,6 @@ Requirements
 ------------
 
 * [PHP](http://www.php.net>) >= 5.4
-
 * A [MySQL](http://www.mysql.org) server to connect via host or [unix sockets](http://en.wikipedia.org/wiki/Unix_domain_socket).
 
 To use the cache features you need either the redis, memcache or APC extensions
