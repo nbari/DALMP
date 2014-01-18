@@ -66,3 +66,6 @@ Using mysql, cache (redis), sessions.
    echo $now, PHP_EOL;
 
    echo session_id();
+
+
+TODO Examples
