@@ -52,6 +52,7 @@ Example converting from binary(16) to original UUID format chat(36):
 
 .. code-block:: php
    :linenos:
+   :emphasize-lines: 12
 
    <?php
 
