@@ -9,9 +9,11 @@ $password = getenv('MYSQL_PASS') ?: '';
 $host = getenv('MYSQL_HOST') ?: '127.0.0.1';
 $port = getenv('MYSQL_PORT') ?: '3306';
 
+define('DALMP_MYSQLI_INIT_COMMAND', 'SET time_zone="-05:00"');
+
 $db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
 
-echo "Server time: ", $db->GetOne('SELECT NOW()');
+echo "-05:00 time: ", $db->GetOne('SELECT NOW()');
 
 /**
  *  load zone files to mysql
