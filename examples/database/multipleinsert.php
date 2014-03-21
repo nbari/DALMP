@@ -13,11 +13,11 @@ $db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
 $db->debug();
 
 $values = array(
-  array(1,2,3),
-  array(1,3),
-  array('date','select', 3),
-  array('niño','coraçao', 'Ú'),
-  array(null,5,7)
+    array(1,2,3),
+    array(1,3),
+    array('date','select', 3),
+    array('niño','coraçao', 'Ú'),
+    array(null,5,7)
 );
 
 $rs = $db->multipleInsert('tests', array('col1', 'col2', 'col3'), $values);
