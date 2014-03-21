@@ -12,10 +12,10 @@ $port = getenv('MYSQL_PORT') ?: '3306';
 $db = new DALMP\Database("utf8://$user:$password@$host:$port/dalmp");
 
 foreach ($db->GetCol('SHOW TABLES') as $table) {
-  $rs = $db->Execute("OPTIMIZE TABLE $table");
-  echo "optimizing $table: $rs",PHP_EOL;
-  $rs = $db->Execute("REPAIR TABLE $table QUICK");
-  echo "repairing $table: $rs",PHP_EOL;
+    $rs = $db->Execute("OPTIMIZE TABLE $table");
+    echo "optimizing $table: $rs",PHP_EOL;
+    $rs = $db->Execute("REPAIR TABLE $table QUICK");
+    echo "repairing $table: $rs",PHP_EOL;
 }
 
 # ------------------------------------------------------------------------------
