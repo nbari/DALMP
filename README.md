@@ -57,5 +57,3 @@ If you want to store session encrypted then you need SQLite3 Encryption http://s
 extension.
 
 On [FreeBSD](http://www.freebsd.org) you can install **DALMP** from ports: /usr/ports/databases/dalmp
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/nbari/dalmp/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
