@@ -37,6 +37,5 @@
     "psr-0": {
       "DALMP\\": "src/"
     }
-  },
-  "minimum-stability": "dev"
+  }
 }
