@@ -14,7 +14,9 @@ class Loader
     public static function autoload($className)
     {
         $className = ltrim($className, '\\');
-        require DALMP_DIR . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $className) . '.php';
+        $fileName = DALMP_DIR . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $className) . '.php';
+        if(is_readable($fileName))
+            require $fileName;
     }
 
     public static function register()
