@@ -15,8 +15,9 @@ class Loader
     {
         $className = ltrim($className, '\\');
         $fileName = DALMP_DIR . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $className) . '.php';
-        if(is_readable($fileName))
+        if (is_readable($fileName)) {
             require $fileName;
+        }
     }
 
     public static function register()
