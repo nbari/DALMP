@@ -373,7 +373,7 @@ class Database
      * Prepared Statements
      *
      * example: PGetAll('SELECT * FROM users WHERE name=? AND id=?', 'name', 1, 'db1')
-     * user also can define  the corresponding type of the bind variables (i, d, s, b): http://pt.php.net/manual/en/mysqli-stmt.bind-param.php
+     * user also can define  the corresponding type of the bind variables (i, d, s, b): http://www.php.net/manual/en/mysqli-stmt.bind-param.php
      * example: PGetAll('SELECT * FROM table WHERE name=? AND id=?', array('s'=>'99.3', 7)); or use the Prepare() method
      *
      * @param SQL    $sql
@@ -412,7 +412,11 @@ class Database
                         $param = !strcmp(intval($param), $param) ? (int) $param : (!strcmp(floatval($param), $param) ? (float) $param : $param);
                     }
 
-                    $key = is_int($param) ? 'i' : (is_float($param) ? 'd' : (is_string($param) ? 's' : 'b'));
+                    if (is_null($param)) {
+                        $key = 's';
+                    } else {
+                        $key = is_int($param) ? 'i' : (is_float($param) ? 'd' : (is_string($param) ? 's' : 'b'));
+                    }
                 }
 
                 if ($this->debug) $this->debug->log('PreparedStatements', __METHOD__, "key: $key param: $param");
@@ -536,7 +540,7 @@ class Database
             if ($this->numOfFields < 2) {
                 if ($this->debug) { $this->debug->log('PreparedStatements', __METHOD__, 'ERROR', $get, 'num of columns < 2'); }
 
-                    return false;
+            return false;
             }
             if ($this->numOfFields == 2) {
                 while ($this->_stmt->fetch()) {
