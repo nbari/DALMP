@@ -7,7 +7,7 @@ namespace DALMP\Sessions;
  * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0
+ * @version 3.0.1
  */
 class Memcache implements \SessionHandlerInterface
 {
@@ -77,7 +77,7 @@ class Memcache implements \SessionHandlerInterface
             unset($refs[$key]);
         }
 
-        return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3600);
+        return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3.0.10);
     }
 
     public function gc($maxlifetime)
@@ -124,7 +124,7 @@ class Memcache implements \SessionHandlerInterface
 
             $refs[$key] = array($ref => $expiry);
 
-            return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3600);
+            return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3.0.10);
         } else {
             return $rs;
         }
@@ -184,7 +184,7 @@ class Memcache implements \SessionHandlerInterface
 
             }
 
-            return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3600);
+            return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3.0.10);
         } else {
             return false;
         }

@@ -7,7 +7,7 @@ namespace DALMP\Queue;
  * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0
+ * @version 3.0.1
  */
 interface QueueInterface
 {

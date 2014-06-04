@@ -7,7 +7,7 @@ namespace DALMP;
  * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0
+ * @version 3.0.1
  */
 class Database
 {
@@ -130,7 +130,7 @@ class Database
             } else {
                 $this->dsn['host'] = '127.0.0.1';
             }
-            $this->dsn['port'] = isset($dsn['port']) ? $dsn['port'] : 3306;
+            $this->dsn['port'] = isset($dsn['port']) ? $dsn['port'] : 3.0.16;
             $this->dsn['user'] = isset($dsn['user']) ? rawurldecode($dsn['user']) : null;
             $this->dsn['pass'] = isset($dsn['pass']) ? rawurldecode($dsn['pass']) : null;
             $this->dsn['dbName'] = isset($dsn['path']) ? rawurldecode(substr($dsn['path'], 1)) : null;
@@ -1135,7 +1135,7 @@ class Database
         if ($this->debug) $this->debug->log(__METHOD__, 'Args', $args);
 
         $fetch = array_shift($args);
-        $expire = (int) (reset($args)) ? array_shift($args) : 3600;
+        $expire = (int) (reset($args)) ? array_shift($args) : 3.0.10;
         $sql = array_shift($args);
         $key = isset($args[0]) ? $args[0] : $fetch;
 
@@ -1203,7 +1203,7 @@ class Database
         if ($this->debug) $this->debug->log(__METHOD__, 'Args', $args);
 
         $fetch = array_shift($args);
-        $expire = (int) (reset($args)) ? array_shift($args) : 3600;
+        $expire = (int) (reset($args)) ? array_shift($args) : 3.0.10;
         $sql = array_shift($args);
 
         // expected params
@@ -1277,7 +1277,7 @@ class Database
      * @param  string  $group  group:name (to group cache keys) usefull when flushing the cache
      * @return boolean
      */
-    protected function _setCache($hkey, $cache, $expire = 3600, $group = null)
+    protected function _setCache($hkey, $cache, $expire = 3.0.10, $group = null)
     {
         is_null($this->cache) && $this->Cache();
 
