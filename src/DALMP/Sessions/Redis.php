@@ -73,7 +73,7 @@ class Redis implements \SessionHandlerInterface
              */
             if (isset($GLOBALS[$this->dalmp_sessions_ref]) && !empty($GLOBALS[$this->dalmp_sessions_ref])) {
                 $this->cache->X()->HDEL($this->cache_ref_key, $key);
-                $this->cache->X()->EXPIRE($this->cache_ref_key, 3.0.10);
+                $this->cache->X()->EXPIRE($this->cache_ref_key, 3600);
             }
 
             return true;
@@ -99,7 +99,7 @@ class Redis implements \SessionHandlerInterface
             if (count($keys) > 1) {
                 $redis = $this->cache->X();
                 call_user_func_array(array($redis, 'HDEL'), $keys);
-                $this->cache->X()->EXPIRE($this->cache_ref_key, 3.0.10);
+                $this->cache->X()->EXPIRE($this->cache_ref_key, 3600);
             }
         }
 
@@ -131,7 +131,7 @@ class Redis implements \SessionHandlerInterface
          * store REF on cache
          */
         if ($rs && $ref) {
-            return (bool) ($this->cache->X()->HSET($this->cache_ref_key, $key, sprintf('%s|%s', $ref, $expiry)) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3.0.10) : false);
+            return (bool) ($this->cache->X()->HSET($this->cache_ref_key, $key, sprintf('%s|%s', $ref, $expiry)) ? $this->cache->X()->EXPIRE($this->cache_ref_key, 3600) : false);
         } else {
             return $rs;
         }

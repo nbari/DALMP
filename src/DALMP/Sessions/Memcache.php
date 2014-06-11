@@ -77,7 +77,7 @@ class Memcache implements \SessionHandlerInterface
             unset($refs[$key]);
         }
 
-        return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3.0.10);
+        return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3600);
     }
 
     public function gc($maxlifetime)
@@ -124,7 +124,7 @@ class Memcache implements \SessionHandlerInterface
 
             $refs[$key] = array($ref => $expiry);
 
-            return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3.0.10);
+            return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3600);
         } else {
             return $rs;
         }
@@ -184,7 +184,7 @@ class Memcache implements \SessionHandlerInterface
 
             }
 
-            return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3.0.10);
+            return (bool) $this->cache->Set($this->cache_ref_key, $refs, 3600);
         } else {
             return false;
         }
