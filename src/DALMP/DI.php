@@ -7,7 +7,7 @@ namespace DALMP;
  * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0.1
+ * @version 3.0.2
  */
 class DI extends abstractDI
 {

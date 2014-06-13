@@ -7,7 +7,7 @@ namespace DALMP\Cache;
  * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0.1
+ * @version 3.0.2
  */
 class Disk implements CacheInterface
 {
@@ -42,7 +42,7 @@ class Disk implements CacheInterface
      *
      * @param string $key
      * @param string $value
-     * @param int $expire time in seconds(default is 2592000 '30 days')
+     * @param int    $expire time in seconds(default is 2592000 '30 days')
      */
     public function set($key, $value, $expire = 2592000)
     {

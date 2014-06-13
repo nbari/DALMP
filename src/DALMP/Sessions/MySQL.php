@@ -7,7 +7,7 @@ namespace DALMP\Sessions;
  * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0.1
+ * @version 3.0.2
  */
 class MySQL implements \SessionHandlerInterface
 {
@@ -37,8 +37,8 @@ class MySQL implements \SessionHandlerInterface
     /**
      * constructor
      *
-     * @param DALMP\Database $db instance
-     * @param string $sessions_ref global variable to be stored as reference
+     * @param DALMP\Database $db           instance
+     * @param string         $sessions_ref global variable to be stored as reference
      */
     public function __construct(\DALMP\Database $DB, $sessions_ref = 'UID')
     {
@@ -117,8 +117,8 @@ class MySQL implements \SessionHandlerInterface
     /**
      * getSessionRef
      *
-     * @param string $ref
-     * @return array of session containing a specific reference
+     * @param  string $ref
+     * @return array  of session containing a specific reference
      */
     public function getSessionRef($ref)
     {
@@ -138,7 +138,7 @@ class MySQL implements \SessionHandlerInterface
     /**
      * delSessionRef - delete sessions containing a specific reference
      *
-     * @param string $ref
+     * @param  string  $ref
      * @return boolean
      */
     public function delSessionRef($ref)

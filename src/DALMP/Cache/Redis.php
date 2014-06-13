@@ -7,7 +7,7 @@ namespace DALMP\Cache;
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0.1
+ * @version 3.0.2
  */
 class Redis implements CacheInterface
 {
@@ -20,8 +20,8 @@ class Redis implements CacheInterface
      * Constructor
      *
      * @param string $host
-     * @param int $port
-     * @param int $timeout
+     * @param int    $port
+     * @param int    $timeout
      */
     public function __construct()
     {
@@ -39,7 +39,7 @@ class Redis implements CacheInterface
      *
      * @param string $key
      * @param string $value
-     * @param int $expire time in seconds(default is 0 meaning unlimited)
+     * @param int    $expire time in seconds(default is 0 meaning unlimited)
      */
     public function set($key, $value, $expire = 0)
     {

@@ -7,7 +7,7 @@ namespace DALMP\Sessions;
  * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0.1
+ * @version 3.0.2
  */
 class SQLite implements \SessionHandlerInterface
 {
@@ -30,8 +30,8 @@ class SQLite implements \SessionHandlerInterface
     /**
      * constructor
      *
-     * @param string $filename Path to the SQLite database
-     * @param string $sessions_ref global variable to be stored as reference
+     * @param string $filename       Path to the SQLite database
+     * @param string $sessions_ref   global variable to be stored as reference
      * @param string $encryption_key
      */
     public function __construct($filename = false, $sessions_ref = 'UID', $encryption_key = false)
@@ -139,8 +139,8 @@ class SQLite implements \SessionHandlerInterface
     /**
      * getSessionRef
      *
-     * @param string $ref
-     * @return array of session containing a specific reference
+     * @param  string $ref
+     * @return array  of session containing a specific reference
      */
     public function getSessionRef($ref)
     {
@@ -160,7 +160,7 @@ class SQLite implements \SessionHandlerInterface
     /**
      * delSessionRef - delete sessions containing a specific reference
      *
-     * @param string $ref
+     * @param  string  $ref
      * @return boolean
      */
     public function delSessionRef($ref)

@@ -7,7 +7,7 @@ namespace DALMP\Sessions;
  * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0.1
+ * @version 3.0.2
  */
 class Memcache implements \SessionHandlerInterface
 {
@@ -47,8 +47,8 @@ class Memcache implements \SessionHandlerInterface
     /**
      * constructor
      *
-     * @param DALMP\Cache\Memcache $cache instance
-     * @param string $sessions_ref global variable to be stored as reference
+     * @param DALMP\Cache\Memcache $cache        instance
+     * @param string               $sessions_ref global variable to be stored as reference
      */
     public function __construct(\DALMP\Cache\Memcache $cache, $sessions_ref = 'UID')
     {
@@ -143,8 +143,8 @@ class Memcache implements \SessionHandlerInterface
     /**
      * getSessionRef
      *
-     * @param string $ref
-     * @return array of sessions containing a specific reference
+     * @param  string $ref
+     * @return array  of sessions containing a specific reference
      */
     public function getSessionRef($ref)
     {
@@ -163,7 +163,7 @@ class Memcache implements \SessionHandlerInterface
     /**
      * delSessionRef - delete sessions containing a specific reference
      *
-     * @param string $ref
+     * @param  string  $ref
      * @return boolean
      */
     public function delSessionRef($ref)

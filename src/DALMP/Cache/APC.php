@@ -7,7 +7,7 @@ namespace DALMP\Cache;
  * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0.1
+ * @version 3.0.2
  */
 class APC implements CacheInterface
 {
@@ -17,9 +17,9 @@ class APC implements CacheInterface
      * Constructor
      *
      * @param string $host
-     * @param int $port
-     * @param int $timeout
-     * @param int $compress
+     * @param int    $port
+     * @param int    $timeout
+     * @param int    $compress
      */
     public function __construct()
     {
@@ -33,7 +33,7 @@ class APC implements CacheInterface
      *
      * @param string $key
      * @param string $value
-     * @param int $expire time in seconds(default is 0 meaning unlimited)
+     * @param int    $expire time in seconds(default is 0 meaning unlimited)
      */
     public function set($key, $value, $expire = 0)
     {

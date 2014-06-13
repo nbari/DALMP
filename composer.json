@@ -1,41 +1,41 @@
 {
-  "name": "dalmp/dalmp",
-  "type": "library",
-  "description": "Database Abstraction Layer for MySQL using PHP",
-  "keywords": [
-    "database",
-    "cache",
-    "sessions"
-  ],
-  "homepage": "http://www.dalmp.com",
-  "license": "BSD-3-Clause",
-  "authors": [
-    {
-      "name": "Nicolas Embriz",
-      "email": "nbari@dalmp.com"
-    }
-  ],
-  "config": {
-    "bin-dir": "bin"
-  },
-  "require": {
-    "php": ">=5.4.0",
-    "ext-mysqli": "*"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "4.1.*",
-    "phpunit/php-invoker": "*"
-  },
-  "suggest": {
-    "ext-session": "handle sessions",
-    "ext-hash": "hash_algos",
-    "ext-redis": "Use redis as cache engine",
-    "ext-memcache": "Use memcache as cache engine",
-    "ext-sqlite3": "Use sqlite for queues"
-  },
-  "autoload": {
-    "psr-0": {
-      "DALMP\\": "src/"
-    }
-  }
+    "authors": [
+        {
+            "email": "nbari@dalmp.com",
+            "name": "Nicolas Embriz"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "DALMP\\": "src/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "description": "Database Abstraction Layer for MySQL using PHP",
+    "homepage": "http://www.dalmp.com",
+    "keywords": [
+        "database",
+        "cache",
+        "sessions"
+    ],
+    "license": "BSD-3-Clause",
+    "name": "dalmp/dalmp",
+    "require": {
+        "ext-mysqli": "*",
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "phpunit/php-invoker": "*",
+        "phpunit/phpunit": "4.1.*"
+    },
+    "suggest": {
+        "ext-hash": "hash_algos",
+        "ext-memcache": "Use memcache as cache engine",
+        "ext-redis": "Use redis as cache engine",
+        "ext-session": "handle sessions",
+        "ext-sqlite3": "Use sqlite for queues"
+    },
+    "type": "library"
 }

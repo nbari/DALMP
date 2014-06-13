@@ -7,16 +7,16 @@ namespace DALMP\Cache;
  * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0.1
+ * @version 3.0.2
  */
 interface CacheInterface
 {
     /**
      * Store data at the server
      *
-     * @param string $key
-     * @param string $value
-     * @param int $ttl time in seconds(default is 0 meaning unlimited)
+     * @param  string $key
+     * @param  string $value
+     * @param  int    $ttl   time in seconds(default is 0 meaning unlimited)
      * @return this
      */
     public function Set($key, $value, $ttl = 0);
@@ -24,7 +24,7 @@ interface CacheInterface
     /**
      * Retrieve item from the server
      *
-     * @param string $key
+     * @param  string $key
      * @return mixed
      */
     public function Get($key);
@@ -32,7 +32,7 @@ interface CacheInterface
     /*
      * Delete item from the server
      *
-     * @param string $key
+     * @param  string $key
      * @return bool
      */
     public function Delete($key);

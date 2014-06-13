@@ -7,7 +7,7 @@ namespace DALMP\Sessions;
  * @author Nicolas Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0.1
+ * @version 3.0.2
  */
 class Files implements \SessionHandlerInterface
 {
@@ -103,7 +103,7 @@ class Files implements \SessionHandlerInterface
     /**
      * getSessionsRefs
      *
-     * @param int $expiry
+     * @param  int   $expiry
      * @return array of sessions containing any reference
      */
     public function getSessionsRefs($expired_sessions = false)
@@ -116,8 +116,8 @@ class Files implements \SessionHandlerInterface
     /**
      * getSessionRef
      *
-     * @param string $ref
-     * @return array of session containing a specific reference
+     * @param  string $ref
+     * @return array  of session containing a specific reference
      */
     public function getSessionRef($ref)
     {
@@ -127,7 +127,7 @@ class Files implements \SessionHandlerInterface
     /**
      * delSessionsRef - delete sessions containing a specific reference
      *
-     * @param string $ref
+     * @param  string  $ref
      * @return boolean
      */
     public function delSessionRef($ref)
