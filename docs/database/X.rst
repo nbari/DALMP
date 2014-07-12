@@ -25,6 +25,15 @@ Example
    $db->X()->ping();
    $db->X()->stat();
 
+   $rs = $db->GetOne('SELECT DATABASE()');
+   echo $rs, PHP_EOL;
+
+   $db->X()->select_db('mysql');
+
+   $rs = $db->GetOne('SELECT DATABASE()');
+   echo $rs, PHP_EOL;
+
+
 
 .. seealso::
 
