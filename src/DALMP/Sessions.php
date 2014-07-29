@@ -63,7 +63,7 @@ class Sessions
         $fingerprint = @$_SERVER['HTTP_ACCEPT'] . @$_SERVER['HTTP_USER_AGENT'] . @$_SERVER['HTTP_ACCEPT_ENCODING'] . @$_SERVER['HTTP_ACCEPT_LANGUAGE'];
 
         if ($use_IP) {
-            $fingerprint .= @$_SERVER['SERVER_ADDR'];
+            $fingerprint .= @$_SERVER['REMOTE_ADDR'];
         }
 
         $fingerprint = sha1('DALMP' . $fingerprint);
