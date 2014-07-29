@@ -7,7 +7,7 @@ namespace DALMP\Queue;
  * @author Nicolas de Bari Embriz <nbari@dalmp.com>
  * @package DALMP
  * @license BSD License
- * @version 3.0.2
+ * @version 3.0.3
  */
 class Gearman implements QueueInterface
 {
