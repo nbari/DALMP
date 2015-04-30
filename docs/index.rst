@@ -79,3 +79,4 @@ Table of Contents
    tests
    examples
    issues
+   navicat
