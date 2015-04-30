@@ -21,7 +21,7 @@ Thanks
 
 Many thanks [Navicat](http://www.navicat.com) for supporting Open Source projects.
 
-![navicat](//raw.githubusercontent.com/nbari/DALMP/master/docs/navicat.jpg)
+![navicat](https://raw.githubusercontent.com/nbari/DALMP/master/docs/navicat.jpg)
 
 Details
 -------
