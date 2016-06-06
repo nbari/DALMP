@@ -75,7 +75,7 @@ class Gearman implements QueueInterface
     {
         $gm= new \GermanWorker();
         $gm->addServer($this->host, $this->port);
-        $gm->addFunction($this->queue_name, XXX)
+        $gm->addFunction($this->queue_name, XXX);
     }
 
     /**
