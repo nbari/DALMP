@@ -46,7 +46,6 @@ class Sessions
         ini_set('session.hash_function', in_array($hash_algo, hash_algos()) ? $hash_algo : 1);
         ini_set('session.name', 'DALMP');
 
-        session_module_name('user');
         session_set_save_handler($this->session_handler, true);
         session_start();
     }
